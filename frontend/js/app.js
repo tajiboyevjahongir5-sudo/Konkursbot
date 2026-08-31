@@ -262,20 +262,23 @@ document.addEventListener("DOMContentLoaded", () => {
           const isDone = task.completed === 1;
 
           item.innerHTML = `
-            <div class="task-info">
-              <div class="task-icon"><i class="fa-brands fa-telegram" style="color: #0088cc; font-size: 1.15rem; filter: drop-shadow(0 0 5px #0088cc);"></i></div>
-              <div>
-                <div class="task-title">${task.title}</div>
+            <div class="task-info" style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-color); box-shadow: 0 0 8px var(--primary-glow); flex-shrink: 0; background: var(--bg-dark);">
+                <img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div class="task-title" style="font-weight: 700; font-size: 0.92rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
+                <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">${task.channel_id}</div>
               </div>
             </div>
-            <div class="task-actions">
-              <a href="${task.invite_link}" target="_blank" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();">
-                <i class="fa-brands fa-telegram"></i> A'zo bo'lish
+            <div class="task-actions" style="display: flex; gap: 8px; align-items: center;">
+              <a href="${task.invite_link}" target="_blank" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" style="padding: 8px 12px; font-size: 0.8rem; border-radius: 8px;">
+                <i class="fa-brands fa-telegram" style="color: #0088cc;"></i> A'zo bo'lish
               </a>
               ${
                 isDone 
-                ? '<button class="btn btn-sm" style="background: var(--success-color); color: #fff;" disabled><i class="fa-solid fa-circle-check"></i></button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
+                ? '<button class="btn btn-sm" style="background: var(--success-color); color: #fff; padding: 8px 12px; border-radius: 8px;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
+                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" style="padding: 8px 12px; font-size: 0.8rem; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
               }
             </div>
           `;

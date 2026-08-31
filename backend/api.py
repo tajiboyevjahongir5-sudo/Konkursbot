@@ -168,6 +168,23 @@ async def get_user_photo(user_id: int):
     return Response(status_code=302, headers={"Location": "/assets/avatar.png"})
 
 
+@router.get("/channel/photo")
+async def get_channel_photo(channel_id: str):
+    from backend.main import get_bot_instance
+    bot = get_bot_instance()
+    if bot and channel_id:
+        try:
+            chat = await bot.get_chat(channel_id)
+            if chat and chat.photo:
+                file_info = await bot.get_file(chat.photo.small_file_id)
+                photo_url = f"https://api.telegram.org/file/bot{settings.BOT_TOKEN}/{file_info.file_path}"
+                return Response(status_code=302, headers={"Location": photo_url})
+        except Exception:
+            pass
+
+    return Response(status_code=302, headers={"Location": "/assets/logo.jpg"})
+
+
 @router.post("/contest/participate")
 async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
     # Verify user channel subscriptions
