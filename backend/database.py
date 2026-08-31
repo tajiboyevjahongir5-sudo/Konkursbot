@@ -530,7 +530,7 @@ async def issue_ticket_db(db, user_id: int, contest_id: int, reason: str = "Konk
         contest_tickets_cnt = (await c_cnt.fetchone())["cnt"]
 
     next_num = contest_tickets_cnt + 1
-    ticket_number = f"#PXL-{next_num:04d}"
+    ticket_number = f"#PXL-{next_num}"
 
     await db.execute("""
         INSERT INTO user_tickets (user_id, ticket_number, contest_id, reason)
