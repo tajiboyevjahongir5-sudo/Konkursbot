@@ -526,16 +526,25 @@ async def get_admin_stats() -> Dict[str, Any]:
 
 
 async def issue_ticket_db(db, user_id: int, contest_id: int, reason: str = "Konkursda qatnashish") -> str:
-    async with db.execute("SELECT COUNT(*) as cnt FROM user_tickets WHERE contest_id = ?", (contest_id,)) as c_cnt:
-        contest_tickets_cnt = (await c_cnt.fetchone())["cnt"]
+    ticket_number = ""
+    retry_count = 0
+    while retry_count < 10:
+        async with db.execute("SELECT COUNT(*) as cnt FROM user_tickets WHERE contest_id = ?", (contest_id,)) as c_cnt:
+            cnt = (await c_cnt.fetchone())["cnt"]
 
-    next_num = contest_tickets_cnt + 1
-    ticket_number = f"#PXL-{next_num}"
+        next_num = cnt + 1 + retry_count
+        candidate_number = f"#PXL-{next_num}"
 
-    await db.execute("""
-        INSERT INTO user_tickets (user_id, ticket_number, contest_id, reason)
-        VALUES (?, ?, ?, ?)
-    """, (user_id, ticket_number, contest_id, reason))
+        try:
+            await db.execute("""
+                INSERT INTO user_tickets (user_id, ticket_number, contest_id, reason)
+                VALUES (?, ?, ?, ?)
+            """, (user_id, candidate_number, contest_id, reason))
+            ticket_number = candidate_number
+            break
+        except sqlite3.IntegrityError:
+            retry_count += 1
+            continue
 
     async with db.execute("SELECT COUNT(*) as total FROM user_tickets WHERE user_id = ?", (user_id,)) as c2:
         cnt_row = await c2.fetchone()
