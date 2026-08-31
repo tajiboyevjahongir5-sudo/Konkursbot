@@ -22,7 +22,9 @@ from backend.database import (
     pick_random_winners,
     get_winners,
     get_admin_stats,
-    get_db
+    get_db,
+    get_user_tickets,
+    participate_in_contest
 )
 
 router = APIRouter(prefix="/api")
@@ -125,6 +127,7 @@ async def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
 @router.get("/user/me")
 async def get_me(user: dict = Depends(get_current_user)):
     ref_count = await get_user_referrals_count(user["id"])
+    user_tickets_list = await get_user_tickets(user["id"])
     is_admin = settings.is_admin(user["id"]) or (user["id"] == 999999999)
     bot_name = "peexell_contest_bot"
     ref_link = f"https://t.me/{bot_name}?start=ref_{user['id']}"
@@ -136,13 +139,58 @@ async def get_me(user: dict = Depends(get_current_user)):
             "first_name": user["first_name"],
             "last_name": user["last_name"],
             "username": user["username"],
-            "tickets": user["tickets"],
+            "tickets": len(user_tickets_list) if user_tickets_list else user["tickets"],
             "points": user["points"],
             "ref_code": user["ref_code"],
             "referrals_count": ref_count,
             "ref_link": ref_link,
-            "is_admin": is_admin
+            "is_admin": is_admin,
+            "tickets_list": user_tickets_list
         }
+    }
+
+
+@router.post("/contest/participate")
+async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
+    # Verify user channel subscriptions
+    sponsors = await get_sponsors(active_only=True)
+    from backend.main import get_bot_instance
+    bot = get_bot_instance()
+
+    unsubscribed_sponsors = []
+    if bot:
+        for s in sponsors:
+            try:
+                member = await bot.get_chat_member(chat_id=s["channel_id"], user_id=user["id"])
+                if member.status not in ["creator", "administrator", "member"]:
+                    unsubscribed_sponsors.append(s["title"])
+            except Exception:
+                pass  # Fallback if permissions missing or testing
+
+    if unsubscribed_sponsors and user["id"] != 999999999:
+        joined_list = ", ".join(unsubscribed_sponsors)
+        return {
+            "status": "error",
+            "message": f"❌ Iltimos, barcha sponsor kanallarga obuna bo'ling! Obuna bo'linmagan: {joined_list}"
+        }
+
+    # Execute contest participation and ticket issuance
+    res = await participate_in_contest(user["id"])
+    if res["already_joined"]:
+        return {
+            "status": "success",
+            "already_joined": True,
+            "ticket_number": res["ticket_number"],
+            "total_tickets": res["total_tickets"],
+            "message": f"Siz allaqachon konkursga qatnashgansiz! Biletingiz: {res['ticket_number']}"
+        }
+
+    return {
+        "status": "success",
+        "already_joined": False,
+        "ticket_number": res["ticket_number"],
+        "total_tickets": res["total_tickets"],
+        "message": f"🎉 Tabriklaymiz! Konkursda muvaffaqiyatli qatnashdingiz! Omadli biletingiz: {res['ticket_number']}"
     }
 
 

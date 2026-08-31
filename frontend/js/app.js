@@ -107,20 +107,47 @@ document.addEventListener("DOMContentLoaded", () => {
         currentUser = res.user;
 
         // Update Header
-        document.getElementById("header-tickets-count").textContent = currentUser.tickets;
+        const hTickets = document.getElementById("header-tickets-count");
+        if (hTickets) hTickets.textContent = currentUser.tickets;
 
-        // Update Profile Tab
-        document.getElementById("prof-user-name").textContent = 
-          `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'Foydalanuvchi';
-        document.getElementById("prof-user-id").textContent = `ID: ${currentUser.id}`;
-        document.getElementById("prof-tickets").textContent = currentUser.tickets;
-        document.getElementById("prof-points").textContent = currentUser.points;
-        document.getElementById("prof-referrals").textContent = currentUser.referrals_count;
+        // Update Profile Tab elements
+        const pName = document.getElementById("prof-user-name");
+        const pId = document.getElementById("prof-user-id");
+        const pTickets = document.getElementById("prof-tickets-count");
+        const pRefs = document.getElementById("prof-referrals-count");
 
-        // Update Friends Tab
-        document.getElementById("ref-link-input").value = currentUser.ref_link;
-        document.getElementById("profile-ref-count").textContent = currentUser.referrals_count;
-        document.getElementById("profile-ref-tickets").textContent = currentUser.tickets;
+        if (pName) pName.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'Foydalanuvchi';
+        if (pId) pId.textContent = `ID: ${currentUser.id}`;
+        if (pTickets) pTickets.textContent = currentUser.tickets;
+        if (pRefs) pRefs.textContent = currentUser.referrals_count;
+
+        // Render User Tickets Grid
+        const ticketsContainer = document.getElementById("user-tickets-container");
+        if (ticketsContainer) {
+          if (currentUser.tickets_list && currentUser.tickets_list.length > 0) {
+            ticketsContainer.innerHTML = "";
+            currentUser.tickets_list.forEach(t => {
+              const card = document.createElement("div");
+              card.style.cssText = "background: var(--bg-dark); border: 1px solid var(--primary-color); padding: 10px; border-radius: 8px; text-align: center; box-shadow: 0 0 8px rgba(197, 255, 0, 0.15);";
+              card.innerHTML = `
+                <div style="color: var(--primary-color); font-weight: 700; font-size: 0.92rem;"><i class="fa-solid fa-ticket"></i> ${t.ticket_number}</div>
+                <div style="color: var(--text-secondary); font-size: 0.72rem; margin-top: 4px;">${t.reason || 'Bilet'}</div>
+              `;
+              ticketsContainer.appendChild(card);
+            });
+          } else {
+            ticketsContainer.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px; grid-column: 1/-1;">Hozircha biletlaringiz yo\'q. Konkursda qatnashib bilet oling!</div>';
+          }
+        }
+
+        // Update Friends Tab elements
+        const rInput = document.getElementById("ref-link-input");
+        const rCount = document.getElementById("profile-ref-count");
+        const rTickets = document.getElementById("profile-ref-tickets");
+
+        if (rInput) rInput.value = currentUser.ref_link;
+        if (rCount) rCount.textContent = currentUser.referrals_count;
+        if (rTickets) rTickets.textContent = currentUser.tickets;
 
         // Show Admin Nav button if Admin
         if (currentUser.is_admin) {
@@ -310,6 +337,29 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       listEl.innerHTML = '<div style="text-align: center; color: var(--danger-color); padding: 20px;">Reytingni yuklashda xatolik.</div>';
     }
+  }
+
+  // --- CONTEST PARTICIPATION ACTION ---
+  const participateBtn = document.getElementById("btn-participate-contest");
+  if (participateBtn) {
+    participateBtn.addEventListener("click", async () => {
+      participateBtn.disabled = true;
+      participateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Obuna tekshirilmoqda...';
+
+      try {
+        const res = await apiFetch("/api/contest/participate", { method: "POST" });
+        if (res.status === "success") {
+          showToast(res.message, "success");
+          await loadUserData();
+        } else {
+          showToast(res.message || "Barcha sponsor kanallarga obuna bo'ling!", "warning");
+        }
+      } catch (err) {
+      } finally {
+        participateBtn.disabled = false;
+        participateBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 🚀 Qatnashish';
+      }
+    });
   }
 
   // --- REFERRAL LINK ACTIONS ---

@@ -41,6 +41,11 @@
     <!-- TAB 1: KONKURS -->
     <section id="tab-contest" class="tab-content active">
       <div class="card">
+        <!-- Konkurs Banner Image -->
+        <div style="width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 14px; border: 1px solid var(--border-color);">
+          <img src="assets/logo.jpg" alt="PEEXELL Contest Banner" style="width: 100%; height: auto; display: block;">
+        </div>
+
         <div class="card-header-title">
           <i class="fa-solid fa-bolt" style="color: var(--primary-color);"></i>
           <span id="contest-title">PEEXELL GRAND KONKURS</span>
@@ -91,15 +96,61 @@
           <span>Sponsor Kanallar (Majburiy Obuna)</span>
         </div>
         <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px;">
-          Konkursda qatnashish uchun kanallarga obuna bo'ling va obunani tekshiring (+1 Extra Bilet):
+          Konkursda qatnashish uchun barcha kanallarga obuna bo'ling va pastdagi <b>🚀 Qatnashish</b> tugmasini bosing:
         </p>
         <div id="tasks-container">
           <!-- Dynamic Task List items injected by JS -->
         </div>
+
+        <!-- Big Participate Button -->
+        <button id="btn-participate-contest" class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 14px; font-size: 1.05rem; font-weight: 700; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-paper-plane"></i> 🚀 Qatnashish
+        </button>
       </div>
     </section>
 
-    <!-- TAB 2: DO'STLAR (REFERRALS) -->
+    <!-- TAB 2: PROFIL (PROFILE & TICKETS) -->
+    <section id="tab-profile" class="tab-content">
+      <div class="card">
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+          <div style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #121316; font-weight: bold;">
+            <i class="fa-solid fa-user-ninja"></i>
+          </div>
+          <div>
+            <div id="prof-user-name" style="font-size: 1.1rem; font-weight: 700; color: #fff;">Foydalanuvchi</div>
+            <div id="prof-user-id" style="font-size: 0.78rem; color: var(--text-secondary);">ID: 00000000</div>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom: 16px;">
+          <div class="stat-card">
+            <div id="prof-tickets-count" class="stat-value" style="color: var(--primary-color);">0</div>
+            <div class="stat-label">Biletlaringiz</div>
+          </div>
+          <div class="stat-card">
+            <div id="prof-referrals-count" class="stat-value">0</div>
+            <div class="stat-label">Taklif qilinganlar</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tickets Grid Card -->
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-ticket" style="color: var(--primary-color);"></i>
+          <span>Sizning Omadli Biletlaringiz</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+          Har bir unikal bilet seriyasi g'olib bo'lish imkoniyatingizni oshiradi:
+        </p>
+
+        <div id="user-tickets-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px;">
+          <div style="text-align: center; color: var(--text-secondary); padding: 15px; grid-column: 1/-1;">Yuklanmoqda...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: DO'STLAR (REFERRALS) -->
     <section id="tab-friends" class="tab-content">
       <div class="card">
         <div class="card-header-title">
@@ -107,7 +158,7 @@
           <span>Do'stlarni taklif qilish</span>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
-          Har bir taklif qilingan do'stingiz uchun sizga **+1 Bilet** taqdim etiladi. Do'stingiz ham **+1 Bonus Bilet** oladi!
+          Har <b>5 ta taklif qilgan do'stingiz</b> homiylarga obuna bo'lib konkursga qatnashsa, sizga <b>+1 Unikal Omadli Bilet</b> taqdim etiladi!
         </p>
 
         <div class="form-group">
@@ -143,7 +194,7 @@
       </div>
     </section>
 
-    <!-- TAB 3: ADMIN PANEL (Only visible for Admins) -->
+    <!-- TAB 4: ADMIN PANEL (Only visible for Admins) -->
     <section id="tab-admin" class="tab-content">
       <div class="card">
         <div class="card-header-title">
@@ -248,6 +299,10 @@
       <button class="nav-item active" data-tab="tab-contest">
         <i class="fa-solid fa-bolt icon"></i>
         <span>Konkurs</span>
+      </button>
+      <button class="nav-item" data-tab="tab-profile">
+        <i class="fa-solid fa-user icon"></i>
+        <span>Profil</span>
       </button>
       <button class="nav-item" data-tab="tab-friends">
         <i class="fa-solid fa-user-group icon"></i>

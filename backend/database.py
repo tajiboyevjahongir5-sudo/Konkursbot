@@ -98,6 +98,33 @@ async def init_db():
             )
         """)
 
+        # User Tickets table
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS user_tickets (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                ticket_number TEXT UNIQUE NOT NULL,
+                contest_id INTEGER NOT NULL,
+                reason TEXT DEFAULT 'Qatnashish',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id),
+                FOREIGN KEY (contest_id) REFERENCES contests (id)
+            )
+        """)
+
+        # Contest Participants table
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS contest_participants (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                contest_id INTEGER NOT NULL,
+                joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_id, contest_id),
+                FOREIGN KEY (user_id) REFERENCES users (id),
+                FOREIGN KEY (contest_id) REFERENCES contests (id)
+            )
+        """)
+
         await db.commit()
 
         # Seed initial sponsors if none exist
@@ -435,4 +462,118 @@ async def get_admin_stats() -> Dict[str, Any]:
             "total_tickets": total_tickets,
             "active_sponsors": active_sponsors,
             "completed_tasks": completed_tasks
+        }
+
+
+async def issue_ticket_db(db, user_id: int, contest_id: int, reason: str = "Konkursda qatnashish") -> str:
+    async with db.execute("SELECT MAX(id) as max_id FROM user_tickets") as c:
+        row = await c.fetchone()
+        max_id = row["max_id"] if (row and row["max_id"]) else 0
+
+    next_num = 1001 + max_id
+    ticket_number = f"#PXL-{next_num}"
+
+    await db.execute("""
+        INSERT INTO user_tickets (user_id, ticket_number, contest_id, reason)
+        VALUES (?, ?, ?, ?)
+    """, (user_id, ticket_number, contest_id, reason))
+
+    async with db.execute("SELECT COUNT(*) as total FROM user_tickets WHERE user_id = ?", (user_id,)) as c2:
+        cnt_row = await c2.fetchone()
+        total_cnt = cnt_row["total"] if cnt_row else 1
+        await db.execute("UPDATE users SET tickets = ? WHERE id = ?", (total_cnt, user_id))
+
+    return ticket_number
+
+
+async def get_user_tickets(user_id: int) -> List[Dict[str, Any]]:
+    async with get_db() as db:
+        async with db.execute("""
+            SELECT ticket_number, reason, created_at
+            FROM user_tickets
+            WHERE user_id = ?
+            ORDER BY id DESC
+        """, (user_id,)) as c:
+            rows = await c.fetchall()
+            return [dict(r) for r in rows]
+
+
+async def participate_in_contest(user_id: int) -> Dict[str, Any]:
+    async with get_db() as db:
+        # Get active contest
+        async with db.execute("SELECT id FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c:
+            row = await c.fetchone()
+            if not row:
+                raise ValueError("Faol konkurs topilmadi")
+            contest_id = row["id"]
+
+        # Check if already joined contest
+        async with db.execute("SELECT id FROM contest_participants WHERE user_id = ? AND contest_id = ?", (user_id, contest_id)) as c:
+            existing = await c.fetchone()
+
+        if existing:
+            async with db.execute("SELECT ticket_number FROM user_tickets WHERE user_id = ? AND contest_id = ? ORDER BY id ASC LIMIT 1", (user_id, contest_id)) as c_t:
+                t_row = await c_t.fetchone()
+                t_num = t_row["ticket_number"] if t_row else "#PXL-1001"
+            
+            async with db.execute("SELECT COUNT(*) as cnt FROM user_tickets WHERE user_id = ?", (user_id,)) as c_cnt:
+                total_t = (await c_cnt.fetchone())["cnt"]
+
+            return {
+                "already_joined": True,
+                "ticket_number": t_num,
+                "total_tickets": total_t
+            }
+
+        # First time joining contest
+        await db.execute("""
+            INSERT INTO contest_participants (user_id, contest_id)
+            VALUES (?, ?)
+        """, (user_id, contest_id))
+
+        # Issue 1st participation ticket
+        ticket_number = await issue_ticket_db(db, user_id, contest_id, "Konkursda qatnashish")
+
+        # Check Referral rule for referrer (Every 5 active participating friends = +1 Ticket)
+        async with db.execute("SELECT referred_by FROM users WHERE id = ?", (user_id,)) as c_ref:
+            ref_row = await c_ref.fetchone()
+            referrer_id = ref_row["referred_by"] if ref_row else None
+
+        if referrer_id:
+            # Count active participating referrals for this referrer
+            async with db.execute("""
+                SELECT COUNT(cp.id) as active_cnt
+                FROM referrals r
+                JOIN contest_participants cp ON r.referred_id = cp.user_id
+                WHERE r.referrer_id = ? AND cp.contest_id = ?
+            """, (referrer_id, contest_id)) as c_act:
+                active_referrals = (await c_act.fetchone())["active_cnt"]
+
+            # Number of referral tickets referrer should have (1 for every 5 active friends)
+            earned_ref_tickets = active_referrals // 5
+
+            # Number of referral tickets referrer has already received
+            async with db.execute("""
+                SELECT COUNT(*) as existing_ref_t
+                FROM user_tickets
+                WHERE user_id = ? AND contest_id = ? AND reason LIKE '%do''st taklifi%'
+            """, (referrer_id, contest_id)) as c_earned:
+                already_issued = (await c_earned.fetchone())["existing_ref_t"]
+
+            # Issue missing referral tickets if milestone hit
+            if earned_ref_tickets > already_issued:
+                new_tickets_to_issue = earned_ref_tickets - already_issued
+                for i in range(new_tickets_to_issue):
+                    milestone = (already_issued + i + 1) * 5
+                    await issue_ticket_db(db, referrer_id, contest_id, f"{milestone} ta do'st taklifi")
+
+        await db.commit()
+
+        async with db.execute("SELECT COUNT(*) as cnt FROM user_tickets WHERE user_id = ?", (user_id,)) as c_cnt:
+            total_t = (await c_cnt.fetchone())["cnt"]
+
+        return {
+            "already_joined": False,
+            "ticket_number": ticket_number,
+            "total_tickets": total_t
         }
