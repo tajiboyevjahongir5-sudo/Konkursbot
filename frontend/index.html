@@ -163,8 +163,32 @@
           </div>
         </div>
 
-        <!-- Add Sponsor Channel Form -->
+        <!-- Edit Contest Information Form -->
         <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 14px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--primary-color);">✏️ Konkurs Ma'lumotlarini Tahrirlash</h4>
+          <div class="form-group">
+            <label>Konkurs Nomi:</label>
+            <input type="text" id="admin-contest-title" class="form-input" placeholder="PEEXELL GRAND KONKURS 2026">
+          </div>
+          <div class="form-group">
+            <label>Konkurs Tavsifi:</label>
+            <textarea id="admin-contest-desc" class="form-input" rows="3" placeholder="Konkurs shartlari va tavsifi..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Sovrinlar Jamg'armasi:</label>
+            <input type="text" id="admin-contest-prizes" class="form-input" placeholder="10,000,000 UZS + iPhone 15 Pro">
+          </div>
+          <div class="form-group">
+            <label>Konkurs Tugash Vaqti (Kun va Soat):</label>
+            <input type="datetime-local" id="admin-contest-endtime" class="form-input">
+          </div>
+          <button id="btn-save-contest" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
+            <i class="fa-solid fa-floppy-disk"></i> Konkurs Ma'lumotlarini Saqlash
+          </button>
+        </div>
+
+        <!-- Add Sponsor Channel Form -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
           <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📢 Yangi Sponsor Kanal Qo'shish</h4>
           <div class="form-group">
             <label>Kanal Nomi:</label>

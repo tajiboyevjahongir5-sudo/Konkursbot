@@ -347,6 +347,25 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!currentUser || !currentUser.is_admin) return;
 
     try {
+      // Pre-fill Contest Edit Form
+      if (activeContest) {
+        const titleInput = document.getElementById("admin-contest-title");
+        const descInput = document.getElementById("admin-contest-desc");
+        const prizeInput = document.getElementById("admin-contest-prizes");
+        const endInput = document.getElementById("admin-contest-endtime");
+
+        if (titleInput) titleInput.value = activeContest.title || "";
+        if (descInput) descInput.value = activeContest.description || "";
+        if (prizeInput) prizeInput.value = activeContest.prize_pool || "";
+        if (endInput && activeContest.end_time) {
+          try {
+            const dt = new Date(activeContest.end_time);
+            const localIso = new Date(dt.getTime() - (dt.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+            endInput.value = localIso;
+          } catch (e) {}
+        }
+      }
+
       // Load Stats
       const statsRes = await apiFetch("/api/admin/stats");
       if (statsRes.status === "success") {
@@ -390,6 +409,33 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.log("Admin load error");
     }
+  }
+
+  // Save Contest Form Handler
+  const saveContestBtn = document.getElementById("btn-save-contest");
+  if (saveContestBtn) {
+    saveContestBtn.addEventListener("click", async () => {
+      const title = document.getElementById("admin-contest-title").value.trim();
+      const description = document.getElementById("admin-contest-desc").value.trim();
+      const prize_pool = document.getElementById("admin-contest-prizes").value.trim();
+      const end_time_val = document.getElementById("admin-contest-endtime").value;
+
+      if (!title || !description || !prize_pool || !end_time_val) {
+        showToast("Barcha maydonlarni to'ldiring!", "warning");
+        return;
+      }
+
+      const end_time = new Date(end_time_val).toISOString();
+
+      try {
+        await apiFetch("/api/admin/contest/update", {
+          method: "POST",
+          body: JSON.stringify({ title, description, prize_pool, end_time })
+        });
+        showToast("Konkurs ma'lumotlari yangilandi! 🏆", "success");
+        await loadContestData();
+      } catch (err) {}
+    });
   }
 
   // Add Sponsor Form Handler
