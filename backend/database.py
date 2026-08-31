@@ -526,12 +526,11 @@ async def get_admin_stats() -> Dict[str, Any]:
 
 
 async def issue_ticket_db(db, user_id: int, contest_id: int, reason: str = "Konkursda qatnashish") -> str:
-    async with db.execute("SELECT MAX(id) as max_id FROM user_tickets") as c:
-        row = await c.fetchone()
-        max_id = row["max_id"] if (row and row["max_id"]) else 0
+    async with db.execute("SELECT COUNT(*) as cnt FROM user_tickets WHERE contest_id = ?", (contest_id,)) as c_cnt:
+        contest_tickets_cnt = (await c_cnt.fetchone())["cnt"]
 
-    next_num = 1001 + max_id
-    ticket_number = f"#PXL-{next_num}"
+    next_num = contest_tickets_cnt + 1
+    ticket_number = f"#PXL-{next_num:04d}"
 
     await db.execute("""
         INSERT INTO user_tickets (user_id, ticket_number, contest_id, reason)
