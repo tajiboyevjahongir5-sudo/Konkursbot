@@ -579,6 +579,26 @@ document.addEventListener("DOMContentLoaded", () => {
     await loadUserData();
     await loadContestData();
     await loadTasks();
+
+    // Check if user opened WebApp in Admin mode via /admin
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetTab = urlParams.get("tab") || tg?.initDataUnsafe?.start_param;
+
+    if (targetTab === "admin" && currentUser && currentUser.is_admin) {
+      const navItems = document.querySelectorAll(".nav-item");
+      const tabContents = document.querySelectorAll(".tab-content");
+
+      navItems.forEach(n => n.classList.remove("active"));
+      tabContents.forEach(c => c.classList.remove("active"));
+
+      const adminNav = document.getElementById("nav-admin-btn");
+      const adminTab = document.getElementById("tab-admin");
+
+      if (adminNav) adminNav.classList.add("active");
+      if (adminTab) adminTab.classList.add("active");
+
+      await loadAdminData();
+    }
   }
 
   init();

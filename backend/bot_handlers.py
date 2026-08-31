@@ -81,18 +81,26 @@ async def admin_handler(message: Message):
         await message.answer("❌ Kechirasiz, siz admin emassiz!")
         return
 
+    admin_url = f"{settings.clean_webapp_url}?tab=admin"
+    admin_keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="⚙️ Admin Panelni Ochish",
+                    web_app=WebAppInfo(url=admin_url)
+                )
+            ]
+        ]
+    )
+
     admin_text = (
         f"⚙️ **PEEXELL ADMIN PANEL** ⚙️\n\n"
-        f"Siz admin huquqiga egasiz! Web App ichidagi **⚙️ Admin** bo'limi orqali quyidagi amallarni bajarishingiz mumkin:\n"
-        f"1. 📢 Sponsor kanallarni boshqarish (Qo'shish / O'chirish)\n"
-        f"2. 🎲 Tasodifiy g'oliblarni aniqlash va bazaga saqlash\n"
-        f"3. ⏱️ Konkurs nomi va taymerini tahrirlash\n"
-        f"4. 📊 Statistikani CSV / JSON holatida yuklab olish\n\n"
-        f"Web App'ni ochish uchun pastdagi tugmani bosing."
+        f"Siz admin huquqiga egasiz!\n"
+        f"Admin panelini bevosita ochish uchun pastdagi tugmani bosing:"
     )
 
     await message.answer(
         admin_text,
         parse_mode="Markdown",
-        reply_markup=get_main_keyboard()
+        reply_markup=admin_keyboard
     )
