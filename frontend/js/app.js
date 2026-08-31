@@ -176,12 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (rInput) rInput.value = currentUser.ref_link;
         if (rCount) rCount.textContent = currentUser.referrals_count;
         if (rTickets) rTickets.textContent = currentUser.tickets;
-
-        // Show Admin Nav button if Admin
-        if (currentUser.is_admin) {
-          const adminBtn = document.getElementById("nav-admin-btn");
-          if (adminBtn) adminBtn.style.display = "flex";
-        }
       }
     } catch (err) {
       console.log("Could not load user data");
@@ -613,10 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
       navItems.forEach(n => n.classList.remove("active"));
       tabContents.forEach(c => c.classList.remove("active"));
 
-      const adminNav = document.getElementById("nav-admin-btn");
       const adminTab = document.getElementById("tab-admin");
-
-      if (adminNav) adminNav.classList.add("active");
       if (adminTab) adminTab.classList.add("active");
 
       updateNavVisibility("tab-admin");
