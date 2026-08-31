@@ -125,7 +125,7 @@ async def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
 @router.get("/user/me")
 async def get_me(user: dict = Depends(get_current_user)):
     ref_count = await get_user_referrals_count(user["id"])
-    is_admin = (user["id"] in settings.ADMIN_IDS) or (user["id"] == 999999999)
+    is_admin = settings.is_admin(user["id"]) or (user["id"] == 999999999)
     bot_name = "peexell_contest_bot"
     ref_link = f"https://t.me/{bot_name}?start=ref_{user['id']}"
 

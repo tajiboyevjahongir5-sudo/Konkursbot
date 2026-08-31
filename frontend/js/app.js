@@ -34,7 +34,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(endpoint, { ...options, headers });
-      const data = await response.json();
+      let data;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        data = { message: text || "Server xatoligi" };
+      }
+
       if (!response.ok) {
         throw new Error(data.detail || data.message || "Xatolik yuz berdi");
       }
