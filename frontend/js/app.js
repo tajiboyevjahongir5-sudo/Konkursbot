@@ -128,10 +128,16 @@ document.addEventListener("DOMContentLoaded", () => {
             ticketsContainer.innerHTML = "";
             currentUser.tickets_list.forEach(t => {
               const card = document.createElement("div");
-              card.style.cssText = "background: var(--bg-dark); border: 1px solid var(--primary-color); padding: 10px; border-radius: 8px; text-align: center; box-shadow: 0 0 8px rgba(197, 255, 0, 0.15);";
+              card.className = "pxl-ticket-card";
               card.innerHTML = `
-                <div style="color: var(--primary-color); font-weight: 700; font-size: 0.92rem;"><i class="fa-solid fa-ticket"></i> ${t.ticket_number}</div>
-                <div style="color: var(--text-secondary); font-size: 0.72rem; margin-top: 4px;">${t.reason || 'Bilet'}</div>
+                <div>
+                  <div class="pxl-ticket-badge">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>${t.ticket_number}</span>
+                  </div>
+                  <div class="pxl-ticket-reason">${t.reason || 'Omadli Bilet'}</div>
+                </div>
+                <div style="font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">PEEXELL</div>
               `;
               ticketsContainer.appendChild(card);
             });
