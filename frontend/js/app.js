@@ -389,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (err) {
       } finally {
         participateBtn.disabled = false;
-        participateBtn.innerHTML = '<i class="fa-solid fa-rocket"></i> 🚀 Qatnashish';
+        participateBtn.innerHTML = '🚀 Qatnashish';
       }
     });
   }
