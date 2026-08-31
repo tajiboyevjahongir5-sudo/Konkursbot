@@ -258,27 +258,28 @@ document.addEventListener("DOMContentLoaded", () => {
         res.tasks.forEach(task => {
           const item = document.createElement("div");
           item.className = "task-item";
+          item.style.cssText = "background: rgba(26, 28, 35, 0.7); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;";
           
           const isDone = task.completed === 1;
 
           item.innerHTML = `
-            <div class="task-info" style="display: flex; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
               <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-color); box-shadow: 0 0 8px var(--primary-glow); flex-shrink: 0; background: var(--bg-dark);">
                 <img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">
               </div>
               <div style="flex: 1; min-width: 0;">
-                <div class="task-title" style="font-weight: 700; font-size: 0.92rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
-                <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">${task.channel_id}</div>
+                <div style="font-weight: 700; font-size: 0.92rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${task.channel_id}</div>
               </div>
             </div>
-            <div class="task-actions" style="display: flex; gap: 8px; align-items: center;">
-              <a href="${task.invite_link}" target="_blank" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" style="padding: 8px 12px; font-size: 0.8rem; border-radius: 8px;">
+            <div style="display: flex; gap: 8px; width: 100%;">
+              <a href="${task.invite_link}" target="_blank" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 9px; font-size: 0.82rem; border-radius: 8px;">
                 <i class="fa-brands fa-telegram" style="color: #0088cc;"></i> A'zo bo'lish
               </a>
               ${
                 isDone 
-                ? '<button class="btn btn-sm" style="background: var(--success-color); color: #fff; padding: 8px 12px; border-radius: 8px;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" style="padding: 8px 12px; font-size: 0.8rem; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
+                ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: var(--success-color); color: #fff; padding: 9px; border-radius: 8px;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
+                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" style="flex: 1; justify-content: center; padding: 9px; font-size: 0.82rem; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
               }
             </div>
           `;
