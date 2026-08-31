@@ -266,7 +266,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="task-icon"><i class="fa-brands fa-telegram" style="color: #0088cc; font-size: 1.15rem; filter: drop-shadow(0 0 5px #0088cc);"></i></div>
               <div>
                 <div class="task-title">${task.title}</div>
-                <div class="task-reward">+1 Bilet | +15 Ball</div>
               </div>
             </div>
             <div class="task-actions">
