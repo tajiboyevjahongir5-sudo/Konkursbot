@@ -81,6 +81,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const navItems = document.querySelectorAll(".nav-item");
   const tabContents = document.querySelectorAll(".tab-content");
 
+  function updateNavVisibility(targetTab) {
+    const bottomNav = document.querySelector(".bottom-nav");
+    if (!bottomNav) return;
+
+    if (targetTab === "tab-admin" || targetTab === "admin") {
+      bottomNav.style.display = "none";
+      document.body.style.paddingBottom = "20px";
+    } else {
+      bottomNav.style.display = "flex";
+      document.body.style.paddingBottom = "80px";
+    }
+  }
+
   navItems.forEach(item => {
     item.addEventListener("click", () => {
       const targetTab = item.getAttribute("data-tab");
@@ -91,6 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
       item.classList.add("active");
       const targetEl = document.getElementById(targetTab);
       if (targetEl) targetEl.classList.add("active");
+
+      updateNavVisibility(targetTab);
 
       // Tab specific refresh logic
       if (targetTab === "tab-tasks") loadTasks();
@@ -597,6 +612,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (adminNav) adminNav.classList.add("active");
       if (adminTab) adminTab.classList.add("active");
 
+      updateNavVisibility("tab-admin");
       await loadAdminData();
     }
   }
