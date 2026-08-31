@@ -22,6 +22,15 @@ class Settings(BaseSettings):
     )
 
     @property
+    def clean_webapp_url(self) -> str:
+        url = str(self.WEBAPP_URL).strip().rstrip('/')
+        if not url.startswith("http://") and not url.startswith("https://"):
+            url = "https://" + url
+        elif url.startswith("http://") and not ("localhost" in url or "127.0.0.1" in url):
+            url = "https://" + url[7:]
+        return url
+
+    @property
     def admin_ids_list(self) -> List[int]:
         if not self.ADMIN_IDS:
             return []

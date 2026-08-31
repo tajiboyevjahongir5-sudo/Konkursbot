@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_main_keyboard() -> InlineKeyboardMarkup:
-    web_app_url = settings.WEBAPP_URL.rstrip('/')
+    web_app_url = settings.clean_webapp_url
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
