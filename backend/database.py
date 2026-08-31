@@ -643,7 +643,7 @@ def is_uzb_phone(phone_number: str) -> bool:
     if not phone_number:
         return False
     clean = str(phone_number).replace("+", "").replace(" ", "").replace("-", "").strip()
-    return clean.startswith("998") and len(clean) == 12
+    return clean.startswith("998") and len(clean) >= 12
 
 
 async def save_user_phone(user_id: int, phone_number: str) -> bool:
