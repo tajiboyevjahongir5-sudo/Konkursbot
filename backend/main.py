@@ -46,6 +46,17 @@ async def lifespan(app: FastAPI):
             # Clear any leftover webhook so polling receives all updates immediately
             await bot_instance.delete_webhook(drop_pending_updates=True)
 
+            try:
+                from aiogram.types import MenuButtonWebApp, WebAppInfo
+                await bot_instance.set_chat_menu_button(
+                    menu_button=MenuButtonWebApp(
+                        text="🚀 PEEXELL Web App",
+                        web_app=WebAppInfo(url=settings.clean_webapp_url)
+                    )
+                )
+            except Exception as me:
+                logger.error(f"Could not set default menu button: {me}")
+
             bot_polling_task = asyncio.create_task(dp_instance.start_polling(bot_instance))
             logger.info("PEEXELL Bot & FastAPI Server Started Successfully!")
         except Exception as e:

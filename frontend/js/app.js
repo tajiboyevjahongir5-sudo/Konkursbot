@@ -282,13 +282,13 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
             </div>
             <div style="display: flex; gap: 8px; width: 100%;">
-              <a href="${task.invite_link}" target="_blank" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 9px; font-size: 0.82rem; border-radius: 8px;">
-                <i class="fa-brands fa-telegram" style="color: #0088cc;"></i> A'zo bo'lish
+              <a href="${task.invite_link}" target="_blank" class="btn btn-sm" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: rgba(0, 136, 204, 0.22); border: 1px solid #0088cc; color: #38bdf8;">
+                <i class="fa-brands fa-telegram" style="color: #38bdf8;"></i> A'zo bo'lish
               </a>
               ${
                 isDone 
-                ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: var(--success-color); color: #fff; padding: 9px; border-radius: 8px;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" style="flex: 1; justify-content: center; padding: 9px; font-size: 0.82rem; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
+                ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: #22c55e; color: #fff; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; border: none;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
+                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
               }
             </div>
           `;

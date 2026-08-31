@@ -1,7 +1,7 @@
 import logging
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, MenuButtonWebApp
 from backend.config import settings
 from backend.database import get_or_create_user, save_user_phone, is_uzb_phone
 
@@ -87,6 +87,18 @@ async def start_handler(message: Message):
     try:
         tmp_msg = await message.answer(".", reply_markup=ReplyKeyboardRemove())
         await tmp_msg.delete()
+    except Exception:
+        pass
+
+    # Set Telegram Chat Menu Button
+    try:
+        await message.bot.set_chat_menu_button(
+            chat_id=message.chat.id,
+            menu_button=MenuButtonWebApp(
+                text="🚀 PEEXELL Web App",
+                web_app=WebAppInfo(url=settings.clean_webapp_url)
+            )
+        )
     except Exception:
         pass
 
