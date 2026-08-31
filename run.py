@@ -23,14 +23,14 @@ def setup_env():
 
 if __name__ == "__main__":
     setup_env()
+    port = int(os.getenv("PORT", 8000))
     print("=" * 60)
-    print("🚀 PEEXELL KONKURS TELEGRAM BOT & WEB APP ISHGATUSHMOQDA...")
-    print("📍 Local WebApp URL: http://localhost:8000")
+    print(f"🚀 PEEXELL KONKURS TELEGRAM BOT & WEB APP ISHGATUSHMOQDA... Port: {port}")
     print("=" * 60)
     
     uvicorn.run(
         "backend.main:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True
+        port=port,
+        reload=False
     )
