@@ -1,9 +1,9 @@
 import logging
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from backend.config import settings
-from backend.database import get_or_create_user, get_user_referrals_count, get_active_contest
+from backend.database import get_or_create_user, save_user_phone, is_uzb_phone
 
 router = Router()
 logger = logging.getLogger(__name__)
@@ -23,6 +23,21 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     )
 
 
+def get_contact_keyboard() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="📱 Telefon raqamni yuborish (+998)",
+                    request_contact=True
+                )
+            ]
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True
+    )
+
+
 @router.message(CommandStart())
 async def start_handler(message: Message):
     user = message.from_user
@@ -37,13 +52,30 @@ async def start_handler(message: Message):
             referrer_id = int(param)
 
     # Save/update user in database
-    await get_or_create_user(
+    db_user = await get_or_create_user(
         user_id=user.id,
         first_name=user.first_name or "Foydalanuvchi",
         last_name=user.last_name,
         username=user.username,
         referrer_id=referrer_id
     )
+
+    # Check if user phone number is verified and is an Uzbekistan (+998) number
+    phone = db_user.get("phone_number")
+    if not is_uzb_phone(phone):
+        verify_text = (
+            f"⚡ **PEEXELL KONKURS BOT** ⚡\n\n"
+            f"Salom, **{user.first_name}**! 👋\n\n"
+            f"🇺🇿 **DIQQAT: TELEFON RAQAMNI TASDIQLASH MAJBURIY!**\n"
+            f"Konkursimizda faqat **O'zbekiston (`+998`)** telefon raqamiga ega foydalanuvchilar qatnashishi mumkin.\n\n"
+            f"Iltimos, pastdagi **📱 Telefon raqamni yuborish (+998)** tugmasini bosing:"
+        )
+        await message.answer(
+            verify_text,
+            parse_mode="Markdown",
+            reply_markup=get_contact_keyboard()
+        )
+        return
 
     welcome_text = (
         f"⚡ **PEEXELL KONKURS BOT** ⚡\n\n"
@@ -53,6 +85,46 @@ async def start_handler(message: Message):
 
     await message.answer(
         welcome_text,
+        parse_mode="Markdown",
+        reply_markup=get_main_keyboard()
+    )
+
+
+@router.message(F.contact)
+async def contact_handler(message: Message):
+    contact = message.contact
+    user_id = message.from_user.id
+
+    # Verify that the contact shared belongs to the user
+    if contact.user_id and contact.user_id != user_id:
+        await message.answer(
+            "❌ Iltimos, o'zingizning shaxsiy telefon raqamingizni yuboring!",
+            reply_markup=get_contact_keyboard()
+        )
+        return
+
+    phone = contact.phone_number
+    if not is_uzb_phone(phone):
+        await message.answer(
+            "❌ **Kechirasiz! Konkursimizda faqat O'zbekiston (+998) telefon raqamiga ega foydalanuvchilar qatnashishi mumkin.**",
+            parse_mode="Markdown",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        return
+
+    # Save phone number
+    await save_user_phone(user_id, phone)
+
+    clean_phone = phone if phone.startswith("+") else f"+{phone}"
+    success_text = (
+        f"✅ **Telefon raqamingiz muvaffaqiyatli tasdiqlandi! ({clean_phone})** 🎉\n\n"
+        f"Endi konkursda qatnashishingiz mumkin! Pastdagi **🚀 PEEXELL Web App** tugmasini bosing:"
+    )
+
+    # Remove reply keyboard and send WebApp inline keyboard
+    await message.answer("Raqamingiz qabul qilindi!", reply_markup=ReplyKeyboardRemove())
+    await message.answer(
+        success_text,
         parse_mode="Markdown",
         reply_markup=get_main_keyboard()
     )

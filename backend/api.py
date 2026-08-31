@@ -24,7 +24,8 @@ from backend.database import (
     get_admin_stats,
     get_db,
     get_user_tickets,
-    participate_in_contest
+    participate_in_contest,
+    is_uzb_phone
 )
 
 router = APIRouter(prefix="/api")
@@ -145,6 +146,8 @@ async def get_me(user: dict = Depends(get_current_user)):
             "referrals_count": ref_count,
             "ref_link": ref_link,
             "is_admin": is_admin,
+            "phone_number": user.get("phone_number"),
+            "is_phone_verified": is_uzb_phone(user.get("phone_number")),
             "tickets_list": user_tickets_list
         }
     }
@@ -187,6 +190,13 @@ async def get_channel_photo(channel_id: str):
 
 @router.post("/contest/participate")
 async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
+    # Enforce Uzbekistan Phone Verification (+998)
+    if not is_uzb_phone(user.get("phone_number")) and user["id"] != 999999999:
+        return {
+            "status": "error",
+            "message": "❌ Konkursda qatnashish uchun avval Telegram botimizda O'zbekiston (+998) telefon raqamingizni tasdiqlang!"
+        }
+
     # Verify user channel subscriptions
     sponsors = await get_sponsors(active_only=True)
     from backend.main import get_bot_instance

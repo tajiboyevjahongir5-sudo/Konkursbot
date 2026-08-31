@@ -29,10 +29,18 @@ async def init_db():
                 referred_by INTEGER,
                 points INTEGER DEFAULT 0,
                 tickets INTEGER DEFAULT 1,
+                phone_number TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (referred_by) REFERENCES users (id)
             )
         """)
+
+        # Add phone_number column if missing in existing DB
+        try:
+            await db.execute("ALTER TABLE users ADD COLUMN phone_number TEXT;")
+            await db.commit()
+        except Exception:
+            pass
 
         # Sponsors table
         await db.execute("""
@@ -629,3 +637,19 @@ async def participate_in_contest(user_id: int) -> Dict[str, Any]:
             "ticket_number": ticket_number,
             "total_tickets": total_t
         }
+
+
+def is_uzb_phone(phone_number: str) -> bool:
+    if not phone_number:
+        return False
+    clean = str(phone_number).replace("+", "").replace(" ", "").replace("-", "").strip()
+    return clean.startswith("998") and len(clean) == 12
+
+
+async def save_user_phone(user_id: int, phone_number: str) -> bool:
+    clean = str(phone_number).replace("+", "").replace(" ", "").replace("-", "").strip()
+    full_phone = f"+{clean}"
+    async with get_db() as db:
+        await db.execute("UPDATE users SET phone_number = ? WHERE id = ?", (full_phone, user_id))
+        await db.commit()
+        return True
