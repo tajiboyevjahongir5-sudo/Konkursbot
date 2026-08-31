@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           item.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px;">
-              <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-color); box-shadow: 0 0 8px var(--primary-glow); flex-shrink: 0; background: var(--bg-dark);">
+              <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-color); flex-shrink: 0; background: var(--bg-dark);">
                 <img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">
               </div>
               <div style="flex: 1; min-width: 0;">
