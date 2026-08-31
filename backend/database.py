@@ -342,14 +342,50 @@ async def mark_task_completed(user_id: int, sponsor_id: int) -> bool:
         return True
 
 
+async def clear_all_tickets_and_participants(db=None):
+    """Clears all tickets, participants, and resets user ticket counts for a new contest cycle."""
+    async def _clear(conn):
+        await conn.execute("DELETE FROM user_tickets")
+        await conn.execute("DELETE FROM contest_participants")
+        await conn.execute("DELETE FROM user_tasks")
+        await conn.execute("UPDATE users SET tickets = 0, points = 0")
+        await conn.commit()
+
+    if db:
+        await _clear(db)
+    else:
+        async with get_db() as conn:
+            await _clear(conn)
+
+
+async def check_and_handle_contest_expiration(db):
+    """Checks if active contest time expired. If expired, deactivates it and clears tickets for new contest."""
+    async with db.execute("SELECT * FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c:
+        row = await c.fetchone()
+        if not row:
+            return
+        contest_dict = dict(row)
+
+    try:
+        end_dt = datetime.fromisoformat(contest_dict["end_time"])
+        if datetime.now() >= end_dt:
+            await db.execute("UPDATE contests SET is_active = 0 WHERE id = ?", (contest_dict["id"],))
+            await db.commit()
+            await clear_all_tickets_and_participants(db)
+    except Exception:
+        pass
+
+
 async def get_active_contest() -> Dict[str, Any]:
     async with get_db() as db:
+        await check_and_handle_contest_expiration(db)
+
         async with db.execute("SELECT * FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as cursor:
             row = await cursor.fetchone()
             if row:
                 return dict(row)
             
-            # Create default if missing
+            # Create default active contest if missing
             default_end = (datetime.now() + timedelta(days=7)).isoformat()
             cursor2 = await db.execute("""
                 INSERT INTO contests (title, description, prize_pool, end_time, is_active)

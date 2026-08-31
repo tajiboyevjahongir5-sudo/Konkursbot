@@ -578,6 +578,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Reset Tickets Handler
+  const resetTicketsBtn = document.getElementById("btn-reset-tickets");
+  if (resetTicketsBtn) {
+    resetTicketsBtn.addEventListener("click", async () => {
+      if (confirm("Haqiqatan ham barcha biletlar va qatnashchilar ma'lumotlarini nolga tushirmoqchimisiz?")) {
+        try {
+          const res = await apiFetch("/api/admin/contest/reset_tickets", { method: "POST" });
+          showToast(res.message || "Biletlar nolga tushirildi! 🧹", "success");
+          await loadAdminData();
+        } catch (e) {}
+      }
+    });
+  }
+
   // Export Buttons Handlers
   const exportCsvBtn = document.getElementById("btn-export-csv");
   if (exportCsvBtn) {

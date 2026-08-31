@@ -335,6 +335,13 @@ async def admin_update_contest(body: UpdateContestRequest, admin: dict = Depends
     return {"status": "success", "message": "Konkurs tahrirlandi"}
 
 
+@router.post("/admin/contest/reset_tickets")
+async def admin_reset_tickets(admin: dict = Depends(get_current_admin)):
+    from backend.database import clear_all_tickets_and_participants
+    await clear_all_tickets_and_participants()
+    return {"status": "success", "message": "🧹 Barcha biletlar va qatnashchilar yangi konkurs uchun tozalandi!"}
+
+
 @router.post("/admin/winners/pick")
 async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get_current_admin)):
     contest = await get_active_contest()
