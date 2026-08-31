@@ -1,18 +1,18 @@
-import aiosqlite
-import random
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 from backend.config import settings
 
 
+@asynccontextmanager
 async def get_db():
-    conn = await aiosqlite.connect(settings.DATABASE_PATH)
-    conn.row_factory = aiosqlite.Row
-    return conn
+    async with aiosqlite.connect(settings.DATABASE_PATH) as conn:
+        conn.row_factory = aiosqlite.Row
+        yield conn
 
 
 async def init_db():
-    async with await get_db() as db:
+    async with get_db() as db:
         await db.execute("PRAGMA foreign_keys = ON;")
         
         # Users table
@@ -133,7 +133,7 @@ async def get_or_create_user(
     username: Optional[str] = None,
     referrer_id: Optional[int] = None
 ) -> Dict[str, Any]:
-    async with await get_db() as db:
+    async with get_db() as db:
         async with db.execute("SELECT * FROM users WHERE id = ?", (user_id,)) as cursor:
             existing = await cursor.fetchone()
             if existing:
@@ -188,21 +188,21 @@ async def get_or_create_user(
 
 
 async def get_user(user_id: int) -> Optional[Dict[str, Any]]:
-    async with await get_db() as db:
+    async with get_db() as db:
         async with db.execute("SELECT * FROM users WHERE id = ?", (user_id,)) as cursor:
             row = await cursor.fetchone()
             return dict(row) if row else None
 
 
 async def get_user_referrals_count(user_id: int) -> int:
-    async with await get_db() as db:
+    async with get_db() as db:
         async with db.execute("SELECT COUNT(*) as cnt FROM referrals WHERE referrer_id = ?", (user_id,)) as cursor:
             row = await cursor.fetchone()
             return row["cnt"] if row else 0
 
 
 async def get_leaderboard(limit: int = 50) -> List[Dict[str, Any]]:
-    async with await get_db() as db:
+    async with get_db() as db:
         query = """
             SELECT 
                 u.id, 
@@ -224,7 +224,7 @@ async def get_leaderboard(limit: int = 50) -> List[Dict[str, Any]]:
 
 
 async def get_sponsors(active_only: bool = True) -> List[Dict[str, Any]]:
-    async with await get_db() as db:
+    async with get_db() as db:
         query = "SELECT * FROM sponsors WHERE is_active = 1" if active_only else "SELECT * FROM sponsors"
         async with db.execute(query) as cursor:
             rows = await cursor.fetchall()
@@ -232,7 +232,7 @@ async def get_sponsors(active_only: bool = True) -> List[Dict[str, Any]]:
 
 
 async def add_sponsor(title: str, channel_id: str, invite_link: str) -> int:
-    async with await get_db() as db:
+    async with get_db() as db:
         cursor = await db.execute("""
             INSERT INTO sponsors (title, channel_id, invite_link, is_active)
             VALUES (?, ?, ?, 1)
@@ -242,7 +242,7 @@ async def add_sponsor(title: str, channel_id: str, invite_link: str) -> int:
 
 
 async def delete_sponsor(sponsor_id: int) -> bool:
-    async with await get_db() as db:
+    async with get_db() as db:
         await db.execute("DELETE FROM sponsors WHERE id = ?", (sponsor_id,))
         await db.execute("DELETE FROM user_tasks WHERE sponsor_id = ?", (sponsor_id,))
         await db.commit()
@@ -250,7 +250,7 @@ async def delete_sponsor(sponsor_id: int) -> bool:
 
 
 async def get_user_tasks(user_id: int) -> List[Dict[str, Any]]:
-    async with await get_db() as db:
+    async with get_db() as db:
         query = """
             SELECT 
                 s.id as sponsor_id,
@@ -268,7 +268,7 @@ async def get_user_tasks(user_id: int) -> List[Dict[str, Any]]:
 
 
 async def mark_task_completed(user_id: int, sponsor_id: int) -> bool:
-    async with await get_db() as db:
+    async with get_db() as db:
         # Check if task already completed
         async with db.execute(
             "SELECT completed FROM user_tasks WHERE user_id = ? AND sponsor_id = ?",
@@ -298,7 +298,7 @@ async def mark_task_completed(user_id: int, sponsor_id: int) -> bool:
 
 
 async def get_active_contest() -> Dict[str, Any]:
-    async with await get_db() as db:
+    async with get_db() as db:
         async with db.execute("SELECT * FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as cursor:
             row = await cursor.fetchone()
             if row:
@@ -322,7 +322,7 @@ async def get_active_contest() -> Dict[str, Any]:
 
 
 async def update_contest(title: str, description: str, prize_pool: str, end_time: str) -> bool:
-    async with await get_db() as db:
+    async with get_db() as db:
         active = await get_active_contest()
         await db.execute("""
             UPDATE contests
@@ -337,7 +337,7 @@ async def pick_random_winners(contest_id: int, count: int = 3, prizes: Optional[
     if not prizes:
         prizes = ["🥇 1-O'rin: iPhone 15 Pro", "🥈 2-O'rin: 3,000,000 UZS", "🥉 3-O'rin: Telegram Premium (1 yil)"]
     
-    async with await get_db() as db:
+    async with get_db() as db:
         # Get all candidate users who have tickets
         async with db.execute("SELECT id, first_name, username, tickets FROM users WHERE tickets > 0") as cursor:
             users = [dict(r) for r in await cursor.fetchall()]
@@ -384,7 +384,7 @@ async def pick_random_winners(contest_id: int, count: int = 3, prizes: Optional[
 
 
 async def get_winners(contest_id: Optional[int] = None) -> List[Dict[str, Any]]:
-    async with await get_db() as db:
+    async with get_db() as db:
         query = """
             SELECT 
                 w.id,
@@ -411,7 +411,7 @@ async def get_winners(contest_id: Optional[int] = None) -> List[Dict[str, Any]]:
 
 
 async def get_admin_stats() -> Dict[str, Any]:
-    async with await get_db() as db:
+    async with get_db() as db:
         async with db.execute("SELECT COUNT(*) as cnt FROM users") as c1:
             total_users = (await c1.fetchone())["cnt"]
         

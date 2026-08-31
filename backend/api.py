@@ -261,7 +261,7 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
 
 @router.get("/admin/export")
 async def admin_export(format: str = Query("json"), admin: dict = Depends(get_current_admin)):
-    async with await get_db() as db:
+    async with get_db() as db:
         async with db.execute("SELECT * FROM users") as c1:
             users = [dict(r) for r in await c1.fetchall()]
         async with db.execute("SELECT * FROM referrals") as c2:
