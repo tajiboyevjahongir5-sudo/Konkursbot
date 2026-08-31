@@ -568,27 +568,24 @@ body::before {
 /* --- CYBERPUNK TICKET CARD DESIGN --- */
 .pxl-ticket-card {
   position: relative;
-  background: linear-gradient(135deg, #181b23 0%, #111216 100%);
+  background: linear-gradient(135deg, rgba(30, 34, 45, 0.95), rgba(18, 20, 26, 0.95));
   border: 1.5px dashed var(--primary-color);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 12px 14px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 10px rgba(197, 255, 0, 0.15);
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 12px rgba(197, 255, 0, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
-  margin-bottom: 8px;
 }
 
 .pxl-ticket-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 16px rgba(197, 255, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 18px rgba(197, 255, 0, 0.35);
 }
 
-.pxl-ticket-card::before,
-.pxl-ticket-card::after {
-  content: "";
+.pxl-ticket-notch {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -598,34 +595,49 @@ body::before {
   border-radius: 50%;
 }
 
-.pxl-ticket-card::before {
+.notch-left {
   left: -6px;
   border-right: 1.5px dashed var(--primary-color);
 }
 
-.pxl-ticket-card::after {
+.notch-right {
   right: -6px;
   border-left: 1.5px dashed var(--primary-color);
 }
 
-.pxl-ticket-badge {
+.pxl-ticket-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--primary-color);
-  font-weight: 800;
-  font-size: 1.05rem;
-  letter-spacing: 0.5px;
+  justify-content: space-between;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+  padding-bottom: 6px;
 }
 
-.pxl-ticket-badge i {
+.pxl-ticket-icon {
+  font-size: 0.9rem;
+}
+
+.pxl-ticket-brand {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  letter-spacing: 1px;
+}
+
+.pxl-ticket-number {
   font-size: 1.1rem;
-  filter: drop-shadow(0 0 4px var(--primary-color));
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--primary-glow);
+  letter-spacing: 0.8px;
+  white-space: nowrap;
 }
 
 .pxl-ticket-reason {
   color: var(--text-secondary);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 500;
-  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

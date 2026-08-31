@@ -159,14 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
               const card = document.createElement("div");
               card.className = "pxl-ticket-card";
               card.innerHTML = `
-                <div>
-                  <div class="pxl-ticket-badge">
-                    <i class="fa-solid fa-ticket"></i>
-                    <span>${t.ticket_number}</span>
-                  </div>
-                  <div class="pxl-ticket-reason">${t.reason || 'Omadli Bilet'}</div>
+                <div class="pxl-ticket-notch notch-left"></div>
+                <div class="pxl-ticket-notch notch-right"></div>
+                <div class="pxl-ticket-header">
+                  <span class="pxl-ticket-icon">🎟️</span>
+                  <span class="pxl-ticket-brand">PEEXELL</span>
                 </div>
-                <div style="font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">PEEXELL</div>
+                <div class="pxl-ticket-number">${t.ticket_number}</div>
+                <div class="pxl-ticket-reason">${t.reason || 'Omadli Bilet'}</div>
               `;
               ticketsContainer.appendChild(card);
             });
