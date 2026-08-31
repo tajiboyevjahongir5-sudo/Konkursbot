@@ -108,9 +108,16 @@ document.addEventListener("DOMContentLoaded", () => {
       updateNavVisibility(targetTab);
 
       // Tab specific refresh logic
-      if (targetTab === "tab-tasks") loadTasks();
-      if (targetTab === "tab-leaderboard") loadLeaderboard();
-      if (targetTab === "tab-admin") loadAdminData();
+      if (targetTab === "tab-contest") {
+        loadContestData();
+        loadTasks();
+      }
+      if (targetTab === "tab-profile" || targetTab === "tab-friends") {
+        loadUserData();
+      }
+      if (targetTab === "tab-admin") {
+        loadAdminData();
+      }
     });
   });
 

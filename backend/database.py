@@ -10,6 +10,7 @@ from backend.config import settings
 async def get_db():
     async with aiosqlite.connect(settings.DATABASE_PATH) as conn:
         conn.row_factory = aiosqlite.Row
+        await conn.execute("PRAGMA foreign_keys = ON;")
         yield conn
 
 
@@ -315,10 +316,25 @@ async def mark_task_completed(user_id: int, sponsor_id: int) -> bool:
             ON CONFLICT(user_id, sponsor_id) DO UPDATE SET completed = 1, completed_at = ?
         """, (user_id, sponsor_id, now, now))
 
-        # Reward user: +1 ticket and +15 points for task completion
+        # Get sponsor title for ticket reason
+        sponsor_title = "Kanal obunasi"
+        async with db.execute("SELECT title FROM sponsors WHERE id = ?", (sponsor_id,)) as c_sp:
+            sp_row = await c_sp.fetchone()
+            if sp_row and sp_row["title"]:
+                sponsor_title = sp_row["title"]
+
+        # Get active contest ID
+        async with db.execute("SELECT id FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c_c:
+            c_row = await c_c.fetchone()
+            contest_id = c_row["id"] if c_row else 1
+
+        # Issue ticket for task completion
+        await issue_ticket_db(db, user_id, contest_id, f"Obuna: {sponsor_title}")
+
+        # Update points (+15)
         await db.execute("""
             UPDATE users
-            SET tickets = tickets + 1, points = points + 15
+            SET points = points + 15
             WHERE id = ?
         """, (user_id,))
 
