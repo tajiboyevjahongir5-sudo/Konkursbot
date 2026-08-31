@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           item.innerHTML = `
             <div class="task-info">
-              <div class="task-icon"><i class="fa-brands fa-telegram"></i></div>
+              <div class="task-icon"><i class="fa-brands fa-telegram" style="color: #0088cc; font-size: 1.15rem; filter: drop-shadow(0 0 5px #0088cc);"></i></div>
               <div>
                 <div class="task-title">${task.title}</div>
                 <div class="task-reward">+1 Bilet | +15 Ball</div>
@@ -271,12 +271,12 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="task-actions">
               <a href="${task.invite_link}" target="_blank" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();">
-                A'zo bo'lish
+                <i class="fa-brands fa-telegram"></i> A'zo bo'lish
               </a>
               ${
                 isDone 
-                ? '<button class="btn btn-sm" style="background: var(--success-color); color: #fff;" disabled><i class="fa-solid fa-check"></i></button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}"><i class="fa-solid fa-sync"></i> Tekshirish</button>`
+                ? '<button class="btn btn-sm" style="background: var(--success-color); color: #fff;" disabled><i class="fa-solid fa-circle-check"></i></button>'
+                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
               }
             </div>
           `;
@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (err) {
       } finally {
         participateBtn.disabled = false;
-        participateBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> 🚀 Qatnashish';
+        participateBtn.innerHTML = '<i class="fa-solid fa-rocket"></i> 🚀 Qatnashish';
       }
     });
   }
