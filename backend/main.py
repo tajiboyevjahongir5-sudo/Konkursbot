@@ -43,6 +43,9 @@ async def lifespan(app: FastAPI):
             dp_instance = Dispatcher()
             dp_instance.include_router(bot_router)
 
+            # Clear any leftover webhook so polling receives all updates immediately
+            await bot_instance.delete_webhook(drop_pending_updates=True)
+
             bot_polling_task = asyncio.create_task(dp_instance.start_polling(bot_instance))
             logger.info("PEEXELL Bot & FastAPI Server Started Successfully!")
         except Exception as e:
