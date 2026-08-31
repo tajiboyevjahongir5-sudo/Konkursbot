@@ -15,7 +15,7 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🟩 🚀 PEEXELL Web App",
+                    text="🚀 PEEXELL Web App ↗",
                     web_app=WebAppInfo(url=web_app_url)
                 )
             ]
@@ -165,7 +165,7 @@ async def admin_handler(message: Message):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🟩 ⚙️ Admin Panelni Ochish",
+                    text="⚙️ Admin Panelni Ochish ↗",
                     web_app=WebAppInfo(url=admin_url)
                 )
             ]
