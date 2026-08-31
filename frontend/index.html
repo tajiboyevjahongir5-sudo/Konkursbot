@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PEEXELL KONKURS WEB APP</title>
+  
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Cyberpunk CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="app-container">
+
+    <!-- HEADER SECTION -->
+    <header class="header-card">
+      <div class="brand-wrapper">
+        <img src="assets/logo.jpg" alt="PEEXELL Logo" class="logo-img">
+        <div>
+          <div class="brand-title">PEEXELL <span>KONKURS</span></div>
+          <div class="brand-subtitle">Omadingizni sinab ko'ring!</div>
+        </div>
+      </div>
+      <div class="user-badge-header">
+        <div class="tickets-pill">
+          <i class="fa-solid fa-ticket"></i>
+          <span id="header-tickets-count">0</span> Bilet
+        </div>
+      </div>
+    </header>
+
+    <!-- TAB 1: KONKURS -->
+    <section id="tab-contest" class="tab-content active">
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-bolt" style="color: var(--primary-color);"></i>
+          <span id="contest-title">PEEXELL GRAND KONKURS</span>
+        </div>
+        <p id="contest-description" style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;">
+          Yangi konkursimizda ishtirok eting! Do'stlaringizni taklif qiling, sponsor kanallarga obuna bo'ling va qimmatbaho sovrinlarni yutib oling!
+        </p>
+
+        <!-- Countdown Timer -->
+        <div style="font-size: 0.8rem; text-align: center; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+          <i class="fa-regular fa-clock" style="color: var(--primary-color);"></i> Konkurs yakunlanishiga qoldi:
+        </div>
+        <div class="timer-container">
+          <div class="timer-box">
+            <div id="timer-days" class="timer-val">00</div>
+            <div class="timer-lbl">Kun</div>
+          </div>
+          <div class="timer-box">
+            <div id="timer-hours" class="timer-val">00</div>
+            <div class="timer-lbl">Soat</div>
+          </div>
+          <div class="timer-box">
+            <div id="timer-mins" class="timer-val">00</div>
+            <div class="timer-lbl">Daqiqa</div>
+          </div>
+          <div class="timer-box">
+            <div id="timer-secs" class="timer-val">00</div>
+            <div class="timer-lbl">Soniya</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prize Pool Card -->
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-trophy" style="color: var(--secondary-color);"></i>
+          <span>Konkurs Sovrinlari</span>
+        </div>
+        <div id="contest-prizes-list" style="color: var(--primary-color); font-weight: 700; font-size: 0.95rem; line-height: 1.8;">
+          🎁 10,000,000 UZS + iPhone 15 Pro + 5x Telegram Premium
+        </div>
+      </div>
+
+      <!-- Quick Action Rules -->
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-circle-info" style="color: var(--text-secondary);"></i>
+          <span>Qanday qatnashiladi?</span>
+        </div>
+        <ul style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; padding-left: 18px;">
+          <li><b>1-Qadam:</b> 🎯 Vazifalar bo'limiga o'ting va sponsor kanallarga obuna bo'ling.</li>
+          <li><b>2-Qadam:</b> 👥 Do'stlar bo'limidan maxsus havolangizni do'stlaringizga yuboring (+1 Bilet).</li>
+          <li><b>3-Qadam:</b> Qancha ko'p biletingiz bo me, g'olib bo'lish imkoniyatingiz shuncha yuqori bo'ladi!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TAB 2: VAZIFALAR -->
+    <section id="tab-tasks" class="tab-content">
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-bullseye" style="color: var(--secondary-color);"></i>
+          <span>Sponsor Kanallar</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Har bir obuna bo'lingan sponsor kanali uchun sizga extra **+1 Bilet** va **+15 Ball** beriladi!
+        </p>
+
+        <div id="tasks-container">
+          <!-- Dynamic Task List items injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: DO'STLAR (REFERRALS) -->
+    <section id="tab-friends" class="tab-content">
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-user-plus" style="color: var(--primary-color);"></i>
+          <span>Do'stlarni taklif qilish</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Har bir taklif qilingan do'stingiz uchun sizga **+1 Bilet** va **+20 Ball** taqdim etiladi. Do'stingiz ham **+1 Bonus Bilet** oladi!
+        </p>
+
+        <div class="form-group">
+          <label>Sizning maxsus taklif havolangiz:</label>
+          <input type="text" id="ref-link-input" class="form-input" readonly value="Yuklanmoqda...">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 12px;">
+          <button id="btn-copy-ref" class="btn btn-secondary btn-sm" style="flex: 1;">
+            <i class="fa-regular fa-copy"></i> Nusxalash
+          </button>
+          <button id="btn-share-ref" class="btn btn-primary btn-sm" style="flex: 1;">
+            <i class="fa-paper-plane"></i> Telegram'da Ulashish
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-chart-line" style="color: var(--secondary-color);"></i>
+          <span>Sizning Referal Statistikangiz</span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div id="profile-ref-count" class="stat-value">0</div>
+            <div class="stat-label">Taklif qilinganlar</div>
+          </div>
+          <div class="stat-card">
+            <div id="profile-ref-tickets" class="stat-value">0</div>
+            <div class="stat-label">Jami Biletlar</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: REYTING (LEADERBOARD) -->
+    <section id="tab-leaderboard" class="tab-content">
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-ranking-star" style="color: var(--primary-color);"></i>
+          <span>TOP 50 Reyting</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Eng ko'p bilet toplagan faol ishtirokchilar ro'yxati.
+        </p>
+
+        <!-- Top 3 Podium -->
+        <div class="podium-container">
+          <div class="podium-card rank-2">
+            <div class="podium-crown">🥈</div>
+            <div id="podium-2-name" class="podium-name">---</div>
+            <div id="podium-2-tickets" class="podium-tickets">0 Bilet</div>
+          </div>
+          <div class="podium-card rank-1">
+            <div class="podium-crown">🥇</div>
+            <div id="podium-1-name" class="podium-name">---</div>
+            <div id="podium-1-tickets" class="podium-tickets">0 Bilet</div>
+          </div>
+          <div class="podium-card rank-3">
+            <div class="podium-crown">🥉</div>
+            <div id="podium-3-name" class="podium-name">---</div>
+            <div id="podium-3-tickets" class="podium-tickets">0 Bilet</div>
+          </div>
+        </div>
+
+        <!-- Leaderboard list -->
+        <div id="leaderboard-list">
+          <!-- Dynamic Leaderboard Rows -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: PROFIL -->
+    <section id="tab-profile" class="tab-content">
+      <div class="card">
+        <div class="profile-hero">
+          <div class="profile-avatar">
+            <i class="fa-solid fa-user-ninja"></i>
+          </div>
+          <div id="prof-user-name" class="profile-name">Foydalanuvchi</div>
+          <div id="prof-user-id" class="profile-id">ID: 00000000</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div id="prof-tickets" class="stat-value">0</div>
+            <div class="stat-label">Biletlar</div>
+          </div>
+          <div class="stat-card">
+            <div id="prof-points" class="stat-value">0</div>
+            <div class="stat-label">Ballar</div>
+          </div>
+          <div class="stat-card">
+            <div id="prof-referrals" class="stat-value">0</div>
+            <div class="stat-label">Referallar</div>
+          </div>
+          <div class="stat-card">
+            <div id="prof-status" class="stat-value" style="font-size: 1rem; color: var(--secondary-color);">Faol</div>
+            <div class="stat-label">Maqom</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: ADMIN PANEL (Only visible for Admins) -->
+    <section id="tab-admin" class="tab-content">
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-sliders" style="color: var(--primary-color);"></i>
+          <span>PEEXELL Admin Boshqaruvi</span>
+        </div>
+
+        <!-- Admin Overview Stats -->
+        <div class="stats-grid" style="margin-bottom: 16px;">
+          <div class="stat-card">
+            <div id="admin-stat-users" class="stat-value">0</div>
+            <div class="stat-label">Jami Foydalanuvchilar</div>
+          </div>
+          <div class="stat-card">
+            <div id="admin-stat-tickets" class="stat-value">0</div>
+            <div class="stat-label">Tarqatilgan Biletlar</div>
+          </div>
+        </div>
+
+        <!-- Add Sponsor Channel Form -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 14px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📢 Yangi Sponsor Kanal Qo'shish</h4>
+          <div class="form-group">
+            <label>Kanal Nomi:</label>
+            <input type="text" id="admin-sponsor-title" class="form-input" placeholder="Masalan: PEEXELL Official">
+          </div>
+          <div class="form-group">
+            <label>Kanal Username yoki ID (@channel):</label>
+            <input type="text" id="admin-sponsor-channel-id" class="form-input" placeholder="@peexell_official">
+          </div>
+          <div class="form-group">
+            <label>Taklif Havolasi (Invite Link):</label>
+            <input type="text" id="admin-sponsor-link" class="form-input" placeholder="https://t.me/peexell_official">
+          </div>
+          <button id="btn-add-sponsor" class="btn btn-primary" style="margin-top: 8px;">
+            <i class="fa-solid fa-plus"></i> Sponsor Qo'shish
+          </button>
+        </div>
+
+        <!-- Sponsor Channels List -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📋 Mavjud Sponsorlar</h4>
+          <div id="admin-sponsors-list">
+            <!-- Dynamic Sponsor items -->
+          </div>
+        </div>
+
+        <!-- Contest Winner Selection -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">🎲 G'oliblarni Aniqlash</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
+            Biletlar soniga qarab tasodifiy g'oliblarni aniqlaydi va bazaga saqlaydi.
+          </p>
+          <button id="btn-pick-winners" class="btn btn-cyan">
+            <i class="fa-solid fa-dice"></i> G'oliblarni Aniqlash (Random)
+          </button>
+          <div id="admin-winners-result" style="margin-top: 12px;"></div>
+        </div>
+
+        <!-- Export Data -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📊 Ma'lumotlarni Eksport Qilish</h4>
+          <div style="display: flex; gap: 10px;">
+            <button id="btn-export-csv" class="btn btn-secondary btn-sm" style="flex: 1;">
+              <i class="fa-solid fa-file-csv"></i> CSV Yuklab Olish
+            </button>
+            <button id="btn-export-json" class="btn btn-secondary btn-sm" style="flex: 1;">
+              <i class="fa-solid fa-file-code"></i> JSON Yuklab Olish
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STICKY BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-tab="tab-contest">
+        <i class="fa-solid fa-bolt icon"></i>
+        <span>Konkurs</span>
+      </button>
+      <button class="nav-item" data-tab="tab-tasks">
+        <i class="fa-solid fa-bullseye icon"></i>
+        <span>Vazifalar</span>
+      </button>
+      <button class="nav-item" data-tab="tab-friends">
+        <i class="fa-solid fa-user-group icon"></i>
+        <span>Do'stlar</span>
+      </button>
+      <button class="nav-item" data-tab="tab-leaderboard">
+        <i class="fa-solid fa-trophy icon"></i>
+        <span>Reyting</span>
+      </button>
+      <button class="nav-item" data-tab="tab-profile">
+        <i class="fa-solid fa-user icon"></i>
+        <span>Profil</span>
+      </button>
+      <button id="nav-admin-btn" class="nav-item" data-tab="tab-admin" style="display: none;">
+        <i class="fa-solid fa-gear icon"></i>
+        <span>Admin</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- Custom JavaScript -->
+  <script src="js/app.js"></script>
+</body>
+</html>
