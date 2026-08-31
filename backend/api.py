@@ -360,29 +360,106 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
 
 
 @router.get("/admin/export")
-async def admin_export(format: str = Query("json"), admin: dict = Depends(get_current_admin)):
+async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_current_admin)):
     async with get_db() as db:
-        async with db.execute("SELECT * FROM users") as c1:
-            users = [dict(r) for r in await c1.fetchall()]
-        async with db.execute("SELECT * FROM referrals") as c2:
-            referrals = [dict(r) for r in await c2.fetchall()]
-        async with db.execute("SELECT * FROM winners") as c3:
-            winners = [dict(r) for r in await c3.fetchall()]
+        # Get active contest title
+        async with db.execute("SELECT title FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c0:
+            row_c = await c0.fetchone()
+            contest_name = row_c["title"] if row_c else "PEEXELL GRAND KONKURS"
 
-    data = {
-        "users": users,
-        "referrals": referrals,
-        "winners": winners
-    }
+        # Fetch users ordered by tickets count
+        async with db.execute("SELECT * FROM users ORDER BY tickets DESC, id ASC") as c1:
+            users = [dict(r) for r in await c1.fetchall()]
+
+        # Fetch user tickets grouped by user_id
+        async with db.execute("SELECT user_id, ticket_number FROM user_tickets ORDER BY id ASC") as c2:
+            tickets_rows = await c2.fetchall()
+            user_tickets_map = {}
+            for row in tickets_rows:
+                uid = row["user_id"]
+                tn = row["ticket_number"]
+                if uid not in user_tickets_map:
+                    user_tickets_map[uid] = []
+                user_tickets_map[uid].append(tn)
+
+        # Fetch referral counts
+        async with db.execute("SELECT referrer_id, COUNT(*) as cnt FROM referrals GROUP BY referrer_id") as c3:
+            ref_rows = await c3.fetchall()
+            user_ref_map = {row["referrer_id"]: row["cnt"] for row in ref_rows}
 
     if format == "csv":
         import csv
         import io
         output = io.StringIO()
-        writer = csv.writer(output)
-        writer.writerow(["ID", "First Name", "Username", "Tickets", "Points", "Referred By", "Created At"])
-        for u in users:
-            writer.writerow([u["id"], u["first_name"], u["username"], u["tickets"], u["points"], u["referred_by"], u["created_at"]])
-        return Response(content=output.getvalue(), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=peexell_contest_users.csv"})
+        # Write UTF-8 BOM for Excel auto-encoding
+        output.write('\ufeff')
+        writer = csv.writer(output, delimiter=';')
+        
+        # Report Header
+        writer.writerow([f"PEEXELL KONKURS HISOBOT FAYLI - {contest_name}"])
+        writer.writerow([])
+        writer.writerow([
+            "T/r",
+            "Telegram ID",
+            "Foydalanuvchi Ismi",
+            "Username",
+            "Telefon Raqami",
+            "Biletlar Soni",
+            "Bilet Raqamlari (Seriya)",
+            "Chaqirgan Do'stlari",
+            "Ro'yxatdan O'tgan Vaqti"
+        ])
 
-    return data
+        for idx, u in enumerate(users, start=1):
+            full_name = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Foydalanuvchi"
+            uname = f"@{u['username']}" if u.get("username") else "Mavjud emas"
+            phone = u.get("phone_number") or "Tasdiqlanmagan"
+            u_tickets = user_tickets_map.get(u["id"], [])
+            tickets_str = ", ".join(u_tickets) if u_tickets else "Bilet yo'q"
+            ticket_count = len(u_tickets) if u_tickets else u.get("tickets", 0)
+            ref_cnt = user_ref_map.get(u["id"], 0)
+            created = u.get("created_at") or ""
+
+            writer.writerow([
+                idx,
+                u["id"],
+                full_name,
+                uname,
+                phone,
+                f"{ticket_count} ta",
+                tickets_str,
+                f"{ref_cnt} ta",
+                created
+            ])
+
+        csv_data = output.getvalue().encode('utf-8-sig')
+        filename = f"peexell_konkurs_hisoboti.csv"
+        return Response(
+            content=csv_data,
+            media_type="text/csv; charset=utf-8",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+    # Return structured JSON format
+    export_list = []
+    for idx, u in enumerate(users, start=1):
+        full_name = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Foydalanuvchi"
+        u_tickets = user_tickets_map.get(u["id"], [])
+        export_list.append({
+            "tr": idx,
+            "id": u["id"],
+            "name": full_name,
+            "username": f"@{u['username']}" if u.get("username") else None,
+            "phone_number": u.get("phone_number"),
+            "tickets_count": len(u_tickets) if u_tickets else u.get("tickets", 0),
+            "ticket_numbers": u_tickets,
+            "referrals_count": user_ref_map.get(u["id"], 0),
+            "created_at": u.get("created_at")
+        })
+
+    return {
+        "status": "success",
+        "contest": contest_name,
+        "total_participants": len(export_list),
+        "data": export_list
+    }
