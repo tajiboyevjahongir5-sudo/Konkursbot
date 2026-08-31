@@ -37,13 +37,18 @@ async def lifespan(app: FastAPI):
     await init_db()
 
     logger.info("Starting Telegram Bot...")
-    bot_instance = Bot(token=settings.BOT_TOKEN)
-    dp_instance = Dispatcher()
-    dp_instance.include_router(bot_router)
+    if settings.BOT_TOKEN and not settings.BOT_TOKEN.startswith("7891234567"):
+        try:
+            bot_instance = Bot(token=settings.BOT_TOKEN)
+            dp_instance = Dispatcher()
+            dp_instance.include_router(bot_router)
 
-    # Start bot polling in background task
-    bot_polling_task = asyncio.create_task(dp_instance.start_polling(bot_instance))
-    logger.info("PEEXELL Bot & FastAPI Server Started Successfully!")
+            bot_polling_task = asyncio.create_task(dp_instance.start_polling(bot_instance))
+            logger.info("PEEXELL Bot & FastAPI Server Started Successfully!")
+        except Exception as e:
+            logger.error(f"Failed to start bot polling: {e}. FastAPI server will continue running.")
+    else:
+        logger.warning("BOT_TOKEN is not configured or is a placeholder. Set BOT_TOKEN in Railway variables.")
 
     yield
 
@@ -51,8 +56,12 @@ async def lifespan(app: FastAPI):
     if bot_polling_task:
         bot_polling_task.cancel()
     if bot_instance:
-        session = await bot_instance.get_session()
-        await session.close()
+        try:
+            session = await bot_instance.get_session()
+            if session:
+                await session.close()
+        except Exception:
+            pass
     logger.info("Shutdown complete.")
 
 

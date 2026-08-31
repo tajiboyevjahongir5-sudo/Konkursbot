@@ -115,7 +115,7 @@ async def get_current_user(
 
 
 async def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
-    if user["id"] not in settings.ADMIN_IDS and user["id"] != 999999999: # 999999999 allowed in dev fallback
+    if not settings.is_admin(user["id"]) and user["id"] != 999999999: # 999999999 allowed in dev fallback
         raise HTTPException(status_code=403, detail="Ruxsat berilmagan! Faqat Adminlar uchun.")
     return user
 

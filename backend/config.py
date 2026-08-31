@@ -10,7 +10,7 @@ ENV_FILE = BASE_DIR / ".env"
 
 class Settings(BaseSettings):
     BOT_TOKEN: str = "7891234567:AAExampleTokenForPeexellContestBot"
-    ADMIN_IDS_RAW: str = "123456789,987654321"
+    ADMIN_IDS: str = "123456789,987654321"
     WEBAPP_URL: str = "http://localhost:8000"
     DATABASE_PATH: str = str(BASE_DIR / "data" / "contest.db")
     SECRET_KEY: str = "peexell_super_secret_key_2026_cyberpunk"
@@ -22,15 +22,18 @@ class Settings(BaseSettings):
     )
 
     @property
-    def ADMIN_IDS(self) -> List[int]:
-        if not self.ADMIN_IDS_RAW:
+    def admin_ids_list(self) -> List[int]:
+        if not self.ADMIN_IDS:
             return []
         ids = []
-        for item in str(self.ADMIN_IDS_RAW).split(","):
+        for item in str(self.ADMIN_IDS).split(","):
             item_clean = item.strip()
             if item_clean.isdigit() or (item_clean.startswith("-") and item_clean[1:].isdigit()):
                 ids.append(int(item_clean))
         return ids
+
+    def is_admin(self, user_id: int) -> bool:
+        return user_id in self.admin_ids_list
 
 
 settings = Settings()

@@ -77,7 +77,7 @@ async def start_handler(message: Message):
 
 @router.message(Command("admin"))
 async def admin_handler(message: Message):
-    if message.from_user.id not in settings.ADMIN_IDS:
+    if not settings.is_admin(message.from_user.id):
         await message.answer("❌ Kechirasiz, siz admin emassiz!")
         return
 
