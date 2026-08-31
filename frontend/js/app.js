@@ -143,6 +143,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (pTickets) pTickets.textContent = currentUser.tickets;
         if (pRefs) pRefs.textContent = currentUser.referrals_count;
 
+        // Update Profile Avatar (Real Telegram Photo)
+        const pAvatar = document.getElementById("prof-user-avatar");
+        if (pAvatar && currentUser.id) {
+          const tgPhoto = tg?.initDataUnsafe?.user?.photo_url;
+          pAvatar.src = tgPhoto || `/api/user/photo/${currentUser.id}`;
+        }
+
         // Render User Tickets Grid
         const ticketsContainer = document.getElementById("user-tickets-container");
         if (ticketsContainer) {
