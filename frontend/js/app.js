@@ -8,6 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (tg) {
     tg.ready();
     tg.expand();
+    
+    // Prevent accidental swipe down to close WebApp while scrolling
+    if (typeof tg.disableVerticalSwipes === 'function') {
+      tg.disableVerticalSwipes();
+    }
+    if (typeof tg.enableClosingConfirmation === 'function') {
+      tg.enableClosingConfirmation();
+    }
+
     try {
       tg.setHeaderColor('#121316');
       tg.setBackgroundColor('#121316');
