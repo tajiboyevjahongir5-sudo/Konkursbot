@@ -23,22 +23,6 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     )
 
 
-def get_reply_web_app_keyboard() -> ReplyKeyboardMarkup:
-    web_app_url = settings.clean_webapp_url
-    return ReplyKeyboardMarkup(
-        keyboard=[
-            [
-                KeyboardButton(
-                    text="🚀 PEEXELL Web App",
-                    web_app=WebAppInfo(url=web_app_url)
-                )
-            ]
-        ],
-        resize_keyboard=True,
-        is_persistent=True
-    )
-
-
 def get_contact_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
@@ -99,6 +83,13 @@ async def start_handler(message: Message):
         f"Konkursda qatnashish va bilet olish uchun pastdagi **🚀 PEEXELL Web App** tugmasini bosing:"
     )
 
+    # Clear lingering bottom reply keyboard
+    try:
+        tmp_msg = await message.answer(".", reply_markup=ReplyKeyboardRemove())
+        await tmp_msg.delete()
+    except Exception:
+        pass
+
     await message.answer(
         welcome_text,
         parse_mode="Markdown",
@@ -137,6 +128,13 @@ async def contact_handler(message: Message):
         f"Endi konkursda qatnashishingiz mumkin! Pastdagi **🚀 PEEXELL Web App** tugmasini bosing:"
     )
 
+    # Clear contact keyboard
+    try:
+        tmp_msg = await message.answer(".", reply_markup=ReplyKeyboardRemove())
+        await tmp_msg.delete()
+    except Exception:
+        pass
+
     await message.answer(
         success_text,
         parse_mode="Markdown",
@@ -167,6 +165,13 @@ async def admin_handler(message: Message):
         f"Siz admin huquqiga egasiz!\n"
         f"Admin panelini bevosita ochish uchun pastdagi tugmani bosing:"
     )
+
+    # Clear lingering bottom reply keyboard
+    try:
+        tmp_msg = await message.answer(".", reply_markup=ReplyKeyboardRemove())
+        await tmp_msg.delete()
+    except Exception:
+        pass
 
     await message.answer(
         admin_text,
