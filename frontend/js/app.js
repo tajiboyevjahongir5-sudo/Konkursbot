@@ -476,6 +476,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function init() {
     await loadUserData();
     await loadContestData();
+    await loadTasks();
   }
 
   init();
