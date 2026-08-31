@@ -23,6 +23,22 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     )
 
 
+def get_reply_web_app_keyboard() -> ReplyKeyboardMarkup:
+    web_app_url = settings.clean_webapp_url
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="🚀 PEEXELL Web App",
+                    web_app=WebAppInfo(url=web_app_url)
+                )
+            ]
+        ],
+        resize_keyboard=True,
+        is_persistent=True
+    )
+
+
 def get_contact_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
@@ -86,7 +102,7 @@ async def start_handler(message: Message):
     await message.answer(
         welcome_text,
         parse_mode="Markdown",
-        reply_markup=get_main_keyboard()
+        reply_markup=get_reply_web_app_keyboard()
     )
 
 
@@ -121,12 +137,26 @@ async def contact_handler(message: Message):
         f"Endi konkursda qatnashishingiz mumkin! Pastdagi **🚀 PEEXELL Web App** tugmasini bosing:"
     )
 
-    # Remove reply keyboard and send WebApp inline keyboard
-    await message.answer("Raqamingiz qabul qilindi!", reply_markup=ReplyKeyboardRemove())
     await message.answer(
         success_text,
         parse_mode="Markdown",
-        reply_markup=get_main_keyboard()
+        reply_markup=get_reply_web_app_keyboard()
+    )
+
+
+def get_admin_reply_keyboard() -> ReplyKeyboardMarkup:
+    admin_url = f"{settings.clean_webapp_url}?tab=admin"
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="⚙️ Admin Panelni Ochish",
+                    web_app=WebAppInfo(url=admin_url)
+                )
+            ]
+        ],
+        resize_keyboard=True,
+        is_persistent=True
     )
 
 
@@ -135,18 +165,6 @@ async def admin_handler(message: Message):
     if not settings.is_admin(message.from_user.id):
         await message.answer("❌ Kechirasiz, siz admin emassiz!")
         return
-
-    admin_url = f"{settings.clean_webapp_url}?tab=admin"
-    admin_keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="⚙️ Admin Panelni Ochish",
-                    web_app=WebAppInfo(url=admin_url)
-                )
-            ]
-        ]
-    )
 
     admin_text = (
         f"⚙️ **PEEXELL ADMIN PANEL** ⚙️\n\n"
@@ -157,5 +175,5 @@ async def admin_handler(message: Message):
     await message.answer(
         admin_text,
         parse_mode="Markdown",
-        reply_markup=admin_keyboard
+        reply_markup=get_admin_reply_keyboard()
     )
