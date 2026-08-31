@@ -18,12 +18,6 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
                     text="🚀 PEEXELL Web App",
                     web_app=WebAppInfo(url=web_app_url)
                 )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="📢 Rasmiy Kanal",
-                    url="https://t.me/peexell_official"
-                )
             ]
         ]
     )
@@ -43,7 +37,7 @@ async def start_handler(message: Message):
             referrer_id = int(param)
 
     # Save/update user in database
-    db_user = await get_or_create_user(
+    await get_or_create_user(
         user_id=user.id,
         first_name=user.first_name or "Foydalanuvchi",
         last_name=user.last_name,
@@ -51,21 +45,10 @@ async def start_handler(message: Message):
         referrer_id=referrer_id
     )
 
-    ref_count = await get_user_referrals_count(user.id)
-    contest = await get_active_contest()
-
-    bot_info = await message.bot.get_me()
-    ref_link = f"https://t.me/{bot_info.username}?start=ref_{user.id}"
-
     welcome_text = (
-        f"⚡ **PEEXELL KONKURS BOTGA XUSH KELIBSIZ!** ⚡\n\n"
-        f"Salom, **{user.first_name}**!\n"
-        f"🏆 **Konkurs:** {contest['title']}\n"
-        f"🎁 **Sovrinlar:** {contest['prize_pool']}\n\n"
-        f"🎫 **Sizning biletlaringiz:** `{db_user['tickets']}` ta\n"
-        f"👥 **Chaqirgan do'stlaringiz:** `{ref_count}` ta\n\n"
-        f"🔗 **Sizning referal havolangiz:**\n`{ref_link}`\n\n"
-        f"🚀 Konkursda qatnashish, sponsor kanallarga obuna bo'lish va reytingni ko'rish uchun quyidagi **PEEXELL Web App** tugmasini bosing!"
+        f"⚡ **PEEXELL KONKURS BOT** ⚡\n\n"
+        f"Salom, **{user.first_name}**! 👋\n"
+        f"Konkursda qatnashish va bilet olish uchun pastdagi **🚀 PEEXELL Web App** tugmasini bosing:"
     )
 
     await message.answer(
