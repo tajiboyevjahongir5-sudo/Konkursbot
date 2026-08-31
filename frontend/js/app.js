@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (res.status === "success" && res.winners) {
           showToast("G'oliblar muvaffaqiyatli aniqlandi! 🏆", "success");
           const resultDiv = document.getElementById("admin-winners-result");
-          resultDiv.innerHTML = '<b>🏆 Konkurs G'oliblari:</b><br>';
+          resultDiv.innerHTML = '<b>🏆 Konkurs G\'oliblari:</b><br>';
           res.winners.forEach(w => {
             resultDiv.innerHTML += `<div>${w.place}-O'rin: <b>${w.first_name}</b> (@${w.username || 'no_user'}) - <i>${w.prize}</i></div>`;
           });
