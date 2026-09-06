@@ -243,18 +243,29 @@
 
         <!-- Add Sponsor Channel Form -->
         <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📢 Yangi Sponsor Kanal Qo'shish</h4>
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📢 Yangi Sponsor Qo'shish (Telegram / YouTube)</h4>
           <div class="form-group">
-            <label>Kanal Nomi:</label>
+            <label>Platforma Turi:</label>
+            <select id="admin-sponsor-platform" class="form-input" style="background: var(--card-bg); color: #fff;">
+              <option value="telegram">✈️ Telegram Kanal (get_chat_member)</option>
+              <option value="youtube">🔴 YouTube Kanal (Google Data API v3)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sponsor Nomi:</label>
             <input type="text" id="admin-sponsor-title" class="form-input" placeholder="Masalan: PEEXELL Official">
           </div>
           <div class="form-group">
-            <label>Kanal Username yoki ID (@channel):</label>
+            <label>Telegram Username (@channel) / YouTube ID:</label>
             <input type="text" id="admin-sponsor-channel-id" class="form-input" placeholder="@peexell_official">
           </div>
           <div class="form-group">
-            <label>Taklif Havolasi (Invite Link):</label>
-            <input type="text" id="admin-sponsor-link" class="form-input" placeholder="https://t.me/peexell_official">
+            <label>Taklif Havolasi (Invite Link / YouTube URL):</label>
+            <input type="text" id="admin-sponsor-link" class="form-input" placeholder="https://t.me/peexell_official yoki https://youtube.com/@peexell">
+          </div>
+          <div class="form-group" id="yt-channel-id-group" style="display: none;">
+            <label>YouTube Channel ID (Google API UC...):</label>
+            <input type="text" id="admin-sponsor-yt-id" class="form-input" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx">
           </div>
           <button id="btn-add-sponsor" class="btn btn-primary" style="margin-top: 8px;">
             <i class="fa-solid fa-circle-plus"></i> Sponsor Qo'shish

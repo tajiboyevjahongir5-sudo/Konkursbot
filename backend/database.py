@@ -49,10 +49,20 @@ async def init_db():
                 title TEXT NOT NULL,
                 channel_id TEXT NOT NULL,
                 invite_link TEXT NOT NULL,
+                platform TEXT DEFAULT 'telegram',
+                youtube_channel_id TEXT,
                 is_active INTEGER DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+
+        # Migration: Ensure platform and youtube_channel_id columns exist in sponsors table
+        async with db.execute("PRAGMA table_info(sponsors)") as cursor:
+            columns = [column[1] for column in await cursor.fetchall()]
+            if "platform" not in columns:
+                await db.execute("ALTER TABLE sponsors ADD COLUMN platform TEXT DEFAULT 'telegram'")
+            if "youtube_channel_id" not in columns:
+                await db.execute("ALTER TABLE sponsors ADD COLUMN youtube_channel_id TEXT")
 
         # Contests table
         await db.execute("""
@@ -274,12 +284,12 @@ async def get_sponsors(active_only: bool = True) -> List[Dict[str, Any]]:
             return [dict(r) for r in rows]
 
 
-async def add_sponsor(title: str, channel_id: str, invite_link: str) -> int:
+async def add_sponsor(title: str, channel_id: str, invite_link: str, platform: str = "telegram", youtube_channel_id: Optional[str] = None) -> int:
     async with get_db() as db:
         cursor = await db.execute("""
-            INSERT INTO sponsors (title, channel_id, invite_link, is_active)
-            VALUES (?, ?, ?, 1)
-        """, (title, channel_id, invite_link))
+            INSERT INTO sponsors (title, channel_id, invite_link, platform, youtube_channel_id, is_active)
+            VALUES (?, ?, ?, ?, ?, 1)
+        """, (title, channel_id, invite_link, platform, youtube_channel_id))
         await db.commit()
         return cursor.lastrowid
 
@@ -300,6 +310,8 @@ async def get_user_tasks(user_id: int) -> List[Dict[str, Any]]:
                 s.title,
                 s.channel_id,
                 s.invite_link,
+                s.platform,
+                s.youtube_channel_id,
                 COALESCE(ut.completed, 0) as completed
             FROM sponsors s
             LEFT JOIN user_tasks ut ON s.id = ut.sponsor_id AND ut.user_id = ?

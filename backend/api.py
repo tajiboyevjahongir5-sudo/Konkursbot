@@ -35,6 +35,8 @@ class AddSponsorRequest(BaseModel):
     title: str
     channel_id: str
     invite_link: str
+    platform: Optional[str] = "telegram"
+    youtube_channel_id: Optional[str] = None
 
 
 class UpdateContestRequest(BaseModel):
@@ -334,7 +336,7 @@ async def admin_get_sponsors(admin: dict = Depends(get_current_admin)):
 
 @router.post("/admin/sponsors")
 async def admin_add_sponsor(body: AddSponsorRequest, admin: dict = Depends(get_current_admin)):
-    sp_id = await add_sponsor(body.title, body.channel_id, body.invite_link)
+    sp_id = await add_sponsor(body.title, body.channel_id, body.invite_link, body.platform or "telegram", body.youtube_channel_id)
     return {"status": "success", "message": "Sponsor muvaffaqiyatli qo'shildi", "sponsor_id": sp_id}
 
 
@@ -468,3 +470,82 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
         "total_participants": len(export_list),
         "data": export_list
     }
+
+
+# --- YOUTUBE DATA API (GOOGLE OAUTH 2.0) ENDPOINTS ---
+
+@router.get("/auth/google/url")
+async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_user)):
+    if not settings.GOOGLE_CLIENT_ID:
+        return {
+            "status": "config_required",
+            "message": "Google OAuth API sozlanmagan. Server .env faylida GOOGLE_CLIENT_ID va GOOGLE_CLIENT_SECRET ni o'rnating."
+        }
+
+    scope = "https://www.googleapis.com/auth/youtube.readonly"
+    state_data = json.dumps({"user_id": user["id"], "sponsor_id": sponsor_id})
+    state_encoded = urllib.parse.quote(state_data)
+
+    redirect_uri = settings.GOOGLE_REDIRECT_URI or f"{settings.clean_webapp_url}/api/auth/google/callback"
+    auth_url = (
+        f"https://accounts.google.com/o/oauth2/v2/auth?"
+        f"client_id={settings.GOOGLE_CLIENT_ID}&"
+        f"redirect_uri={urllib.parse.quote(redirect_uri)}&"
+        f"response_type=code&"
+        f"scope={urllib.parse.quote(scope)}&"
+        f"access_type=offline&"
+        f"state={state_encoded}"
+    )
+    return {"status": "success", "url": auth_url}
+
+
+@router.get("/auth/google/callback")
+async def google_auth_callback(code: str, state: str):
+    import urllib.request
+    try:
+        state_dict = json.loads(urllib.parse.unquote(state))
+        user_id = state_dict.get("user_id")
+        sponsor_id = state_dict.get("sponsor_id")
+
+        redirect_uri = settings.GOOGLE_REDIRECT_URI or f"{settings.clean_webapp_url}/api/auth/google/callback"
+        token_url = "https://oauth2.googleapis.com/token"
+        token_data = urllib.parse.urlencode({
+            "code": code,
+            "client_id": settings.GOOGLE_CLIENT_ID,
+            "client_secret": settings.GOOGLE_CLIENT_SECRET,
+            "redirect_uri": redirect_uri,
+            "grant_type": "authorization_code"
+        }).encode("utf-8")
+
+        req = urllib.request.Request(token_url, data=token_data, headers={"Content-Type": "application/x-www-form-urlencoded"})
+        with urllib.request.urlopen(req) as resp:
+            token_resp = json.loads(resp.read().decode("utf-8"))
+
+        access_token = token_resp.get("access_token")
+        if not access_token:
+            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Google Auth Xatosi: Access Token olinmadi</h2></div>", media_type="text/html")
+
+        sponsors = await get_sponsors(active_only=False)
+        sponsor = next((s for s in sponsors if s["id"] == sponsor_id), None)
+        target_yt_id = sponsor.get("youtube_channel_id") if sponsor else None
+
+        yt_api_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50"
+        if target_yt_id:
+            yt_api_url += f"&forChannelId={target_yt_id}"
+
+        yt_req = urllib.request.Request(yt_api_url, headers={"Authorization": f"Bearer {access_token}"})
+        is_subbed = False
+        with urllib.request.urlopen(yt_req) as yt_resp:
+            yt_data = json.loads(yt_resp.read().decode("utf-8"))
+            items = yt_data.get("items", [])
+            if len(items) > 0:
+                is_subbed = True
+
+        if is_subbed and sponsor_id and user_id:
+            await mark_task_completed(user_id, sponsor_id)
+            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'><script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! YouTube obunangiz 100% rasmiy tasdiqlandi! +1 Bilet berildi!</h2><p>Oyna 2 soniyada yopiladi...</p></div>", media_type="text/html")
+        else:
+            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Obuna aniqlanmadi!</h2><p>Iltimos ko'rsatilgan YouTube kanalga obuna bo'ling va qaytadan urinib ko'ring.</p></div>", media_type="text/html")
+
+    except Exception as e:
+        return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Tekshirishda Xatolik</h2><p>{str(e)}</p></div>", media_type="text/html")

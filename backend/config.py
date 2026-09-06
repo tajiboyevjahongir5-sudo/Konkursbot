@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     WEBAPP_URL: str = "http://localhost:8000"
     DATABASE_PATH: str = str(BASE_DIR / "data" / "contest.db")
     SECRET_KEY: str = "peexell_super_secret_key_2026_cyberpunk"
+    
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    GOOGLE_REDIRECT_URI: str = ""
 
     model_config = SettingsConfigDict(
         env_file=str(ENV_FILE),

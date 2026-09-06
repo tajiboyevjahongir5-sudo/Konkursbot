@@ -270,25 +270,31 @@ document.addEventListener("DOMContentLoaded", () => {
           item.style.cssText = "background: rgba(26, 28, 35, 0.7); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;";
           
           const isDone = task.completed === 1;
+          const isYT = task.platform === "youtube";
+          const iconClass = isYT ? "fa-youtube" : "fa-telegram";
+          const iconColor = isYT ? "#ff3b30" : "#38bdf8";
+          const btnBg = isYT ? "rgba(255, 59, 48, 0.18)" : "rgba(0, 136, 204, 0.22)";
+          const btnBorder = isYT ? "#ff3b30" : "#0088cc";
+          const btnText = isYT ? "🔴 YouTube'da Obuna Bo'lish" : "✈️ Telegram'da A'zo Bo'lish";
 
           item.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px;">
-              <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-color); flex-shrink: 0; background: var(--bg-dark);">
-                <img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">
+              <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid ${btnBorder}; flex-shrink: 0; background: var(--bg-dark); display: flex; align-items: center; justify-content: center;">
+                ${isYT ? '<i class="fa-brands fa-youtube" style="color: #ff3b30; font-size: 1.5rem;"></i>' : `<img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">`}
               </div>
               <div style="flex: 1; min-width: 0;">
                 <div style="font-weight: 700; font-size: 0.92rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${task.channel_id}</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${isYT ? 'YouTube Kanal (Google Data API)' : task.channel_id}</div>
               </div>
             </div>
             <div style="display: flex; gap: 8px; width: 100%;">
-              <a href="${task.invite_link}" target="_blank" class="btn btn-sm" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: rgba(0, 136, 204, 0.22); border: 1px solid #0088cc; color: #38bdf8;">
-                <i class="fa-brands fa-telegram" style="color: #38bdf8;"></i> A'zo bo'lish
+              <a href="${task.invite_link}" target="_blank" class="btn btn-sm" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${iconColor};">
+                <i class="fa-brands ${iconClass}" style="color: ${iconColor};"></i> ${btnText}
               </a>
               ${
                 isDone 
                 ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: #22c55e; color: #fff; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; border: none;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
+                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" data-platform="${task.platform || 'telegram'}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
               }
             </div>
           `;
@@ -299,8 +305,34 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".btn-check-task").forEach(btn => {
           btn.addEventListener("click", async (e) => {
             const sponsorId = parseInt(btn.getAttribute("data-id"));
+            const platform = btn.getAttribute("data-platform");
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Tekshirilmoqda...';
+
+            if (platform === "youtube") {
+              try {
+                const gRes = await apiFetch(`/api/auth/google/url?sponsor_id=${sponsorId}`);
+                if (gRes.status === "success" && gRes.url) {
+                  window.open(gRes.url, '_blank', 'width=500,height=600');
+                  showToast("Google akkauntingiz orqali YouTube obunangiz tekshirilmoqda...", "warning");
+                } else if (gRes.status === "config_required") {
+                  showToast("YouTube Data API sozlanmagan. Standart avtomatik tasdiqlash bajarildi!", "success");
+                  const checkRes = await apiFetch("/api/tasks/check", { method: "POST", body: JSON.stringify({ sponsor_id: sponsorId }) });
+                  if (checkRes.completed) {
+                    await loadUserData();
+                    await loadTasks();
+                  }
+                } else {
+                  showToast(gRes.message || "YouTube tekshirishda xatolik!", "danger");
+                }
+              } catch (err) {
+                showToast("Google API bilan ulanishda xatolik!", "danger");
+              } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+              }
+              return;
+            }
 
             try {
               const checkRes = await apiFetch("/api/tasks/check", {
@@ -315,11 +347,11 @@ document.addEventListener("DOMContentLoaded", () => {
               } else {
                 showToast(checkRes.message, "danger");
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-sync"></i> Tekshirish';
+                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
               }
             } catch (err) {
               btn.disabled = false;
-              btn.innerHTML = '<i class="fa-solid fa-sync"></i> Tekshirish';
+              btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
             }
           });
         });
@@ -554,13 +586,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const platformSelect = document.getElementById("admin-sponsor-platform");
+  if (platformSelect) {
+    platformSelect.addEventListener("change", () => {
+      const ytGroup = document.getElementById("yt-channel-id-group");
+      if (ytGroup) {
+        ytGroup.style.display = platformSelect.value === "youtube" ? "block" : "none";
+      }
+    });
+  }
+
   // Add Sponsor Form Handler
   const addSponsorBtn = document.getElementById("btn-add-sponsor");
   if (addSponsorBtn) {
     addSponsorBtn.addEventListener("click", async () => {
+      const platform = document.getElementById("admin-sponsor-platform") ? document.getElementById("admin-sponsor-platform").value : "telegram";
       const title = document.getElementById("admin-sponsor-title").value.trim();
       const channel_id = document.getElementById("admin-sponsor-channel-id").value.trim();
       const invite_link = document.getElementById("admin-sponsor-link").value.trim();
+      const youtube_channel_id = document.getElementById("admin-sponsor-yt-id") ? document.getElementById("admin-sponsor-yt-id").value.trim() : null;
 
       if (!title || !channel_id || !invite_link) {
         showToast("Barcha maydonlarni to'ldiring!", "warning");
@@ -570,12 +614,13 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         await apiFetch("/api/admin/sponsors", {
           method: "POST",
-          body: JSON.stringify({ title, channel_id, invite_link })
+          body: JSON.stringify({ title, channel_id, invite_link, platform, youtube_channel_id })
         });
-        showToast("Sponsor kanal qo'shildi! 🎉", "success");
+        showToast("Sponsor qo'shildi! 🎉", "success");
         document.getElementById("admin-sponsor-title").value = "";
         document.getElementById("admin-sponsor-channel-id").value = "";
         document.getElementById("admin-sponsor-link").value = "";
+        if (document.getElementById("admin-sponsor-yt-id")) document.getElementById("admin-sponsor-yt-id").value = "";
         loadAdminData();
       } catch (err) {}
     });
