@@ -694,6 +694,19 @@ def is_uzb_phone(phone_number: str) -> bool:
     return clean.startswith("998") and len(clean) >= 12
 
 
+async def revoke_user_tickets_for_unsub(user_id: int) -> int:
+    async with get_db() as db:
+        async with db.execute("SELECT COUNT(*) as cnt FROM user_tickets WHERE user_id = ?", (user_id,)) as c:
+            revoked_count = (await c.fetchone())["cnt"]
+
+        await db.execute("DELETE FROM user_tickets WHERE user_id = ?", (user_id,))
+        await db.execute("DELETE FROM contest_participants WHERE user_id = ?", (user_id,))
+        await db.execute("UPDATE user_tasks SET completed = 0 WHERE user_id = ?", (user_id,))
+        await db.execute("UPDATE users SET tickets = 0 WHERE id = ?", (user_id,))
+        await db.commit()
+        return revoked_count
+
+
 async def save_user_phone(user_id: int, phone_number: str) -> bool:
     clean = str(phone_number).replace("+", "").replace(" ", "").replace("-", "").strip()
     full_phone = f"+{clean}"

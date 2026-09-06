@@ -218,9 +218,14 @@ async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
 
     if unsubscribed_sponsors and not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
         joined_list = ", ".join(unsubscribed_sponsors)
+        from backend.database import revoke_user_tickets_for_unsub
+        revoked = await revoke_user_tickets_for_unsub(user["id"])
+        msg = f"❌ Iltimos, barcha sponsor kanallarga obuna bo'ling! Obuna bo'linmagan: {joined_list}"
+        if revoked > 0:
+            msg = f"⚠️ DIQQAT! Siz homiy kanallardan ({joined_list}) chiqib ketganingiz sababli barcha biletlaringiz BEKOR QILINDI! Qayta qatnashish uchun obuna bo'ling."
         return {
             "status": "error",
-            "message": f"❌ Iltimos, barcha sponsor kanallarga obuna bo'ling! Obuna bo'linmagan: {joined_list}"
+            "message": msg
         }
 
     # Execute contest participation and ticket issuance
@@ -367,11 +372,33 @@ class BroadcastRequest(BaseModel):
 @router.post("/admin/winners/pick")
 async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get_current_admin)):
     contest = await get_active_contest()
+
+    # Pre-check active Telegram sponsors and purge unsubscribed candidates before random selection
+    sponsors = await get_sponsors(active_only=True)
+    from backend.main import get_bot_instance
+    bot = get_bot_instance()
+    from backend.database import revoke_user_tickets_for_unsub, get_db
+
+    if bot:
+        async with get_db() as db:
+            async with db.execute("SELECT user_id FROM contest_participants WHERE contest_id = ?", (contest["id"],)) as c_p:
+                participants = await c_p.fetchall()
+
+        for p in participants:
+            uid = p["user_id"]
+            for s in sponsors:
+                if s.get("platform", "telegram") == "telegram":
+                    try:
+                        member = await bot.get_chat_member(chat_id=s["channel_id"], user_id=uid)
+                        if member.status not in ["creator", "administrator", "member"]:
+                            await revoke_user_tickets_for_unsub(uid)
+                            break
+                    except Exception:
+                        pass
+
     winners = await pick_random_winners(contest["id"], body.count, body.prizes)
 
     # Auto-notify winners via Telegram bot
-    from backend.main import get_bot_instance
-    bot = get_bot_instance()
     if bot and winners:
         import asyncio
         for w in winners:
