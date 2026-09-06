@@ -360,11 +360,66 @@ async def admin_reset_tickets(admin: dict = Depends(get_current_admin)):
     return {"status": "success", "message": "🧹 Barcha biletlar va qatnashchilar yangi konkurs uchun tozalandi!"}
 
 
+class BroadcastRequest(BaseModel):
+    message: str
+
+
 @router.post("/admin/winners/pick")
 async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get_current_admin)):
     contest = await get_active_contest()
     winners = await pick_random_winners(contest["id"], body.count, body.prizes)
+
+    # Auto-notify winners via Telegram bot
+    from backend.main import get_bot_instance
+    bot = get_bot_instance()
+    if bot and winners:
+        import asyncio
+        for w in winners:
+            try:
+                msg = (
+                    f"🎉 <b>TABRIKLAYMIZ!</b>\n\n"
+                    f"Siz PEEXELL GRAND KONKURSida <b>{w['place']}-O'rin</b> (<i>{w['prize']}</i>) g'olibi bo'ldingiz!\n\n"
+                    f"📞 Sovrinni olish uchun tez orada admin siz bilan bog'lanadi."
+                )
+                await bot.send_message(chat_id=w["user_id"], text=msg, parse_mode="HTML")
+                await asyncio.sleep(0.05)
+            except Exception:
+                pass
+
     return {"status": "success", "winners": winners}
+
+
+@router.post("/admin/broadcast")
+async def admin_broadcast(body: BroadcastRequest, admin: dict = Depends(get_current_admin)):
+    if not body.message.strip():
+        raise HTTPException(status_code=400, detail="Xabar matni bo'sh bo'lishi mumkin emas")
+
+    from backend.main import get_bot_instance
+    bot = get_bot_instance()
+
+    if not bot:
+        raise HTTPException(status_code=500, detail="Bot instansiyasi faol emas")
+
+    async with get_db() as db:
+        async with db.execute("SELECT id FROM users") as cursor:
+            users = await cursor.fetchall()
+
+    success_count = 0
+    fail_count = 0
+    import asyncio
+
+    for u in users:
+        try:
+            await bot.send_message(chat_id=u["id"], text=body.message, parse_mode="HTML")
+            success_count += 1
+            await asyncio.sleep(0.04)
+        except Exception:
+            fail_count += 1
+
+    return {
+        "status": "success",
+        "message": f"📢 Ommaviy xabar yuborildi!\n✅ Muvaffaqiyatli: {success_count} ta\n❌ Yetib bormadi: {fail_count} ta"
+    }
 
 
 @router.get("/admin/export")

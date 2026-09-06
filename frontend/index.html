@@ -109,6 +109,17 @@
           </button>
         </div>
 
+        <!-- Past Winners Showcase Card -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
+          <div class="card-header-title">
+            <i class="fa-solid fa-award" style="color: var(--secondary-color);"></i>
+            <span>🏆 Konkurs G'oliblari</span>
+          </div>
+          <div id="public-winners-list" style="margin-top: 10px;">
+            <div style="font-size: 0.82rem; color: var(--text-secondary); text-align: center; padding: 10px;">Hozircha g'oliblar aniqlanmagan.</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -301,6 +312,21 @@
           </p>
           <button id="btn-reset-tickets" class="btn btn-secondary btn-sm" style="background: rgba(255, 59, 48, 0.15); border: 1px solid var(--danger-color); color: var(--danger-color); width: 100%;">
             <i class="fa-solid fa-trash-can"></i> Barcha Biletlarni O'chirish (Nolga Tushirish)
+          </button>
+        </div>
+
+        <!-- Admin Broadcast Form -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--primary-color);">📢 Ommaviy Xabar Yuborish (Broadcast)</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
+            Barcha foydalanuvchilar Telegramiga avtomatik xabar va e'lon yuboradi.
+          </p>
+          <div class="form-group">
+            <label>Xabar Matni (HTML/Text):</label>
+            <textarea id="admin-broadcast-msg" class="form-input" rows="3" placeholder="📢 Yangi e'lon va konkurs yangiliklari..."></textarea>
+          </div>
+          <button id="btn-send-broadcast" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+            <i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)
           </button>
         </div>
 

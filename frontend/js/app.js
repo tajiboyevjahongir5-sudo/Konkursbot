@@ -63,10 +63,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- TOAST NOTIFICATIONS ---
+  // --- TOAST NOTIFICATIONS & HAPTIC FEEDBACK ---
   function showToast(message, type = "success") {
     const container = document.getElementById("toast-container");
     if (!container) return;
+
+    // Telegram Native Haptic Feedback Vibration
+    if (tg && tg.HapticFeedback) {
+      try {
+        if (type === "success") tg.HapticFeedback.notificationOccurred("success");
+        else if (type === "danger") tg.HapticFeedback.notificationOccurred("error");
+        else tg.HapticFeedback.notificationOccurred("warning");
+      } catch (e) {}
+    }
 
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
@@ -120,6 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (targetTab === "tab-contest") {
         loadContestData();
         loadTasks();
+        loadPublicWinners();
       }
       if (targetTab === "tab-profile" || targetTab === "tab-friends") {
         loadUserData();
@@ -129,6 +139,43 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // --- DATA LOADING & STATE MANAGEMENT ---
+  async function loadPublicWinners() {
+    const winnersEl = document.getElementById("public-winners-list");
+    if (!winnersEl) return;
+
+    try {
+      const res = await apiFetch("/api/winners");
+      if (res.status === "success" && res.winners && res.winners.length > 0) {
+        winnersEl.innerHTML = "";
+        res.winners.forEach(w => {
+          const row = document.createElement("div");
+          row.style.cssText = "display: flex; align-items: center; justify-content: space-between; background: rgba(26, 28, 35, 0.7); border: 1px solid var(--card-border); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;";
+          
+          let medal = "🥇";
+          if (w.place === 2) medal = "🥈";
+          if (w.place === 3) medal = "🥉";
+
+          const uName = w.first_name || (w.username ? `@${w.username}` : `User ${w.user_id}`);
+
+          row.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.2rem;">${medal}</span>
+              <div>
+                <div style="font-weight: 700; font-size: 0.88rem; color: #fff;">${uName}</div>
+                <div style="font-size: 0.76rem; color: var(--primary-color); font-weight: 600;">${w.prize}</div>
+              </div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px;">${w.place}-O'rin</div>
+          `;
+          winnersEl.appendChild(row);
+        });
+      } else {
+        winnersEl.innerHTML = '<div style="font-size: 0.82rem; color: var(--text-secondary); text-align: center; padding: 10px;">Hozircha g\'oliblar aniqlanmagan. Konkurs davom etmoqda!</div>';
+      }
+    } catch (err) {}
+  }
 
   // --- DATA LOADING & STATE MANAGEMENT ---
   async function loadUserData() {
@@ -812,6 +859,39 @@ document.addEventListener("DOMContentLoaded", () => {
       updateNavVisibility("tab-admin");
       await loadAdminData();
     }
+  }
+
+  // Admin Broadcast Handler
+  const sendBroadcastBtn = document.getElementById("btn-send-broadcast");
+  if (sendBroadcastBtn) {
+    sendBroadcastBtn.addEventListener("click", async () => {
+      const msgInput = document.getElementById("admin-broadcast-msg");
+      const message = msgInput ? msgInput.value.trim() : "";
+
+      if (!message) {
+        showToast("Xabar matnini kiriting!", "warning");
+        return;
+      }
+
+      if (!confirm("Barcha bot foydalanuvchilariga ushbu xabarni yuborishni tasdiqlaysizmi?")) return;
+
+      sendBroadcastBtn.disabled = true;
+      sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
+
+      try {
+        const res = await apiFetch("/api/admin/broadcast", {
+          method: "POST",
+          body: JSON.stringify({ message })
+        });
+        showToast(res.message, "success");
+        if (msgInput) msgInput.value = "";
+      } catch (err) {
+        showToast("Xabar yuborishda xatolik!", "danger");
+      } finally {
+        sendBroadcastBtn.disabled = false;
+        sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)';
+      }
+    });
   }
 
   init();
