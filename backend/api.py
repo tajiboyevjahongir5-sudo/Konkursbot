@@ -80,8 +80,7 @@ def verify_telegram_webapp_data(init_data: str) -> dict:
 
     # Note: In strict production, check calculated_hash == hash_val
     # We validate strictly, but fallback gracefully for dev testing
-    if calculated_hash != hash_val and settings.BOT_TOKEN != "7891234567:AAExampleTokenForPeexellContestBot":
-
+    if calculated_hash != hash_val and not settings.BOT_TOKEN.startswith("7891234567"):
         raise HTTPException(status_code=401, detail="Telegram initData tasdiqlanmadi (Invalid Hash)")
 
     if "user" not in parsed_data:
@@ -96,15 +95,17 @@ async def get_current_user(
 ) -> dict:
     raw_init_data = x_telegram_init_data or initData
 
-    # Dev/Browser test mode fallback
+    # Dev/Browser test mode fallback only if dummy token
     if not raw_init_data:
-        # Provide default fallback user for browser direct testing
-        tg_user = {
-            "id": 999999999,
-            "first_name": "Test User",
-            "last_name": "PEEXELL",
-            "username": "test_peexell_user"
-        }
+        if settings.BOT_TOKEN.startswith("7891234567"):
+            tg_user = {
+                "id": 999999999,
+                "first_name": "Test User",
+                "last_name": "PEEXELL",
+                "username": "test_peexell_user"
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Telegram initData topilmadi")
     else:
         tg_user = verify_telegram_webapp_data(raw_init_data)
 
@@ -118,7 +119,7 @@ async def get_current_user(
 
 
 async def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
-    if not settings.is_admin(user["id"]) and user["id"] != 999999999: # 999999999 allowed in dev fallback
+    if not settings.is_admin(user["id"]) and not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
         raise HTTPException(status_code=403, detail="Ruxsat berilmagan! Faqat Adminlar uchun.")
     return user
 
@@ -210,9 +211,10 @@ async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
                 if member.status not in ["creator", "administrator", "member"]:
                     unsubscribed_sponsors.append(s["title"])
             except Exception:
-                pass  # Fallback if permissions missing or testing
+                if not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
+                    unsubscribed_sponsors.append(s["title"])
 
-    if unsubscribed_sponsors and user["id"] != 999999999:
+    if unsubscribed_sponsors and not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
         joined_list = ", ".join(unsubscribed_sponsors)
         return {
             "status": "error",
@@ -269,15 +271,18 @@ async def check_task(body: CheckTaskRequest, user: dict = Depends(get_current_us
             member = await bot.get_chat_member(chat_id=sponsor["channel_id"], user_id=user["id"])
             if member.status in ["creator", "administrator", "member"]:
                 is_subscribed = True
-        except Exception as e:
-            # Fallback if bot is not added to channel as admin or in local testing mode
-            # If channel_id starts with @ or -100, we check; if test user or error, grant for testing gracefully
-            if user["id"] == 999999999:
+            else:
+                is_subscribed = False
+        except Exception:
+            if user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567"):
                 is_subscribed = True
             else:
-                is_subscribed = True  # Auto-verify fallback if channel bot permissions are missing
+                is_subscribed = False
     else:
-        is_subscribed = True
+        if user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567"):
+            is_subscribed = True
+        else:
+            is_subscribed = False
 
     if is_subscribed:
         updated = await mark_task_completed(user["id"], body.sponsor_id)
@@ -362,30 +367,31 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
 @router.get("/admin/export")
 async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_current_admin)):
     async with get_db() as db:
-        # Get active contest title
-        async with db.execute("SELECT title FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c0:
+        # Get active contest ID & title
+        async with db.execute("SELECT id, title FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c0:
             row_c = await c0.fetchone()
+            contest_id = row_c["id"] if row_c else 1
             contest_name = row_c["title"] if row_c else "PEEXELL GRAND KONKURS"
 
-        # Fetch users ordered by tickets count
-        async with db.execute("SELECT * FROM users ORDER BY tickets DESC, id ASC") as c1:
-            users = [dict(r) for r in await c1.fetchall()]
-
-        # Fetch user tickets grouped by user_id
-        async with db.execute("SELECT user_id, ticket_number FROM user_tickets ORDER BY id ASC") as c2:
-            tickets_rows = await c2.fetchall()
-            user_tickets_map = {}
-            for row in tickets_rows:
-                uid = row["user_id"]
-                tn = row["ticket_number"]
-                if uid not in user_tickets_map:
-                    user_tickets_map[uid] = []
-                user_tickets_map[uid].append(tn)
-
-        # Fetch referral counts
-        async with db.execute("SELECT referrer_id, COUNT(*) as cnt FROM referrals GROUP BY referrer_id") as c3:
-            ref_rows = await c3.fetchall()
-            user_ref_map = {row["referrer_id"]: row["cnt"] for row in ref_rows}
+        # Single fast query returning user info, aggregated ticket numbers, ticket count, and referral count
+        async with db.execute("""
+            SELECT 
+                u.id,
+                u.first_name,
+                u.last_name,
+                u.username,
+                u.phone_number,
+                u.created_at,
+                COUNT(DISTINCT ut.id) as ticket_count,
+                GROUP_CONCAT(DISTINCT ut.ticket_number) as ticket_numbers_str,
+                (SELECT COUNT(*) FROM referrals r WHERE r.referrer_id = u.id) as referrals_count
+            FROM users u
+            LEFT JOIN user_tickets ut ON u.id = ut.user_id AND ut.contest_id = ?
+            GROUP BY u.id
+            ORDER BY ticket_count DESC, u.id ASC
+        """, (contest_id,)) as cursor:
+            rows = await cursor.fetchall()
+            users_data = [dict(r) for r in rows]
 
     if format == "csv":
         import csv
@@ -410,14 +416,13 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
             "Ro'yxatdan O'tgan Vaqti"
         ])
 
-        for idx, u in enumerate(users, start=1):
+        for idx, u in enumerate(users_data, start=1):
             full_name = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Foydalanuvchi"
             uname = f"@{u['username']}" if u.get("username") else "Mavjud emas"
             phone = u.get("phone_number") or "Tasdiqlanmagan"
-            u_tickets = user_tickets_map.get(u["id"], [])
-            tickets_str = ", ".join(u_tickets) if u_tickets else "Bilet yo'q"
-            ticket_count = len(u_tickets) if u_tickets else u.get("tickets", 0)
-            ref_cnt = user_ref_map.get(u["id"], 0)
+            tickets_str = u.get("ticket_numbers_str") or "Bilet yo'q"
+            ticket_count = u.get("ticket_count") or 0
+            ref_cnt = u.get("referrals_count") or 0
             created = u.get("created_at") or ""
 
             writer.writerow([
@@ -442,18 +447,18 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
 
     # Return structured JSON format
     export_list = []
-    for idx, u in enumerate(users, start=1):
+    for idx, u in enumerate(users_data, start=1):
         full_name = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Foydalanuvchi"
-        u_tickets = user_tickets_map.get(u["id"], [])
+        t_list = u.get("ticket_numbers_str").split(",") if u.get("ticket_numbers_str") else []
         export_list.append({
             "tr": idx,
             "id": u["id"],
             "name": full_name,
             "username": f"@{u['username']}" if u.get("username") else None,
             "phone_number": u.get("phone_number"),
-            "tickets_count": len(u_tickets) if u_tickets else u.get("tickets", 0),
-            "ticket_numbers": u_tickets,
-            "referrals_count": user_ref_map.get(u["id"], 0),
+            "tickets_count": u.get("ticket_count", 0),
+            "ticket_numbers": t_list,
+            "referrals_count": u.get("referrals_count", 0),
             "created_at": u.get("created_at")
         })
 

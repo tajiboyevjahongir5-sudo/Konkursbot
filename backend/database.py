@@ -134,6 +134,11 @@ async def init_db():
             )
         """)
 
+        # Database Indexes for ultra-fast query speeds
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_user_tickets_user_contest ON user_tickets (user_id, contest_id)")
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_contest_participants_user_contest ON contest_participants (user_id, contest_id)")
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals (referrer_id)")
+
         await db.commit()
 
         # Seed initial sponsors if none exist
@@ -427,17 +432,25 @@ async def pick_random_winners(contest_id: int, count: int = 3, prizes: Optional[
         prizes = ["🥇 1-O'rin: iPhone 15 Pro", "🥈 2-O'rin: 3,000,000 UZS", "🥉 3-O'rin: Telegram Premium (1 yil)"]
     
     async with get_db() as db:
-        # Get all candidate users who have tickets
-        async with db.execute("SELECT id, first_name, username, tickets FROM users WHERE tickets > 0") as cursor:
+        # Get candidates who joined THIS contest and have tickets for THIS contest
+        async with db.execute("""
+            SELECT u.id, u.first_name, u.username, COUNT(ut.id) as contest_tickets
+            FROM users u
+            JOIN contest_participants cp ON u.id = cp.user_id
+            JOIN user_tickets ut ON u.id = ut.user_id AND ut.contest_id = cp.contest_id
+            WHERE cp.contest_id = ?
+            GROUP BY u.id
+            HAVING contest_tickets > 0
+        """, (contest_id,)) as cursor:
             users = [dict(r) for r in await cursor.fetchall()]
 
         if not users:
             return []
 
-        # Weighted pool based on tickets count
+        # Weighted pool based on tickets count for current contest
         pool = []
         for u in users:
-            pool.extend([u["id"]] * u["tickets"])
+            pool.extend([u["id"]] * u["contest_tickets"])
 
         random.shuffle(pool)
         selected_ids = []

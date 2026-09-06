@@ -404,16 +404,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- REFERRAL LINK ACTIONS ---
+  function fallbackCopyText(text) {
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      if (successful) {
+        showToast("Taklif havolasi nusxalandi! 🚀", "success");
+      } else {
+        showToast("Nusxalashda xatolik!", "danger");
+      }
+    } catch (err) {
+      showToast("Nusxalashda xatolik!", "danger");
+    }
+  }
+
   const copyBtn = document.getElementById("btn-copy-ref");
   if (copyBtn) {
     copyBtn.addEventListener("click", () => {
       const linkInput = document.getElementById("ref-link-input");
       if (linkInput && linkInput.value) {
-        navigator.clipboard.writeText(linkInput.value).then(() => {
-          showToast("Taklif havolasi nusxalandi! 🚀", "success");
-        }).catch(() => {
-          showToast("Nusxalashda xatolik!", "danger");
-        });
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(linkInput.value).then(() => {
+            showToast("Taklif havolasi nusxalandi! 🚀", "success");
+          }).catch(() => {
+            fallbackCopyText(linkInput.value);
+          });
+        } else {
+          fallbackCopyText(linkInput.value);
+        }
       }
     });
   }
