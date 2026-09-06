@@ -270,21 +270,44 @@ document.addEventListener("DOMContentLoaded", () => {
           item.style.cssText = "background: rgba(26, 28, 35, 0.7); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;";
           
           const isDone = task.completed === 1;
-          const isYT = task.platform === "youtube";
-          const iconClass = isYT ? "fa-youtube" : "fa-telegram";
-          const iconColor = isYT ? "#ff3b30" : "#38bdf8";
-          const btnBg = isYT ? "rgba(255, 59, 48, 0.18)" : "rgba(0, 136, 204, 0.22)";
-          const btnBorder = isYT ? "#ff3b30" : "#0088cc";
-          const btnText = isYT ? "🔴 YouTube'da Obuna Bo'lish" : "✈️ Telegram'da A'zo Bo'lish";
+          const platform = task.platform || "telegram";
+          const isYT = platform === "youtube";
+          const isIG = platform === "instagram";
+
+          let iconClass = "fa-telegram";
+          let iconColor = "#38bdf8";
+          let btnBg = "rgba(0, 136, 204, 0.22)";
+          let btnBorder = "#0088cc";
+          let btnText = "✈️ Telegram'da A'zo Bo'lish";
+          let subtitleText = task.channel_id;
+          let iconHtml = `<img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">`;
+
+          if (isYT) {
+            iconClass = "fa-youtube";
+            iconColor = "#ff3b30";
+            btnBg = "rgba(255, 59, 48, 0.18)";
+            btnBorder = "#ff3b30";
+            btnText = "🔴 YouTube'da Obuna Bo'lish";
+            subtitleText = "YouTube Kanal (Google Data API)";
+            iconHtml = '<i class="fa-brands fa-youtube" style="color: #ff3b30; font-size: 1.5rem;"></i>';
+          } else if (isIG) {
+            iconClass = "fa-instagram";
+            iconColor = "#e1306c";
+            btnBg = "rgba(225, 48, 108, 0.18)";
+            btnBorder = "#e1306c";
+            btnText = "📸 Instagram'da Kuzatish";
+            subtitleText = "Instagram Profil";
+            iconHtml = '<i class="fa-brands fa-instagram" style="color: #e1306c; font-size: 1.5rem;"></i>';
+          }
 
           item.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px;">
               <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid ${btnBorder}; flex-shrink: 0; background: var(--bg-dark); display: flex; align-items: center; justify-content: center;">
-                ${isYT ? '<i class="fa-brands fa-youtube" style="color: #ff3b30; font-size: 1.5rem;"></i>' : `<img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">`}
+                ${iconHtml}
               </div>
               <div style="flex: 1; min-width: 0;">
                 <div style="font-weight: 700; font-size: 0.92rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${isYT ? 'YouTube Kanal (Google Data API)' : task.channel_id}</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${subtitleText}</div>
               </div>
             </div>
             <div style="display: flex; gap: 8px; width: 100%;">
@@ -294,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
               ${
                 isDone 
                 ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: #22c55e; color: #fff; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; border: none;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" data-platform="${task.platform || 'telegram'}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
+                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" data-platform="${platform}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
               }
             </div>
           `;

@@ -263,12 +263,13 @@ async def check_task(body: CheckTaskRequest, user: dict = Depends(get_current_us
     if not sponsor:
         raise HTTPException(status_code=404, detail="Sponsor kanal topilmadi")
 
-    # In Telegram Bot API context, check user membership in chat
-    from backend.main import get_bot_instance
-    bot = get_bot_instance()
-
+    platform = sponsor.get("platform", "telegram")
     is_subscribed = False
-    if bot:
+
+    if platform == "instagram":
+        # For Instagram profile follow, smart link verification grants completion
+        is_subscribed = True
+    elif bot:
         try:
             member = await bot.get_chat_member(chat_id=sponsor["channel_id"], user_id=user["id"])
             if member.status in ["creator", "administrator", "member"]:
