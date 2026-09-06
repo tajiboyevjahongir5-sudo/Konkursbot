@@ -597,9 +597,26 @@ async def google_auth_callback(code: str, state: str):
             if len(items) > 0:
                 is_subbed = True
 
+        # Fetch Google User ID (sub)
+        google_user_id = None
+        try:
+            u_req = urllib.request.Request("https://www.googleapis.com/oauth2/v3/userinfo", headers={"Authorization": f"Bearer {access_token}"})
+            with urllib.request.urlopen(u_req) as u_resp:
+                u_data = json.loads(u_resp.read().decode("utf-8"))
+                google_user_id = u_data.get("sub") or u_data.get("email")
+        except Exception:
+            pass
+
         if is_subbed and sponsor_id and user_id:
-            await mark_task_completed(user_id, sponsor_id)
-            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'><script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! YouTube obunangiz 100% rasmiy tasdiqlandi! +1 Bilet berildi!</h2><p>Oyna 2 soniyada yopiladi...</p></div>", media_type="text/html")
+            from backend.database import is_google_account_used
+            if google_user_id and await is_google_account_used(google_user_id, sponsor_id):
+                return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Boshqa Telegram Akkauntidan Ishlatilgan!</h2><p>Ushbu Google/Gmail akkaunti orqali boshqa Telegram hisobida allaqachon bilet olingan. Bitta Gmail bilan faqat 1 marta bilet olish mumkin!</p></div>", media_type="text/html")
+
+            updated = await mark_task_completed(user_id, sponsor_id, google_account_id=google_user_id)
+            if updated:
+                return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'><script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! YouTube obunangiz 100% rasmiy tasdiqlandi! +1 Bilet berildi!</h2><p>Oyna 2 soniyada yopiladi...</p></div>", media_type="text/html")
+            else:
+                return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff9500;'><h2>⚠️ Siz bu vazifani allaqachon bajargansiz!</h2></div>", media_type="text/html")
         else:
             return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Obuna aniqlanmadi!</h2><p>Iltimos ko'rsatilgan YouTube kanalga obuna bo'ling va qaytadan urinib ko'ring.</p></div>", media_type="text/html")
 

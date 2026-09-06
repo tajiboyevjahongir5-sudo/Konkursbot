@@ -97,11 +97,18 @@ async def init_db():
                 sponsor_id INTEGER NOT NULL,
                 completed INTEGER DEFAULT 0,
                 completed_at TIMESTAMP,
+                google_account_id TEXT,
                 UNIQUE(user_id, sponsor_id),
                 FOREIGN KEY (user_id) REFERENCES users (id),
                 FOREIGN KEY (sponsor_id) REFERENCES sponsors (id) ON DELETE CASCADE
             )
         """)
+
+        # Migration: Ensure google_account_id column exists in user_tasks table
+        async with db.execute("PRAGMA table_info(user_tasks)") as cursor:
+            columns = [column[1] for column in await cursor.fetchall()]
+            if "google_account_id" not in columns:
+                await db.execute("ALTER TABLE user_tasks ADD COLUMN google_account_id TEXT")
 
         # Winners table
         await db.execute("""
@@ -322,8 +329,18 @@ async def get_user_tasks(user_id: int) -> List[Dict[str, Any]]:
             return [dict(r) for r in rows]
 
 
-async def mark_task_completed(user_id: int, sponsor_id: int) -> bool:
+async def mark_task_completed(user_id: int, sponsor_id: int, google_account_id: Optional[str] = None) -> bool:
     async with get_db() as db:
+        # Check if Google account was already used by another Telegram user for this sponsor task
+        if google_account_id:
+            async with db.execute(
+                "SELECT user_id FROM user_tasks WHERE sponsor_id = ? AND google_account_id = ? AND completed = 1 AND user_id != ?",
+                (sponsor_id, google_account_id, user_id)
+            ) as c_g:
+                dup = await c_g.fetchone()
+                if dup:
+                    return False  # Block duplicate Google account usage
+
         # Check if task already completed
         async with db.execute(
             "SELECT completed FROM user_tasks WHERE user_id = ? AND sponsor_id = ?",
@@ -336,10 +353,10 @@ async def mark_task_completed(user_id: int, sponsor_id: int) -> bool:
         # Insert or update
         now = datetime.now().isoformat()
         await db.execute("""
-            INSERT INTO user_tasks (user_id, sponsor_id, completed, completed_at)
-            VALUES (?, ?, 1, ?)
-            ON CONFLICT(user_id, sponsor_id) DO UPDATE SET completed = 1, completed_at = ?
-        """, (user_id, sponsor_id, now, now))
+            INSERT INTO user_tasks (user_id, sponsor_id, completed, completed_at, google_account_id)
+            VALUES (?, ?, 1, ?, ?)
+            ON CONFLICT(user_id, sponsor_id) DO UPDATE SET completed = 1, completed_at = ?, google_account_id = ?
+        """, (user_id, sponsor_id, now, google_account_id, now, google_account_id))
 
         # Get sponsor title for ticket reason
         sponsor_title = "Kanal obunasi"
@@ -358,9 +375,7 @@ async def mark_task_completed(user_id: int, sponsor_id: int) -> bool:
 
         # Update points (+15)
         await db.execute("""
-            UPDATE users
-            SET points = points + 15
-            WHERE id = ?
+            UPDATE users SET points = points + 15 WHERE id = ?
         """, (user_id,))
 
         await db.commit()
