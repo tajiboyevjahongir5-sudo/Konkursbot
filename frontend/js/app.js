@@ -263,6 +263,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+        const igClickTracker = {};
+
         container.innerHTML = "";
         res.tasks.forEach(task => {
           const item = document.createElement("div");
@@ -281,6 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
           let btnText = "✈️ Telegram'da A'zo Bo'lish";
           let subtitleText = task.channel_id;
           let iconHtml = `<img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">`;
+          let linkAttr = `href="${task.invite_link}" target="_blank"`;
 
           if (isYT) {
             iconClass = "fa-youtube";
@@ -296,8 +299,9 @@ document.addEventListener("DOMContentLoaded", () => {
             btnBg = "rgba(225, 48, 108, 0.18)";
             btnBorder = "#e1306c";
             btnText = "📸 Instagram'da Kuzatish";
-            subtitleText = "Instagram Profil";
+            subtitleText = "Instagram Profil (Smart Tracker)";
             iconHtml = '<i class="fa-brands fa-instagram" style="color: #e1306c; font-size: 1.5rem;"></i>';
+            linkAttr = `href="#" class="btn-ig-link" data-url="${task.invite_link}" data-id="${task.sponsor_id}"`;
           }
 
           item.innerHTML = `
@@ -311,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
             </div>
             <div style="display: flex; gap: 8px; width: 100%;">
-              <a href="${task.invite_link}" target="_blank" class="btn btn-sm" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${iconColor};">
+              <a ${linkAttr} class="btn btn-sm ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${iconColor};">
                 <i class="fa-brands ${iconClass}" style="color: ${iconColor};"></i> ${btnText}
               </a>
               ${
@@ -324,6 +328,28 @@ document.addEventListener("DOMContentLoaded", () => {
           container.appendChild(item);
         });
 
+        // Add Instagram link tracking listeners
+        document.querySelectorAll(".btn-ig-link").forEach(linkBtn => {
+          linkBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const targetUrl = linkBtn.getAttribute("data-url");
+            const sponsorId = linkBtn.getAttribute("data-id");
+            
+            igClickTracker[sponsorId] = {
+              clicked: true,
+              timestamp: Date.now()
+            };
+
+            showToast("Instagram profilga o'tilmoqda... Obuna bo'lib qayting!", "success");
+
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+              window.Telegram.WebApp.openLink(targetUrl);
+            } else {
+              window.open(targetUrl, '_blank');
+            }
+          });
+        });
+
         // Add check button event listeners
         document.querySelectorAll(".btn-check-task").forEach(btn => {
           btn.addEventListener("click", async (e) => {
@@ -331,6 +357,53 @@ document.addEventListener("DOMContentLoaded", () => {
             const platform = btn.getAttribute("data-platform");
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Tekshirilmoqda...';
+
+            if (platform === "instagram") {
+              const trackData = igClickTracker[sponsorId];
+              if (!trackData || !trackData.clicked) {
+                showToast("❌ Avval Instagram havolasiga kirib obuna bo'ling!", "warning");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                return;
+              }
+
+              const elapsedSeconds = (Date.now() - trackData.timestamp) / 1000;
+              if (elapsedSeconds < 4) {
+                showToast("⏳ Iltimos, profilni ko'rish va obuna bo'lish uchun Instagram'da kamida 5 soniya turing!", "warning");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                return;
+              }
+
+              const userIgNik = prompt("📸 Obunani tasdiqlash uchun Instagram nikingizni kiriting (masalan: @username):");
+              if (!userIgNik || userIgNik.trim().length < 2) {
+                showToast("❌ Obunani tasdiqlash uchun Instagram nikingizni kiritishingiz shart!", "warning");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                return;
+              }
+
+              try {
+                const checkRes = await apiFetch("/api/tasks/check", {
+                  method: "POST",
+                  body: JSON.stringify({ sponsor_id: sponsorId })
+                });
+
+                if (checkRes.completed) {
+                  showToast(`🎉 Instagram obunangiz tasdiqlandi! (${userIgNik.trim()}) +1 Bilet berildi!`, "success");
+                  await loadUserData();
+                  await loadTasks();
+                } else {
+                  showToast(checkRes.message, "danger");
+                }
+              } catch (err) {
+                showToast("Tekshirishda xatolik yuz berdi", "danger");
+              } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+              }
+              return;
+            }
 
             if (platform === "youtube") {
               try {
