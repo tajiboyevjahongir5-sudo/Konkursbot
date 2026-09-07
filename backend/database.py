@@ -341,7 +341,7 @@ async def is_google_account_used(google_account_id: str, sponsor_id: int) -> boo
             return row is not None
 
 
-async def mark_task_completed(user_id: int, sponsor_id: int, google_account_id: Optional[str] = None) -> bool:
+async def mark_task_completed(user_id: int, sponsor_id: int, google_account_id: Optional[str] = None) -> Dict[str, Any]:
     async with get_db() as db:
         # Check if Google account was already used by another Telegram user for this sponsor task
         if google_account_id:
@@ -351,47 +351,83 @@ async def mark_task_completed(user_id: int, sponsor_id: int, google_account_id: 
             ) as c_g:
                 dup = await c_g.fetchone()
                 if dup:
-                    return False  # Block duplicate Google account usage
+                    return {
+                        "status": "error",
+                        "message": "Ushbu Google akkauntdan boshqa foydalanuvchi foydalangan!",
+                        "completed": False,
+                        "all_completed": False,
+                        "ticket_issued": False
+                    }
 
-        # Check if task already completed
+        # Check if task already completed in user_tasks
+        already_done = False
         async with db.execute(
             "SELECT completed FROM user_tasks WHERE user_id = ? AND sponsor_id = ?",
             (user_id, sponsor_id)
         ) as cursor:
             row = await cursor.fetchone()
             if row and row["completed"] == 1:
-                return False  # Already completed
+                already_done = True
 
-        # Insert or update
         now = datetime.now().isoformat()
-        await db.execute("""
-            INSERT INTO user_tasks (user_id, sponsor_id, completed, completed_at, google_account_id)
-            VALUES (?, ?, 1, ?, ?)
-            ON CONFLICT(user_id, sponsor_id) DO UPDATE SET completed = 1, completed_at = ?, google_account_id = ?
-        """, (user_id, sponsor_id, now, google_account_id, now, google_account_id))
+        if not already_done:
+            await db.execute("""
+                INSERT INTO user_tasks (user_id, sponsor_id, completed, completed_at, google_account_id)
+                VALUES (?, ?, 1, ?, ?)
+                ON CONFLICT(user_id, sponsor_id) DO UPDATE SET completed = 1, completed_at = ?, google_account_id = ?
+            """, (user_id, sponsor_id, now, google_account_id, now, google_account_id))
 
-        # Get sponsor title for ticket reason
-        sponsor_title = "Kanal obunasi"
-        async with db.execute("SELECT title FROM sponsors WHERE id = ?", (sponsor_id,)) as c_sp:
-            sp_row = await c_sp.fetchone()
-            if sp_row and sp_row["title"]:
-                sponsor_title = sp_row["title"]
+            # Update points (+15)
+            await db.execute("UPDATE users SET points = points + 15 WHERE id = ?", (user_id,))
+            await db.commit()
 
-        # Get active contest ID
-        async with db.execute("SELECT id FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c_c:
-            c_row = await c_c.fetchone()
-            contest_id = c_row["id"] if c_row else 1
+        # Check if ALL active sponsors are completed by this user
+        async with db.execute("SELECT COUNT(*) as cnt FROM sponsors WHERE is_active = 1") as c_sp:
+            total_sponsors = (await c_sp.fetchone())["cnt"]
 
-        # Issue ticket for task completion
-        await issue_ticket_db(db, user_id, contest_id, f"Obuna: {sponsor_title}")
+        async with db.execute("""
+            SELECT COUNT(DISTINCT s.id) as cnt
+            FROM sponsors s
+            JOIN user_tasks ut ON s.id = ut.sponsor_id
+            WHERE s.is_active = 1 AND ut.user_id = ? AND ut.completed = 1
+        """, (user_id,)) as c_ut:
+            completed_sponsors = (await c_ut.fetchone())["cnt"]
 
-        # Update points (+15)
-        await db.execute("""
-            UPDATE users SET points = points + 15 WHERE id = ?
-        """, (user_id,))
+        all_completed = (total_sponsors > 0) and (completed_sponsors >= total_sponsors)
 
-        await db.commit()
-        return True
+        ticket_issued = False
+        ticket_number = None
+
+        if all_completed:
+            # Get active contest ID
+            async with db.execute("SELECT id FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c_c:
+                c_row = await c_c.fetchone()
+                contest_id = c_row["id"] if c_row else 1
+
+            # Check if ticket already exists for this contest
+            async with db.execute("SELECT ticket_number FROM user_tickets WHERE user_id = ? AND contest_id = ?", (user_id, contest_id)) as c_t:
+                ex_t = await c_t.fetchone()
+                if not ex_t:
+                    ticket_number = await issue_ticket_db(db, user_id, contest_id, "Barcha homiylarga obuna bo'lindi")
+                    ticket_issued = True
+                else:
+                    ticket_number = ex_t["ticket_number"]
+
+            # Register participant in contest_participants
+            await db.execute("""
+                INSERT OR IGNORE INTO contest_participants (user_id, contest_id)
+                VALUES (?, ?)
+            """, (user_id, contest_id))
+            await db.commit()
+
+        return {
+            "status": "success",
+            "already_done": already_done,
+            "completed": True,
+            "all_completed": all_completed,
+            "ticket_issued": ticket_issued,
+            "ticket_number": ticket_number
+        }
 
 
 async def clear_all_tickets_and_participants(db=None):

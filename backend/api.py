@@ -143,7 +143,7 @@ async def get_me(user: dict = Depends(get_current_user)):
             "first_name": user["first_name"],
             "last_name": user["last_name"],
             "username": user["username"],
-            "tickets": len(user_tickets_list) if user_tickets_list else user["tickets"],
+            "tickets": len(user_tickets_list),
             "points": user["points"],
             "ref_code": user["ref_code"],
             "referrals_count": ref_count,
@@ -200,37 +200,49 @@ async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
             "message": "❌ Konkursda qatnashish uchun avval Telegram botimizda O'zbekiston (+998) telefon raqamingizni tasdiqlang!"
         }
 
-    # Verify user channel subscriptions
+    # Verify user channel subscriptions across ALL platforms
     sponsors = await get_sponsors(active_only=True)
     from backend.main import get_bot_instance
     bot = get_bot_instance()
 
     unsubscribed_sponsors = []
-    if bot:
-        for s in sponsors:
-            inv = str(s.get("invite_link", "")).lower()
-            p_type = s.get("platform") or "telegram"
-            if "youtube.com" in inv or "youtu.be" in inv:
-                p_type = "youtube"
-            elif "instagram.com" in inv:
-                p_type = "instagram"
+    user_tasks_list = await get_user_tasks(user["id"])
+    completed_task_ids = {t["sponsor_id"] for t in user_tasks_list if t.get("completed") == 1}
 
-            if p_type == "telegram":
+    for s in sponsors:
+        inv = str(s.get("invite_link", "")).lower()
+        p_type = s.get("platform") or "telegram"
+        if "youtube.com" in inv or "youtu.be" in inv:
+            p_type = "youtube"
+        elif "instagram.com" in inv:
+            p_type = "instagram"
+
+        if p_type == "telegram":
+            is_sub = False
+            if bot:
                 try:
                     member = await bot.get_chat_member(chat_id=s["channel_id"], user_id=user["id"])
-                    if member.status not in ["creator", "administrator", "member"]:
-                        unsubscribed_sponsors.append(s["title"])
+                    if member.status in ["creator", "administrator", "member"]:
+                        is_sub = True
+                        await mark_task_completed(user["id"], s["id"])
                 except Exception:
-                    if not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
-                        unsubscribed_sponsors.append(s["title"])
+                    if user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567"):
+                        is_sub = True
+
+            if not is_sub and not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
+                unsubscribed_sponsors.append(s["title"])
+
+        elif p_type in ["youtube", "instagram"]:
+            if s["id"] not in completed_task_ids:
+                unsubscribed_sponsors.append(s["title"])
 
     if unsubscribed_sponsors and not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
         joined_list = ", ".join(unsubscribed_sponsors)
         from backend.database import revoke_user_tickets_for_unsub
         revoked = await revoke_user_tickets_for_unsub(user["id"])
-        msg = f"❌ Iltimos, barcha sponsor kanallarga obuna bo'ling! Obuna bo'linmagan: {joined_list}"
+        msg = f"❌ Iltimos, barcha homiy kanallarga obuna bo'ling! Obuna bo'linmagan: {joined_list}"
         if revoked > 0:
-            msg = f"⚠️ DIQQAT! Siz homiy kanallardan ({joined_list}) chiqib ketganingiz sababli barcha biletlaringiz BEKOR QILINDI! Qayta qatnashish uchun obuna bo'ling."
+            msg = f"⚠️ DIQQAT! Siz homiy kanallardan ({joined_list}) chiqib ketganingiz sababli barcha biletlaringiz BEKOR QILINDI! Qayta qatnashish uchun barcha homiylarga obuna bo'ling."
         return {
             "status": "error",
             "message": msg
@@ -244,7 +256,7 @@ async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
             "already_joined": True,
             "ticket_number": res["ticket_number"],
             "total_tickets": res["total_tickets"],
-            "message": f"Siz allaqachon konkursga qatnashgansiz! Biletingiz: {res['ticket_number']}"
+            "message": f"Siz allaqachon barcha homiylarga obuna bo'lgansiz va konkursga qatnashgansiz! Biletingiz: {res['ticket_number']}"
         }
 
     return {
@@ -252,7 +264,7 @@ async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
         "already_joined": False,
         "ticket_number": res["ticket_number"],
         "total_tickets": res["total_tickets"],
-        "message": f"🎉 Tabriklaymiz! Konkursda muvaffaqiyatli qatnashdingiz! Omadli biletingiz: {res['ticket_number']}"
+        "message": f"🎉 Tabriklaymiz! Barcha homiylarga obuna bo'ldingiz va konkursda muvaffaqiyatli qatnashdingiz! Omadli biletingiz: {res['ticket_number']}"
     }
 
 
@@ -285,8 +297,13 @@ async def check_task(body: CheckTaskRequest, user: dict = Depends(get_current_us
 
     is_subscribed = False
 
+    from backend.main import get_bot_instance
+    bot = get_bot_instance()
+
     if platform in ["youtube", "instagram"]:
-        is_subscribed = True
+        # Check if already completed in user_tasks
+        user_tasks_list = await get_user_tasks(user["id"])
+        is_subscribed = any(t["sponsor_id"] == body.sponsor_id and t.get("completed") == 1 for t in user_tasks_list)
     elif bot:
         try:
             member = await bot.get_chat_member(chat_id=sponsor["channel_id"], user_id=user["id"])
@@ -306,19 +323,36 @@ async def check_task(body: CheckTaskRequest, user: dict = Depends(get_current_us
             is_subscribed = False
 
     if is_subscribed:
-        updated = await mark_task_completed(user["id"], body.sponsor_id)
-        if updated:
+        res = await mark_task_completed(user["id"], body.sponsor_id)
+        if isinstance(res, dict) and res.get("status") == "error":
             return {
-                "status": "success",
-                "completed": True,
-                "message": f"🎉 Tabriklaymiz! '{sponsor['title']}' kanaliga obuna tasdiqlandi. +1 Bilet berildi!"
+                "status": "error",
+                "completed": False,
+                "message": res.get("message", "Xatolik yuz berdi")
             }
+
+        all_completed = isinstance(res, dict) and res.get("all_completed")
+        already_done = isinstance(res, dict) and res.get("already_done")
+        ticket_issued = isinstance(res, dict) and res.get("ticket_issued")
+        t_num = res.get("ticket_number") if isinstance(res, dict) else None
+
+        if all_completed:
+            if ticket_issued:
+                msg = f"🎉 Tabriklaymiz! Barcha homiy kanallarga obuna bo'ldingiz! Bilet biriktirildi: {t_num}"
+            else:
+                msg = f"🎉 Tabriklaymiz! Barcha homiylarga obuna bo'lgansiz. Biletingiz: {t_num or '#PXL-1001'}"
         else:
-            return {
-                "status": "success",
-                "completed": True,
-                "message": "Siz bu vazifani allaqachon bajargansiz!"
-            }
+            if already_done:
+                msg = f"✅ '{sponsor['title']}' kanaliga obuna tasdiqlangan. Bilet olish uchun qolgan homiy kanallarga ham obuna bo'ling."
+            else:
+                msg = f"✅ '{sponsor['title']}' kanaliga obuna tasdiqlandi! Bilet berilishi uchun barcha homiy kanallarga obuna bo'ling."
+
+        return {
+            "status": "success",
+            "completed": True,
+            "all_completed": all_completed,
+            "message": msg
+        }
     else:
         return {
             "status": "error",
@@ -651,11 +685,19 @@ async def google_auth_callback(code: str, state: str):
             if google_user_id and await is_google_account_used(google_user_id, sponsor_id):
                 return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Boshqa Telegram Akkauntidan Ishlatilgan!</h2><p>Ushbu Google/Gmail akkaunti orqali boshqa Telegram hisobida allaqachon bilet olingan. Bitta Gmail bilan faqat 1 marta bilet olish mumkin!</p></div>", media_type="text/html")
 
-            updated = await mark_task_completed(user_id, sponsor_id, google_account_id=google_user_id)
-            if updated:
-                return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'><script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! YouTube obunangiz 100% rasmiy tasdiqlandi! +1 Bilet berildi!</h2><p>Oyna 2 soniyada yopiladi...</p></div>", media_type="text/html")
+            res = await mark_task_completed(user_id, sponsor_id, google_account_id=google_user_id)
+            if isinstance(res, dict) and res.get("status") == "error":
+                return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ {res.get('message')}</h2></div>", media_type="text/html")
+
+            all_done = isinstance(res, dict) and res.get("all_completed")
+            ticket_msg = "+1 Bilet biriktirildi!" if (isinstance(res, dict) and res.get("ticket_issued")) else ""
+
+            if all_done:
+                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! Barcha homiy kanallarga 100% rasmiy obuna bo'ldingiz! {ticket_msg}</h2><p>Oyna 2 soniyada yopiladi...</p>"
             else:
-                return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff9500;'><h2>⚠️ Siz bu vazifani allaqachon bajargansiz!</h2></div>", media_type="text/html")
+                card_html = "<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>✅ YouTube obunangiz 100% rasmiy tasdiqlandi!</h2><p style='color: #ffcc00;'>Bilet olish uchun barcha homiy kanallarga (Telegram va b.) ham obuna bo'ling.</p><p>Oyna 2 soniyada yopiladi...</p>"
+
+            return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'>{card_html}</div>", media_type="text/html")
         else:
             return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Obuna aniqlanmadi!</h2><p>Iltimos ko'rsatilgan YouTube kanalga obuna bo'ling va qaytadan urinib ko'ring.</p></div>", media_type="text/html")
 
