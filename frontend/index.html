@@ -364,6 +364,28 @@
 
   </div>
 
+  <!-- YouTube Google OAuth Modal Guide -->
+  <div id="yt-oauth-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #1a1d24; border: 1px solid var(--primary-color); border-radius: 16px; padding: 24px; max-width: 400px; width: 100%; box-shadow: 0 0 25px rgba(197, 255, 0, 0.25); color: #fff;">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <i class="fa-brands fa-youtube" style="font-size: 2.8rem; color: #ff0000;"></i>
+        <h3 style="color: #fff; font-size: 1.15rem; margin-top: 10px; font-weight: 800;">Google OAuth YouTube Tekshiruvi</h3>
+      </div>
+      <div style="font-size: 0.85rem; color: #ccc; line-height: 1.6; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 14px; border-radius: 10px; border-left: 3px solid var(--primary-color);">
+        <p style="margin-bottom: 8px;"><b>📌 Obunani 100% rasmiy API orqali tekshirish yo'riqnomasi:</b></p>
+        <ol style="padding-left: 18px; margin: 0;">
+          <li style="margin-bottom: 6px;">Pastdagi <b>"🚀 Google Bilan Kirish"</b> tugmasini bosing va Google akkauntingizni tanlang.</li>
+          <li style="margin-bottom: 6px;">Agar Google ekranida <i>"Google hasn't verified this app"</i> chiqsangiz: pastdagi <b>"Advanced" (Kengaytirilgan)</b> ➔ <b>"Go to Konkursbot"</b> havolasini bosing.</li>
+          <li>Google Data API YouTube obunangizni avtomatik va rasmiy tasdiqlaydi!</li>
+        </ol>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="btn-yt-modal-close" class="btn btn-secondary" style="flex: 1; padding: 12px; font-weight: 700; border-radius: 10px;">Bekor qilish</button>
+        <button id="btn-yt-modal-proceed" class="btn btn-primary" style="flex: 1.5; padding: 12px; font-weight: 800; border-radius: 10px;">🚀 Google Bilan Kirish</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Custom JavaScript -->
   <script src="js/app.js"></script>
 </body>

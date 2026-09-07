@@ -465,24 +465,49 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (platform === "youtube") {
-              try {
-                const checkRes = await apiFetch("/api/tasks/check", {
-                  method: "POST",
-                  body: JSON.stringify({ sponsor_id: sponsorId })
-                });
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+              
+              const modal = document.getElementById("yt-oauth-modal");
+              const closeBtn = document.getElementById("btn-yt-modal-close");
+              const proceedBtn = document.getElementById("btn-yt-modal-proceed");
 
-                if (checkRes.completed) {
-                  showToast(checkRes.message, "success");
-                  await loadUserData();
-                  await loadTasks();
-                } else {
-                  showToast(checkRes.message, "danger");
-                }
-              } catch (err) {
-                showToast("Tekshirishda xatolik yuz berdi", "danger");
-              } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+              if (modal) {
+                modal.style.display = "flex";
+
+                closeBtn.onclick = () => {
+                  modal.style.display = "none";
+                };
+
+                proceedBtn.onclick = async () => {
+                  modal.style.display = "none";
+                  try {
+                    const gRes = await apiFetch(`/api/auth/google/url?sponsor_id=${sponsorId}`);
+                    if (gRes.status === "success" && gRes.url) {
+                      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                        window.Telegram.WebApp.openLink(gRes.url);
+                      } else {
+                        window.open(gRes.url, '_blank', 'width=500,height=600');
+                      }
+                      showToast("🔐 Google bilan kiring... YouTube Data API obunasi 100% rasmiy tekshirilmoqda!", "warning");
+                    } else {
+                      showToast(gRes.message || "YouTube API bilan ulanishda xatolik!", "danger");
+                    }
+                  } catch (e) {
+                    showToast("Google API bilan ulanishda xatolik!", "danger");
+                  }
+                };
+              } else {
+                try {
+                  const gRes = await apiFetch(`/api/auth/google/url?sponsor_id=${sponsorId}`);
+                  if (gRes.status === "success" && gRes.url) {
+                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                      window.Telegram.WebApp.openLink(gRes.url);
+                    } else {
+                      window.open(gRes.url, '_blank', 'width=500,height=600');
+                    }
+                  }
+                } catch (e) {}
               }
               return;
             }
