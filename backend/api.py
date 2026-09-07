@@ -191,6 +191,16 @@ async def get_channel_photo(channel_id: str):
     return Response(status_code=302, headers={"Location": "/assets/logo.jpg"})
 
 
+@router.get("/privacy")
+async def get_privacy_page():
+    from fastapi.responses import FileResponse
+    from pathlib import Path
+    privacy_path = Path(__file__).resolve().parent.parent / "frontend" / "privacy.html"
+    if privacy_path.exists():
+        return FileResponse(str(privacy_path), media_type="text/html")
+    return Response(content="<h1>Privacy Policy Page</h1>", media_type="text/html")
+
+
 @router.post("/contest/participate")
 async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
     # Enforce Uzbekistan Phone Verification (+998)
