@@ -213,6 +213,11 @@ async def get_terms_page():
     return Response(content="<h1>Terms of Service Page</h1>", media_type="text/html")
 
 
+@router.get("/googlebc5c6674a5de989b.html")
+async def get_google_verification_file():
+    return Response(content="google-site-verification: googlebc5c6674a5de989b.html", media_type="text/html")
+
+
 @router.post("/contest/participate")
 async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
     # Enforce Uzbekistan Phone Verification (+998)
