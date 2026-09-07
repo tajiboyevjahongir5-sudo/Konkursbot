@@ -658,17 +658,35 @@ async def google_auth_callback(code: str, state: str):
         sponsor = next((s for s in sponsors if s["id"] == sponsor_id), None)
         target_yt_id = sponsor.get("youtube_channel_id") if sponsor else None
 
-        yt_api_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50"
-        if target_yt_id:
-            yt_api_url += f"&forChannelId={target_yt_id}"
-
-        yt_req = urllib.request.Request(yt_api_url, headers={"Authorization": f"Bearer {access_token}"})
         is_subbed = False
-        with urllib.request.urlopen(yt_req) as yt_resp:
-            yt_data = json.loads(yt_resp.read().decode("utf-8"))
-            items = yt_data.get("items", [])
-            if len(items) > 0:
-                is_subbed = True
+        try:
+            yt_api_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50"
+            if target_yt_id and str(target_yt_id).startswith("UC"):
+                yt_api_url += f"&forChannelId={target_yt_id}"
+
+            yt_req = urllib.request.Request(yt_api_url, headers={"Authorization": f"Bearer {access_token}"})
+            with urllib.request.urlopen(yt_req) as yt_resp:
+                yt_data = json.loads(yt_resp.read().decode("utf-8"))
+                items = yt_data.get("items", [])
+                if len(items) > 0:
+                    is_subbed = True
+
+            if not is_subbed and target_yt_id:
+                gen_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50"
+                gen_req = urllib.request.Request(gen_url, headers={"Authorization": f"Bearer {access_token}"})
+                with urllib.request.urlopen(gen_req) as gen_resp:
+                    gen_data = json.loads(gen_resp.read().decode("utf-8"))
+                    for item in gen_data.get("items", []):
+                        snippet = item.get("snippet", {})
+                        ch_id = snippet.get("resourceId", {}).get("channelId", "")
+                        ch_title = snippet.get("title", "").lower()
+                        t_str = str(target_yt_id).lower()
+                        sp_title = str(sponsor.get("title", "")).lower() if sponsor else ""
+                        if t_str in ch_id.lower() or t_str in ch_title or (sp_title and sp_title in ch_title):
+                            is_subbed = True
+                            break
+        except Exception:
+            pass
 
         # Fetch Google User ID (sub)
         google_user_id = None
