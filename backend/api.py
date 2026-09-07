@@ -201,6 +201,16 @@ async def get_privacy_page():
     return Response(content="<h1>Privacy Policy Page</h1>", media_type="text/html")
 
 
+@router.get("/terms")
+async def get_terms_page():
+    from fastapi.responses import FileResponse
+    from pathlib import Path
+    terms_path = Path(__file__).resolve().parent.parent / "frontend" / "terms.html"
+    if terms_path.exists():
+        return FileResponse(str(terms_path), media_type="text/html")
+    return Response(content="<h1>Terms of Service Page</h1>", media_type="text/html")
+
+
 @router.post("/contest/participate")
 async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
     # Enforce Uzbekistan Phone Verification (+998)
