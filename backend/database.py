@@ -329,6 +329,18 @@ async def get_user_tasks(user_id: int) -> List[Dict[str, Any]]:
             return [dict(r) for r in rows]
 
 
+async def is_google_account_used(google_account_id: str, sponsor_id: int) -> bool:
+    if not google_account_id:
+        return False
+    async with get_db() as db:
+        async with db.execute(
+            "SELECT id FROM user_tasks WHERE sponsor_id = ? AND google_account_id = ? AND completed = 1",
+            (sponsor_id, google_account_id)
+        ) as cursor:
+            row = await cursor.fetchone()
+            return row is not None
+
+
 async def mark_task_completed(user_id: int, sponsor_id: int, google_account_id: Optional[str] = None) -> bool:
     async with get_db() as db:
         # Check if Google account was already used by another Telegram user for this sponsor task
