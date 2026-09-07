@@ -208,13 +208,21 @@ async def participate_contest_endpoint(user: dict = Depends(get_current_user)):
     unsubscribed_sponsors = []
     if bot:
         for s in sponsors:
-            try:
-                member = await bot.get_chat_member(chat_id=s["channel_id"], user_id=user["id"])
-                if member.status not in ["creator", "administrator", "member"]:
-                    unsubscribed_sponsors.append(s["title"])
-            except Exception:
-                if not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
-                    unsubscribed_sponsors.append(s["title"])
+            inv = str(s.get("invite_link", "")).lower()
+            p_type = s.get("platform") or "telegram"
+            if "youtube.com" in inv or "youtu.be" in inv:
+                p_type = "youtube"
+            elif "instagram.com" in inv:
+                p_type = "instagram"
+
+            if p_type == "telegram":
+                try:
+                    member = await bot.get_chat_member(chat_id=s["channel_id"], user_id=user["id"])
+                    if member.status not in ["creator", "administrator", "member"]:
+                        unsubscribed_sponsors.append(s["title"])
+                except Exception:
+                    if not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
+                        unsubscribed_sponsors.append(s["title"])
 
     if unsubscribed_sponsors and not (user["id"] == 999999999 and settings.BOT_TOKEN.startswith("7891234567")):
         joined_list = ", ".join(unsubscribed_sponsors)
@@ -268,11 +276,16 @@ async def check_task(body: CheckTaskRequest, user: dict = Depends(get_current_us
     if not sponsor:
         raise HTTPException(status_code=404, detail="Sponsor kanal topilmadi")
 
-    platform = sponsor.get("platform", "telegram")
+    inv_link = str(sponsor.get("invite_link", "")).lower()
+    platform = sponsor.get("platform") or "telegram"
+    if "youtube.com" in inv_link or "youtu.be" in inv_link:
+        platform = "youtube"
+    elif "instagram.com" in inv_link:
+        platform = "instagram"
+
     is_subscribed = False
 
-    if platform == "instagram":
-        # For Instagram profile follow, smart link verification grants completion
+    if platform in ["youtube", "instagram"]:
         is_subscribed = True
     elif bot:
         try:

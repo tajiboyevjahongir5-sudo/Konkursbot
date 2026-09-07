@@ -319,9 +319,12 @@ document.addEventListener("DOMContentLoaded", () => {
           item.style.cssText = "background: rgba(26, 28, 35, 0.7); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;";
           
           const isDone = task.completed === 1;
-          const platform = task.platform || "telegram";
-          const isYT = platform === "youtube";
-          const isIG = platform === "instagram";
+          const rawPlatform = (task.platform || "").toLowerCase();
+          const invLink = (task.invite_link || "").toLowerCase();
+
+          const isYT = rawPlatform === "youtube" || invLink.includes("youtube.com") || invLink.includes("youtu.be");
+          const isIG = rawPlatform === "instagram" || invLink.includes("instagram.com");
+          const platform = isYT ? "youtube" : (isIG ? "instagram" : "telegram");
 
           let iconClass = "fa-telegram";
           let iconColor = "#38bdf8";
