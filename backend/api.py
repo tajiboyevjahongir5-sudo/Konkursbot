@@ -192,6 +192,7 @@ async def get_channel_photo(channel_id: str):
 
 
 @router.get("/privacy")
+@router.get("/privacy.html")
 async def get_privacy_page():
     from fastapi.responses import FileResponse
     from pathlib import Path
@@ -202,6 +203,7 @@ async def get_privacy_page():
 
 
 @router.get("/terms")
+@router.get("/terms.html")
 async def get_terms_page():
     from fastapi.responses import FileResponse
     from pathlib import Path

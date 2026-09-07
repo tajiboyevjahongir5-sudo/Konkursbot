@@ -5,6 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>PEEXELL KONKURS WEB APP</title>
   
+  <meta name="description" content="PEEXELL Konkurs Web App - Telegram Mini App va Google OAuth 2.0 orqali yutuqli konkurslarda shaffof qatnashing!">
+  <meta name="keywords" content="PEEXELL, Contest, Telegram Mini App, Konkurs Bot, Google OAuth, YouTube Data API, Privacy Policy, Terms of Service">
+  <meta name="author" content="Jahongir Tajiboyev">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Google Search Console Domain Verification Meta Tag -->
+  <meta name="google-site-verification" content="PEEXELL_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN" />
+
+  <!-- Open Graph Metadata -->
+  <meta property="og:title" content="PEEXELL Konkurs Web App">
+  <meta property="og:description" content="Omadingizni sinab ko'ring! Sponsor kanallarga obuna bo'ling va qimmatbaho sovrinlarni yutib oling!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://konkursbot-production.up.railway.app/">
+  <meta property="og:image" content="https://konkursbot-production.up.railway.app/assets/logo.jpg">
+
+  <link rel="canonical" href="https://konkursbot-production.up.railway.app/" />
+
+  <!-- Schema.org JSON-LD Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PEEXELL Konkurs Web App",
+    "url": "https://konkursbot-production.up.railway.app/",
+    "description": "Telegram Mini App va Google OAuth orqali yutuqli konkurslarda qatnashish platformasi.",
+    "applicationCategory": "EntertainmentApplication",
+    "operatingSystem": "All",
+    "publisher": {
+      "@type": "Organization",
+      "name": "PEEXELL",
+      "url": "https://konkursbot-production.up.railway.app",
+      "logo": "https://konkursbot-production.up.railway.app/assets/logo.jpg"
+    }
+  }
+  </script>
+
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
@@ -346,12 +382,14 @@
       </div>
     </section>
 
-    <!-- FOOTER WITH PRIVACY POLICY LINK FOR GOOGLE OAUTH VERIFICATION -->
-    <footer style="text-align: center; padding: 15px 10px 90px 10px; font-size: 0.78rem; color: var(--text-secondary);">
+    <!-- FOOTER WITH PRIVACY POLICY & TERMS OF SERVICE LINKS FOR GOOGLE OAUTH VERIFICATION -->
+    <footer style="text-align: center; padding: 20px 10px 95px 10px; font-size: 0.82rem; color: var(--text-secondary); border-top: 1px solid var(--card-border); margin-top: 25px;">
       <p>© 2026 PEEXELL Contest Bot. Barcha huquqlar himoyalangan.</p>
-      <p style="margin-top: 6px;">
-        <a href="/privacy" target="_blank" style="color: var(--primary-color); text-decoration: underline; font-weight: 600;">Maxfiylik Siyosati (Privacy Policy)</a>
-      </p>
+      <div style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <a href="/privacy.html" target="_blank" style="color: var(--primary-color); text-decoration: underline; font-weight: 600;">Maxfiylik Siyosati (Privacy Policy)</a>
+        <span style="color: var(--card-border);">|</span>
+        <a href="/terms.html" target="_blank" style="color: var(--primary-color); text-decoration: underline; font-weight: 600;">Xizmat Ko'rsatish Shartlari (Terms of Service)</a>
+      </div>
     </footer>
 
     <!-- STICKY BOTTOM NAVIGATION BAR -->

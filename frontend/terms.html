@@ -3,68 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PEEXELL Konkurs Bot Xizmat Ko'rsatish Shartlari (Terms of Service) - Foydalanish qoidalari, Google OAuth va Telegram integratsiyasi shartlari.">
+    <meta name="keywords" content="PEEXELL, Terms of Service, Xizmat Shartlari, Google OAuth, Telegram Bot, Uzbekistan">
+    <meta name="author" content="Jahongir Tajiboyev">
+    <meta name="robots" content="index, follow">
+
+    <!-- Google Search Console Domain Verification Meta Tag -->
+    <meta name="google-site-verification" content="PEEXELL_GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN" />
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="PEEXELL Konkurs Bot — Xizmat Ko'rsatish Shartlari (Terms of Service)">
+    <meta property="og:description" content="PEEXELL Konkurs Bot xizmatidan foydalanish bo'yicha rasmiy huquqiy shartlar va konkurs qoidalari.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://konkursbot-production.up.railway.app/terms.html">
+    <meta property="og:image" content="https://konkursbot-production.up.railway.app/assets/logo.jpg">
+
     <title>PEEXELL Konkurs Bot - Xizmat Ko'rsatish Shartlari (Terms of Service)</title>
+
+    <link rel="canonical" href="https://konkursbot-production.up.railway.app/terms.html" />
+
+    <!-- Schema.org JSON-LD Markup for Google Search Console & Verification -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "PEEXELL Konkurs Bot - Xizmat Ko'rsatish Shartlari (Terms of Service)",
+      "url": "https://konkursbot-production.up.railway.app/terms.html",
+      "description": "PEEXELL Konkurs Bot xizmatidan foydalanish shartlari va qoidalarining rasmiy hujjati.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "PEEXELL",
+        "url": "https://konkursbot-production.up.railway.app",
+        "logo": "https://konkursbot-production.up.railway.app/assets/logo.jpg"
+      }
+    }
+    </script>
+
     <style>
+        :root {
+            --bg-color: #121316;
+            --card-bg: #1a1d24;
+            --card-border: #2a2e39;
+            --primary-color: #C5FF00;
+            --secondary-color: #00E5FF;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a5b5;
+            --box-bg: #232733;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #121316;
-            color: #e0e0e0;
-            max-width: 850px;
-            margin: 0 auto;
+            line-height: 1.7;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             padding: 40px 20px;
         }
-        h1, h2 {
-            color: #C5FF00;
-        }
-        h1 {
-            border-bottom: 2px solid #C5FF00;
-            padding-bottom: 10px;
-            font-size: 2rem;
-        }
-        h2 {
-            margin-top: 30px;
-            font-size: 1.3rem;
-        }
+
         .container {
-            background: #1a1d24;
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid #2a2e39;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        ul {
-            padding-left: 20px;
+
+        .header-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 12px;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
         }
+
+        .badge-updated {
+            display: inline-block;
+            background: rgba(197, 255, 0, 0.1);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-top: 32px;
+            margin-bottom: 14px;
+            font-size: 1.35rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-main);
+            font-size: 0.98rem;
+        }
+
+        ul, ol {
+            padding-left: 24px;
+            margin-bottom: 18px;
+        }
+
         li {
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        strong {
+            color: #ffffff;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-card {
+            background: var(--box-bg);
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            margin-top: 30px;
+        }
+
+        .contact-card p {
             margin-bottom: 8px;
         }
-        a {
-            color: #C5FF00;
-            text-decoration: none;
+
+        .footer-nav {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px 10px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+            .header-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>PEEXELL Konkurs Bot — Xizmat Ko'rsatish Shartlari (Terms of Service)</h1>
-        <p><strong>So'nggi yangilanish:</strong> 2026-yil 7-sentyabr</p>
+        <h1 class="header-title">PEEXELL Konkurs Bot — Xizmat Ko'rsatish Shartlari (Terms of Service)</h1>
+        <div class="badge-updated">So'nggi yangilanish: 2026-yil 7-sentyabr</div>
+
+        <p>Ushbu Xizmat Ko'rsatish Shartlari (Terms of Service) <strong>PEEXELL Konkurs Bot</strong> ("Xizmat", "Ilova") platformasidan foydalanish tartibi hamda konkurs ishtirokchilari uchun majburiy bo'lgan huquqiy shartlarni belgilaydi. Ilovamizdan foydalanish orqali siz ushbu Shartlarga to'liq va shartsiz rozilik bildirasiz.</p>
 
         <h2>1. Shartlarni Qabul Qilish</h2>
-        <p>PEEXELL Konkurs Bot Telegram Mini App ilovasidan foydalanish orqali siz ushbu Xizmat Ko'rsatish Shartlariga to'liq rozilik bildirasiz.</p>
+        <p>PEEXELL Telegram Mini App yoki bot xizmatiga kirish hamda konkurslarda bilet olish orqali foydalanuvchi ushbu Xizmat Shartlari hamda <a href="/privacy.html">Maxfiylik Siyosati</a> qoidalariga rioya etish majburiyatini oladi.</p>
 
-        <h2>2. Konkurs Qoidalari va Obuna Talablari</h2>
+        <h2>2. Konkursda Qatnashish Qoidalari va Obuna Talablari</h2>
         <ul>
-            <li>Konkursda ishtirok etish va bilet olish uchun barcha ko'rsatilgan homiy kanallarga (Telegram, YouTube, Instagram) a'zo bo'lishingiz shart.</li>
-            <li>Obuna holati Google Data API va Telegram API orqali rasmiy tekshiriladi.</li>
-            <li>Soxta akkauntlar yoki bir kishi tomonidan bir nechta Google akkauntlardan foydalanilgan holatlar aniqlanganda biletlar bekor qilinadi.</li>
+            <li><strong>Majburiy Obunalar:</strong> Konkursda bilet olish uchun foydalanuvchi ko'rsatilgan barcha homiy kanallarga (Telegram, YouTube, Instagram) a'zo bo'lishi shart.</li>
+            <li><strong>Google OAuth va YouTube Tekshiruvi:</strong> YouTube homiy kanallariga obuna bo'linganligi Google OAuth 2.0 va YouTube Data API v3 (`youtube.readonly`) orqali rasmiy tekshiriladi.</li>
+            <li><strong>Telefon Raqami Tasdiqlash:</strong> Sovrinlarni g'oliblarga topshirish va soxta akkauntlarni oldini olish uchun O'zbekiston telefon raqamini (+998) tasdiqlash talab etilishi mumkin.</li>
         </ul>
 
-        <h2>3. G'oliblarni Aniqlash</h2>
-        <p>G'oliblar konkurs taymeri tugagach tasodifiy (randomizer) algoritmi orqali avtomatik va shaffof tarzda aniqlanadi.</p>
+        <h2>3. Halol O'yin va Anti-Fraud (Multi-Account) Cheklovlari</h2>
+        <p>Tizimimiz shaffoflik va teng imkoniyatlarni ta'minlash uchun avtomatik anti-cheat tizimiga ega:</p>
+        <ul>
+            <li>Bir kishi tomonidan bir nechta soxta Telegram yoki Google akkauntlar orqali konkursda bilet olish taqiqlanadi.</li>
+            <li>Agar foydalanuvchi konkurs yakunlanmasdan turib homiy kanallardan chiqib ketsa, uning barcha biletlari avtomatik tarzda bekor qilinadi.</li>
+        </ul>
 
-        <h2>4. Bog'lanish Ma'lumotlari</h2>
-        <p>Savollar bo'yicha bog'lanish: <a href="mailto:jahongirtajiboyev001@gmail.com">jahongirtajiboyev001@gmail.com</a></p>
+        <h2>4. G'oliblarni Aniqlash va Sovrinlarni Topshirish</h2>
+        <ul>
+            <li>G'oliblar konkurs taymeri tugagandan so'ng, tizim bazasidagi mavjud unikal biletlar orasidan tasodifiy (randomizer) algoritm orqali avtomatik va shaffof aniqlanadi.</li>
+            <li>G'oliblar ro me'yxati e'lon qilingach, tashkilotchilar 72 soat ichida g'olib bilan bog'lanishadi.</li>
+            <li>Noto me'g me'ri ma me'lumot taqdim etgan yoki shartlarni buzgan ishtirokchining sovrini bekor qilinishi yoki keyingi ishtirokchiga o me'tishi mumkin.</li>
+        </ul>
+
+        <h2>5. Uchinchi Shaxs Servislari va Cheklovlar</h2>
+        <p>Ilova Google OAuth va Telegram WebApp imkoniyatlaridan foydalanadi. Foydalanuvchi Google va Telegram servislarining tegishli foydalanish shartlariga rioya etishi lozim.</p>
+
+        <h2>6. Mas'uliyatni Cheklash (Disclaimer)</h2>
+        <p>PEEXELL texnik sabablarga ko me'ra Telegram yoki Google API xizmatlarida yuzaga kelishi mumkin bo me'lgan qisqa muddatli uzilishlar uchun javobgarlikni o me'z zimmasiga olmaydi, biroq xizmat uzluksizligini ta me'minlash uchun barcha choralarni ko me'radi.</p>
+
+        <h2>7. Bog'lanish Ma'lumotlari</h2>
+        <div class="contact-card">
+            <p>Xizmat ko me'rsatish shartlari bo me'yicha savollaringiz bo me'lsa, biz bilan bog me'laning:</p>
+            <p><strong>Mas'ul Tashkilot / Loyihachi:</strong> Jahongir Tajiboyev</p>
+            <p><strong>Email:</strong> <a href="mailto:jahongirtajiboyev001@gmail.com">jahongirtajiboyev001@gmail.com</a></p>
+            <p><strong>Rasmiy Veb-Sayt:</strong> <a href="https://konkursbot-production.up.railway.app" target="_blank">https://konkursbot-production.up.railway.app</a></p>
+        </div>
+
+        <div class="footer-nav">
+            <p>© 2026 PEEXELL Contest Bot. Barcha huquqlar himoyalangan.</p>
+            <p style="margin-top: 8px;">
+                <a href="/privacy.html">Maxfiylik Siyosati (Privacy Policy)</a> | 
+                <a href="/index.html">Bosh Sahifa</a>
+            </p>
+        </div>
     </div>
 </body>
 </html>

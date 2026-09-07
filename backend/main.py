@@ -95,10 +95,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi.responses import FileResponse
+
+# Explicit Root FileResponse endpoints for Privacy Policy and Terms of Service (Google OAuth Verification requirement)
+frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
+
+@app.get("/privacy")
+@app.get("/privacy.html")
+async def serve_privacy():
+    privacy_path = frontend_dir / "privacy.html"
+    if privacy_path.exists():
+        return FileResponse(str(privacy_path), media_type="text/html")
+    return Response(content="<h1>Privacy Policy Page</h1>", media_type="text/html")
+
+@app.get("/terms")
+@app.get("/terms.html")
+async def serve_terms():
+    terms_path = frontend_dir / "terms.html"
+    if terms_path.exists():
+        return FileResponse(str(terms_path), media_type="text/html")
+    return Response(content="<h1>Terms of Service Page</h1>", media_type="text/html")
+
 # Include API Router
 app.include_router(api_router)
 
 # Mount Static Files for Frontend SPA
-frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
 if frontend_dir.exists():
     app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
