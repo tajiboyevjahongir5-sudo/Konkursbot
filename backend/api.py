@@ -579,18 +579,17 @@ async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_
         }
 
     scope = "https://www.googleapis.com/auth/youtube.readonly"
-    state_data = json.dumps({"user_id": user["id"], "sponsor_id": sponsor_id})
-    state_encoded = urllib.parse.quote(state_data)
+    state_str = f"{user['id']}_{sponsor_id}"
 
     redirect_uri = settings.GOOGLE_REDIRECT_URI or f"{settings.clean_webapp_url}/api/auth/google/callback"
     auth_url = (
         f"https://accounts.google.com/o/oauth2/v2/auth?"
         f"client_id={settings.GOOGLE_CLIENT_ID}&"
-        f"redirect_uri={urllib.parse.quote(redirect_uri)}&"
+        f"redirect_uri={urllib.parse.quote(redirect_uri, safe='')}&"
         f"response_type=code&"
-        f"scope={urllib.parse.quote(scope)}&"
-        f"access_type=offline&"
-        f"state={state_encoded}"
+        f"scope={urllib.parse.quote(scope, safe='')}&"
+        f"prompt=select_account&"
+        f"state={state_str}"
     )
     return {"status": "success", "url": auth_url}
 
@@ -599,9 +598,9 @@ async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_
 async def google_auth_callback(code: str, state: str):
     import urllib.request
     try:
-        state_dict = json.loads(urllib.parse.unquote(state))
-        user_id = state_dict.get("user_id")
-        sponsor_id = state_dict.get("sponsor_id")
+        parts = state.split("_")
+        user_id = int(parts[0]) if len(parts) > 0 else 0
+        sponsor_id = int(parts[1]) if len(parts) > 1 else 0
 
         redirect_uri = settings.GOOGLE_REDIRECT_URI or f"{settings.clean_webapp_url}/api/auth/google/callback"
         token_url = "https://oauth2.googleapis.com/token"
