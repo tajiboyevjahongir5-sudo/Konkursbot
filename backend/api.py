@@ -687,7 +687,24 @@ def render_cyberpunk_result_page(
     glow_color = f"{color}40"
     icon = "❌" if status_type == "error" else ("🎉" if status_type == "success" else "⚠️")
     
-    script_close = "<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script>" if auto_close else ""
+    script_return = f"""
+    <script>
+        function returnToBot() {{
+            try {{
+                if (window.opener) {{
+                    window.opener.postMessage('yt_success', '*');
+                }}
+            }} catch (e) {{}}
+            
+            window.close();
+            
+            setTimeout(function() {{
+                window.location.href = "https://t.me/peexell_contest_bot";
+            }}, 200);
+        }}
+        { "setTimeout(returnToBot, 3000);" if auto_close else "" }
+    </script>
+    """
 
     email_badge = f"<div class='email-badge'>📧 {user_email}</div>" if user_email else ""
     
@@ -695,7 +712,7 @@ def render_cyberpunk_result_page(
     if action_button_text and action_button_url:
         action_btn_html = f"<a href='{action_button_url}' target='_blank' class='btn btn-action'>{action_button_text}</a>"
     
-    close_btn_html = "<button onclick='window.close()' class='btn btn-close'>Oynani Yopish</button>"
+    close_btn_html = "<button onclick='returnToBot()' class='btn btn-close'>✈️ Telegram Botga Qaytish</button>"
 
     progress_bar_html = "<div class='progress-bar-container'><div class='progress-bar-fill'></div></div>" if auto_close else ""
 
@@ -705,7 +722,7 @@ def render_cyberpunk_result_page(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PEEXELL Verification</title>
-    {script_close}
+    {script_return}
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }}
         body {{
@@ -854,7 +871,7 @@ def render_cyberpunk_result_page(
             height: 100%;
             background: {color};
             width: 100%;
-            animation: countdownBar 2.5s linear forwards;
+            animation: countdownBar 3s linear forwards;
         }}
         @keyframes countdownBar {{
             from {{ width: 100%; }}
@@ -870,7 +887,7 @@ def render_cyberpunk_result_page(
         <p>{subtitle}</p>
         {action_btn_html}
         {close_btn_html}
-        {f'<div class="timer-text">⚡ Oyna 2.5 soniyada avtomatik yopiladi...</div>' if auto_close else ''}
+        {f'<div class="timer-text">⚡ 3 soniyada avtomatik Telegram Botga qaytariladi...</div>' if auto_close else ''}
         {progress_bar_html}
     </div>
 </body>
