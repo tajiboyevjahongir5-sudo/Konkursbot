@@ -688,12 +688,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Load Stats
-      const statsRes = await apiFetch("/api/admin/stats");
-      if (statsRes.status === "success") {
-        document.getElementById("admin-stat-users").textContent = statsRes.stats.total_users;
-        document.getElementById("admin-stat-tickets").textContent = statsRes.stats.total_tickets;
-      }
+      // Load Detailed Stats
+      try {
+        const statsRes = await apiFetch("/api/admin/stats/detailed");
+        if (statsRes.status === "success" && statsRes.stats) {
+          const s = statsRes.stats;
+          const uEl = document.getElementById("admin-stat-users");
+          const tEl = document.getElementById("admin-stat-tickets");
+          const tuEl = document.getElementById("admin-stat-today-users");
+          const rEl = document.getElementById("admin-stat-referrals");
+          const gEl = document.getElementById("admin-stat-google-verified");
+          const spEl = document.getElementById("admin-stat-sponsors-count");
+
+          if (uEl) uEl.textContent = s.total_users;
+          if (tEl) tEl.textContent = s.total_tickets;
+          if (tuEl) tuEl.textContent = s.today_users;
+          if (rEl) rEl.textContent = s.total_referrals;
+          if (gEl) gEl.textContent = s.google_verified_count;
+          if (spEl) spEl.textContent = s.active_sponsors;
+        }
+      } catch (e) {}
 
       // Load Sponsors
       const sponsorsRes = await apiFetch("/api/admin/sponsors");
@@ -803,10 +817,162 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Pick Random Winners Handler
+  // --- ADMIN SUBTABS SWITCHING ---
+  document.querySelectorAll(".admin-subtab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.getAttribute("data-subtab");
+      document.querySelectorAll(".admin-subtab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".admin-subcontent").forEach(c => c.classList.remove("active"));
+
+      btn.classList.add("active");
+      const contentEl = document.getElementById(targetId);
+      if (contentEl) contentEl.classList.add("active");
+    });
+  });
+
+  // Refresh Stats Button
+  const refreshStatsBtn = document.getElementById("btn-refresh-stats");
+  if (refreshStatsBtn) {
+    refreshStatsBtn.addEventListener("click", async () => {
+      refreshStatsBtn.disabled = true;
+      refreshStatsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      await loadAdminData();
+      showToast("Statistikalar yangilandi! 📊", "success");
+      refreshStatsBtn.disabled = false;
+      refreshStatsBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Yangilash';
+    });
+  }
+
+  // User Search & Ticket Management Handlers
+  const searchUserBtn = document.getElementById("btn-search-user");
+  const searchUserInput = document.getElementById("admin-user-search-input");
+  const searchResultsDiv = document.getElementById("admin-user-search-results");
+
+  async function performUserSearch() {
+    const q = searchUserInput?.value.trim();
+    if (!q) {
+      showToast("Qidiruv so'zini kiriting!", "warning");
+      return;
+    }
+
+    if (searchResultsDiv) {
+      searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px;"><i class="fa-solid fa-spinner fa-spin"></i> Qidirilmoqda...</div>';
+    }
+
+    try {
+      const res = await apiFetch(`/api/admin/users/search?q=${encodeURIComponent(q)}`);
+      if (res.status === "success" && res.users) {
+        if (res.users.length === 0) {
+          searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--danger-color); padding: 15px;">Foydalanuvchi topilmadi.</div>';
+          return;
+        }
+
+        searchResultsDiv.innerHTML = "";
+        res.users.forEach(u => {
+          const card = document.createElement("div");
+          card.className = "admin-user-card";
+          const userName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Foydalanuvchi';
+          const userHandle = u.username ? `@${u.username}` : `ID: ${u.id}`;
+
+          card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div>
+                <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">${userName}</div>
+                <div style="font-size: 0.78rem; color: var(--primary-color);">${userHandle} (ID: ${u.id})</div>
+              </div>
+              <div style="text-align: right;">
+                <span class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-weight: 700; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px;">
+                  🎟️ <span id="user-tickets-badge-${u.id}">${u.tickets}</span> bilet
+                </span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 10px;">
+              <div>👥 Referallar: <b>${u.referrals_count || 0}</b></div>
+              <div>✅ Vazifalar: <b>${u.tasks_count || 0}</b></div>
+              ${u.phone_number ? `<div>📞 ${u.phone_number}</div>` : ''}
+            </div>
+
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="1" style="background: rgba(197, 255, 0, 0.2); color: #fff; border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;">
+                +1 Bilet
+              </button>
+              <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="5" style="background: rgba(197, 255, 0, 0.2); color: #fff; border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;">
+                +5 Bilet
+              </button>
+              <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="-1" style="background: rgba(255, 59, 48, 0.2); color: #fff; border: 1px solid var(--danger-color); padding: 4px 8px; font-size: 0.74rem;">
+                -1 Bilet
+              </button>
+              <button class="btn btn-sm btn-ticket-custom" data-id="${u.id}" style="background: rgba(255, 255, 255, 0.1); color: #fff; padding: 4px 8px; font-size: 0.74rem;">
+                ✏️ Miqdor kiritish
+              </button>
+            </div>
+          `;
+          searchResultsDiv.appendChild(card);
+        });
+
+        document.querySelectorAll(".btn-ticket-mod").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const uid = parseInt(btn.getAttribute("data-id"));
+            const delta = parseInt(btn.getAttribute("data-delta"));
+            await modifyUserTickets(uid, delta);
+          });
+        });
+
+        document.querySelectorAll(".btn-ticket-custom").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const uid = parseInt(btn.getAttribute("data-id"));
+            const input = prompt("Qo'shish yoki ayirish uchun bilet miqdorini kiriting (masalan: +10 yoki -5):");
+            if (input !== null) {
+              const delta = parseInt(input);
+              if (!isNaN(delta) && delta !== 0) {
+                await modifyUserTickets(uid, delta);
+              } else {
+                showToast("Noto'g'ri son kiritildi!", "warning");
+              }
+            }
+          });
+        });
+      }
+    } catch (e) {
+      if (searchResultsDiv) searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--danger-color); padding: 15px;">Qidiruvda xatolik yuz berdi.</div>';
+    }
+  }
+
+  async function modifyUserTickets(userId, delta) {
+    try {
+      const res = await apiFetch("/api/admin/users/tickets", {
+        method: "POST",
+        body: JSON.stringify({ user_id: userId, delta: delta })
+      });
+      if (res.status === "success") {
+        showToast(res.message, "success");
+        const badge = document.getElementById(`user-tickets-badge-${userId}`);
+        if (badge && res.new_tickets !== undefined) {
+          badge.textContent = res.new_tickets;
+        }
+        await loadAdminData();
+      } else {
+        showToast(res.message || "Xatolik yuz berdi", "danger");
+      }
+    } catch (e) {
+      showToast("Biletni o'zgartirishda xatolik!", "danger");
+    }
+  }
+
+  if (searchUserBtn) searchUserBtn.addEventListener("click", performUserSearch);
+  if (searchUserInput) {
+    searchUserInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") performUserSearch();
+    });
+  }
+
+  // Pick Random Winners Handler
   const pickWinnersBtn = document.getElementById("btn-pick-winners");
   if (pickWinnersBtn) {
     pickWinnersBtn.addEventListener("click", async () => {
-      if (!confirm("Biletlar asosida 3 ta tasodifiy g'olibni aniqlashni tasdiqlaysizmi?")) return;
+      const countVal = parseInt(document.getElementById("admin-winners-count")?.value || "3");
+      if (!confirm(`Biletlar asosida ${countVal} ta tasodifiy g'olibni aniqlashni tasdiqlaysizmi?`)) return;
 
       pickWinnersBtn.disabled = true;
       pickWinnersBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aniqlanmoqda...';
@@ -814,7 +980,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const res = await apiFetch("/api/admin/winners/pick", {
           method: "POST",
-          body: JSON.stringify({ count: 3 })
+          body: JSON.stringify({ count: countVal })
         });
 
         if (res.status === "success" && res.winners) {
@@ -824,11 +990,28 @@ document.addEventListener("DOMContentLoaded", () => {
           res.winners.forEach(w => {
             resultDiv.innerHTML += `<div>${w.place}-O'rin: <b>${w.first_name}</b> (@${w.username || 'no_user'}) - <i>${w.prize}</i></div>`;
           });
+          await loadPublicWinners();
         }
       } catch (err) {
       } finally {
         pickWinnersBtn.disabled = false;
-        pickWinnersBtn.innerHTML = '<i class="fa-solid fa-dice"></i> G\'oliblarni Aniqlash (Random)';
+        pickWinnersBtn.innerHTML = '<i class="fa-solid fa-dice-five"></i> G\'oliblarni Aniqlash (Random)';
+      }
+    });
+  }
+
+  // Clear Winners Handler
+  const clearWinnersBtn = document.getElementById("btn-clear-winners");
+  if (clearWinnersBtn) {
+    clearWinnersBtn.addEventListener("click", async () => {
+      if (confirm("G'oliblar ro'yxatini tozalashni tasdiqlaysizmi?")) {
+        try {
+          const res = await apiFetch("/api/admin/winners/clear", { method: "POST" });
+          showToast(res.message || "G'oliblar tozalandi! 🧹", "success");
+          const resultDiv = document.getElementById("admin-winners-result");
+          if (resultDiv) resultDiv.innerHTML = "";
+          await loadPublicWinners();
+        } catch (e) {}
       }
     });
   }
@@ -883,6 +1066,54 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Admin Broadcast Handler (with Photo & Button support)
+  const sendBroadcastBtn = document.getElementById("btn-send-broadcast");
+  if (sendBroadcastBtn) {
+    sendBroadcastBtn.addEventListener("click", async () => {
+      const msgInput = document.getElementById("admin-broadcast-msg");
+      const photoInput = document.getElementById("admin-broadcast-photo");
+      const btnTextInput = document.getElementById("admin-broadcast-btn-text");
+      const btnUrlInput = document.getElementById("admin-broadcast-btn-url");
+
+      const message = msgInput ? msgInput.value.trim() : "";
+      const photo_url = photoInput ? photoInput.value.trim() : "";
+      const button_text = btnTextInput ? btnTextInput.value.trim() : "";
+      const button_url = btnUrlInput ? btnUrlInput.value.trim() : "";
+
+      if (!message) {
+        showToast("Xabar matnini kiriting!", "warning");
+        return;
+      }
+
+      if (!confirm("Barcha bot foydalanuvchilariga ushbu xabarni yuborishni tasdiqlaysizmi?")) return;
+
+      sendBroadcastBtn.disabled = true;
+      sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
+
+      try {
+        const res = await apiFetch("/api/admin/broadcast", {
+          method: "POST",
+          body: JSON.stringify({
+            message,
+            photo_url: photo_url || null,
+            button_text: button_text || null,
+            button_url: button_url || null
+          })
+        });
+        showToast(res.message, "success");
+        if (msgInput) msgInput.value = "";
+        if (photoInput) photoInput.value = "";
+        if (btnTextInput) btnTextInput.value = "";
+        if (btnUrlInput) btnUrlInput.value = "";
+      } catch (err) {
+        showToast("Xabar yuborishda xatolik!", "danger");
+      } finally {
+        sendBroadcastBtn.disabled = false;
+        sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)';
+      }
+    });
+  }
+
   // --- INITIAL STARTUP ---
   async function init() {
     await loadUserData();
@@ -906,39 +1137,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateNavVisibility("tab-admin");
       await loadAdminData();
     }
-  }
-
-  // Admin Broadcast Handler
-  const sendBroadcastBtn = document.getElementById("btn-send-broadcast");
-  if (sendBroadcastBtn) {
-    sendBroadcastBtn.addEventListener("click", async () => {
-      const msgInput = document.getElementById("admin-broadcast-msg");
-      const message = msgInput ? msgInput.value.trim() : "";
-
-      if (!message) {
-        showToast("Xabar matnini kiriting!", "warning");
-        return;
-      }
-
-      if (!confirm("Barcha bot foydalanuvchilariga ushbu xabarni yuborishni tasdiqlaysizmi?")) return;
-
-      sendBroadcastBtn.disabled = true;
-      sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
-
-      try {
-        const res = await apiFetch("/api/admin/broadcast", {
-          method: "POST",
-          body: JSON.stringify({ message })
-        });
-        showToast(res.message, "success");
-        if (msgInput) msgInput.value = "";
-      } catch (err) {
-        showToast("Xabar yuborishda xatolik!", "danger");
-      } finally {
-        sendBroadcastBtn.disabled = false;
-        sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)';
-      }
-    });
   }
 
   init();

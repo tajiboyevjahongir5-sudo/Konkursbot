@@ -252,21 +252,71 @@
           <span>PEEXELL Admin Boshqaruvi</span>
         </div>
 
-        <!-- Admin Overview Stats -->
-        <div class="stats-grid" style="margin-bottom: 16px;">
-          <div class="stat-card">
-            <div id="admin-stat-users" class="stat-value">0</div>
-            <div class="stat-label">Jami Foydalanuvchilar</div>
+        <!-- Admin Sub-navigation (Mini Tabs) -->
+        <div class="admin-subnav">
+          <button type="button" class="admin-subtab-btn active" data-subtab="subtab-stats">
+            <i class="fa-solid fa-chart-pie"></i> Statistika
+          </button>
+          <button type="button" class="admin-subtab-btn" data-subtab="subtab-contest">
+            <i class="fa-solid fa-trophy"></i> Konkurs
+          </button>
+          <button type="button" class="admin-subtab-btn" data-subtab="subtab-sponsors">
+            <i class="fa-solid fa-bullhorn"></i> Sponsorlar
+          </button>
+          <button type="button" class="admin-subtab-btn" data-subtab="subtab-users">
+            <i class="fa-solid fa-users"></i> Foydalanuvchilar
+          </button>
+          <button type="button" class="admin-subtab-btn" data-subtab="subtab-winners">
+            <i class="fa-solid fa-award"></i> G'oliblar
+          </button>
+          <button type="button" class="admin-subtab-btn" data-subtab="subtab-broadcast">
+            <i class="fa-solid fa-paper-plane"></i> Xabarnoma
+          </button>
+          <button type="button" class="admin-subtab-btn" data-subtab="subtab-system">
+            <i class="fa-solid fa-shield-halved"></i> Boshqaruv
+          </button>
+        </div>
+
+        <!-- SUBTAB 1: STATISTIKA -->
+        <div id="subtab-stats" class="admin-subcontent active">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="font-size: 0.95rem; color: var(--primary-color); margin: 0;">📊 Kengaytirilgan Tahlil & Statistika</h4>
+            <button id="btn-refresh-stats" class="btn btn-secondary btn-sm" style="padding: 5px 10px; font-size: 0.75rem;">
+              <i class="fa-solid fa-arrows-rotate"></i> Yangilash
+            </button>
           </div>
-          <div class="stat-card">
-            <div id="admin-stat-tickets" class="stat-value">0</div>
-            <div class="stat-label">Tarqatilgan Biletlar</div>
+          
+          <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px;">
+            <div class="stat-card">
+              <div id="admin-stat-users" class="stat-value">0</div>
+              <div class="stat-label">Jami Foydalanuvchilar</div>
+            </div>
+            <div class="stat-card">
+              <div id="admin-stat-tickets" class="stat-value">0</div>
+              <div class="stat-label">Tarqatilgan Biletlar</div>
+            </div>
+            <div class="stat-card">
+              <div id="admin-stat-today-users" class="stat-value" style="color: #00F0FF;">0</div>
+              <div class="stat-label">Bugungi Yangi Userlar</div>
+            </div>
+            <div class="stat-card">
+              <div id="admin-stat-referrals" class="stat-value" style="color: #FFB800;">0</div>
+              <div class="stat-label">Taklif Qilingan Referallar</div>
+            </div>
+            <div class="stat-card">
+              <div id="admin-stat-google-verified" class="stat-value" style="color: #FF3B30;">0</div>
+              <div class="stat-label">YouTube/Google Tasdiqlangan</div>
+            </div>
+            <div class="stat-card">
+              <div id="admin-stat-sponsors-count" class="stat-value" style="color: var(--primary-color);">0</div>
+              <div class="stat-label">Faol Sponsor Kanallar</div>
+            </div>
           </div>
         </div>
 
-        <!-- Edit Contest Information Form -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 14px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--primary-color);">✏️ Konkurs Ma'lumotlarini Tahrirlash</h4>
+        <!-- SUBTAB 2: KONKURS SOZLAMALARI -->
+        <div id="subtab-contest" class="admin-subcontent">
+          <h4 style="margin-bottom: 12px; font-size: 0.95rem; color: var(--primary-color);">⚡ Konkurs Ma'lumotlarini Tahrirlash</h4>
           <div class="form-group">
             <label>Konkurs Nomi:</label>
             <input type="text" id="admin-contest-title" class="form-input" placeholder="PEEXELL GRAND KONKURS 2026">
@@ -338,14 +388,14 @@
               <i class="fa-solid fa-circle-check"></i> O'zbekiston 24-soatlik tizimi (AM / PM siz)
             </div>
           </div>
-          <button id="btn-save-contest" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
+          <button id="btn-save-contest" class="btn btn-primary" style="margin-top: 10px; width: 100%;">
             <i class="fa-solid fa-circle-check"></i> Konkurs Ma'lumotlarini Saqlash
           </button>
         </div>
 
-        <!-- Add Sponsor Channel Form -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📢 Yangi Sponsor Qo'shish (Telegram / YouTube)</h4>
+        <!-- SUBTAB 3: SPONSORLAR -->
+        <div id="subtab-sponsors" class="admin-subcontent">
+          <h4 style="margin-bottom: 12px; font-size: 0.95rem;">📢 Yangi Sponsor Qo'shish</h4>
           <div class="form-group">
             <label>Platforma Turi:</label>
             <select id="admin-sponsor-platform" class="form-input" style="background: var(--card-bg); color: #fff;">
@@ -370,38 +420,104 @@
             <label>YouTube Channel ID (Google API UC...):</label>
             <input type="text" id="admin-sponsor-yt-id" class="form-input" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx">
           </div>
-          <button id="btn-add-sponsor" class="btn btn-primary" style="margin-top: 8px;">
+          <button id="btn-add-sponsor" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
             <i class="fa-solid fa-circle-plus"></i> Sponsor Qo'shish
           </button>
-        </div>
 
-        <!-- Sponsor Channels List -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📋 Mavjud Sponsorlar</h4>
-          <div id="admin-sponsors-list">
-            <!-- Dynamic Sponsor items -->
+          <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 18px;">
+            <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📋 Mavjud Sponsorlar Ro'yxati</h4>
+            <div id="admin-sponsors-list">
+              <!-- Dynamic Sponsor items -->
+            </div>
           </div>
         </div>
 
-        <!-- Contest Winner Selection -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">🎲 G'oliblarni Aniqlash</h4>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
-            Biletlar soniga qarab tasodifiy g'oliblarni aniqlaydi va bazaga saqlaydi.
+        <!-- SUBTAB 4: FOYDALANUVCHILAR BOSHQARUVI -->
+        <div id="subtab-users" class="admin-subcontent">
+          <h4 style="margin-bottom: 8px; font-size: 0.95rem; color: var(--primary-color);">👥 Foydalanuvchilarni Qidirish & Boshqarish</h4>
+          <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 12px;">
+            Foydalanuvchini Telegram ID, Username yoki Ismi orqali qidiring va biletlarini to'g'ridan-to'g'ri tahrirlang.
           </p>
-          <button id="btn-pick-winners" class="btn btn-cyan">
-            <i class="fa-solid fa-dice-five"></i> G'oliblarni Aniqlash (Random)
-          </button>
-          <div id="admin-winners-result" style="margin-top: 12px;"></div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+            <input type="text" id="admin-user-search-input" class="form-input" placeholder="ID (masalan: 12345678) yoki @username..." style="flex: 1;">
+            <button id="btn-search-user" class="btn btn-primary" style="padding: 0 16px;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+
+          <div id="admin-user-search-results">
+            <div style="text-align: center; color: var(--text-secondary); font-size: 0.82rem; padding: 20px;">
+              Qidirish uchun yuqoridagi maydonga foydalanuvchi ID yoki username kiriting.
+            </div>
+          </div>
         </div>
 
-        <!-- Reset Tickets Section -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--danger-color);">🧹 Baza va Foydalanuvchilarni Tozalash</h4>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
+        <!-- SUBTAB 5: G'OLIBLARNI BOSHQARISH -->
+        <div id="subtab-winners" class="admin-subcontent">
+          <h4 style="margin-bottom: 8px; font-size: 0.95rem; color: var(--primary-color);">🏆 Konkurs G'oliblarini Aniqlash</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+            Biletlar soniga qarab tasodifiy (random) g'oliblarni aniqlaydi va barcha sponsorlarga a'zoligini qayta tekshiradi.
+          </p>
+
+          <div class="form-group">
+            <label>G'oliblar Soni:</label>
+            <select id="admin-winners-count" class="form-input" style="background: var(--card-bg); color: #fff;">
+              <option value="1">1 ta G'olib (Faqat Bosh sovrin)</option>
+              <option value="3" selected>3 ta G'olib (1, 2, 3-O'rinlar)</option>
+              <option value="5">5 ta G'olib (TOP 5 sovrindor)</option>
+              <option value="10">10 ta G'olib (TOP 10 sovrindor)</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button id="btn-pick-winners" class="btn btn-cyan" style="flex: 2;">
+              <i class="fa-solid fa-dice-five"></i> G'oliblarni Aniqlash (Random)
+            </button>
+            <button id="btn-clear-winners" class="btn btn-secondary btn-sm" style="flex: 1; border-color: rgba(255,255,255,0.2);">
+              <i class="fa-solid fa-rotate-left"></i> Tozalash
+            </button>
+          </div>
+
+          <div id="admin-winners-result" style="margin-top: 16px;"></div>
+        </div>
+
+        <!-- SUBTAB 6: OMMAVIY XABARNOMA (BROADCAST) -->
+        <div id="subtab-broadcast" class="admin-subcontent">
+          <h4 style="margin-bottom: 8px; font-size: 0.95rem; color: var(--primary-color);">📢 Ommaviy Xabar Yuborish (Broadcast)</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+            Barcha bot foydalanuvchilariga rasm, tugma va formatlangan xabar yuboring.
+          </p>
+          <div class="form-group">
+            <label>Xabar Matni (HTML teglari qo'llab-quvvatlanadi: &lt;b&gt;, &lt;i&gt;, &lt;a&gt;):</label>
+            <textarea id="admin-broadcast-msg" class="form-input" rows="4" placeholder="📢 Diqqat! Konkursimizning yangi shartlari va e'lonlari..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Rasm Havolasi (Photo URL - ixtiyoriy):</label>
+            <input type="text" id="admin-broadcast-photo" class="form-input" placeholder="https://example.com/banner.jpg (bo'sh qoldirish mumkin)">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px;">
+            <div class="form-group">
+              <label>Tugma Matni (ixtiyoriy):</label>
+              <input type="text" id="admin-broadcast-btn-text" class="form-input" placeholder="🚀 Konkursga O'tish">
+            </div>
+            <div class="form-group">
+              <label>Tugma Havolasi (URL):</label>
+              <input type="text" id="admin-broadcast-btn-url" class="form-input" placeholder="https://t.me/peexell_contest_bot">
+            </div>
+          </div>
+          <button id="btn-send-broadcast" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+            <i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)
+          </button>
+        </div>
+
+        <!-- SUBTAB 7: TIZIM & BOSHQARUV -->
+        <div id="subtab-system" class="admin-subcontent">
+          <h4 style="margin-bottom: 8px; font-size: 0.95rem; color: var(--danger-color);">🧹 Baza va Foydalanuvchilarni Tozalash</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
             Sinov biletlari, bajargan vazifalar va test foydalanuvchilarini bazadan to'liq o'chiradi.
           </p>
-          <div style="display: flex; gap: 10px; flex-direction: column;">
+          <div style="display: flex; gap: 10px; flex-direction: column; margin-bottom: 18px;">
             <button id="btn-reset-tickets" class="btn btn-secondary btn-sm" style="background: rgba(255, 59, 48, 0.15); border: 1px solid var(--danger-color); color: var(--danger-color); width: 100%;">
               <i class="fa-solid fa-trash-can"></i> Barcha Biletlarni Nolga Tushirish
             </button>
@@ -409,33 +525,17 @@
               <i class="fa-solid fa-user-slash"></i> Barcha Foydalanuvchi Ma'lumotlarini Tozalash (Reset All)
             </button>
           </div>
-        </div>
 
-        <!-- Admin Broadcast Form -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--primary-color);">📢 Ommaviy Xabar Yuborish (Broadcast)</h4>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
-            Barcha foydalanuvchilar Telegramiga avtomatik xabar va e'lon yuboradi.
-          </p>
-          <div class="form-group">
-            <label>Xabar Matni (HTML/Text):</label>
-            <textarea id="admin-broadcast-msg" class="form-input" rows="3" placeholder="📢 Yangi e'lon va konkurs yangiliklari..."></textarea>
-          </div>
-          <button id="btn-send-broadcast" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
-            <i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)
-          </button>
-        </div>
-
-        <!-- Export Data -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📊 Ma'lumotlarni Eksport Qilish</h4>
-          <div style="display: flex; gap: 10px;">
-            <button id="btn-export-csv" class="btn btn-secondary btn-sm" style="flex: 1;">
-              <i class="fa-solid fa-file-arrow-down"></i> CSV Yuklab Olish
-            </button>
-            <button id="btn-export-json" class="btn btn-secondary btn-sm" style="flex: 1;">
-              <i class="fa-solid fa-code"></i> JSON Yuklab Olish
-            </button>
+          <div style="border-top: 1px solid var(--card-border); padding-top: 14px;">
+            <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📊 Ma'lumotlarni Eksport Qilish</h4>
+            <div style="display: flex; gap: 10px;">
+              <button id="btn-export-csv" class="btn btn-secondary btn-sm" style="flex: 1;">
+                <i class="fa-solid fa-file-arrow-down"></i> CSV Yuklab Olish
+              </button>
+              <button id="btn-export-json" class="btn btn-secondary btn-sm" style="flex: 1;">
+                <i class="fa-solid fa-code"></i> JSON Yuklab Olish
+              </button>
+            </div>
           </div>
         </div>
 

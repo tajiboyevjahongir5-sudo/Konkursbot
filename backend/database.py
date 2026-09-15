@@ -781,3 +781,116 @@ async def clear_all_users_data() -> dict:
         await db.commit()
         return {"status": "success", "message": "Barcha foydalanuvchi ma'lumotlari to'liq tozalandi."}
 
+
+async def get_detailed_admin_stats() -> Dict[str, Any]:
+    async with get_db() as db:
+        async with db.execute("SELECT COUNT(*) as cnt FROM users") as c:
+            total_users = (await c.fetchone())["cnt"]
+            
+        async with db.execute("SELECT COUNT(*) as cnt FROM user_tickets") as c:
+            total_tickets = (await c.fetchone())["cnt"]
+            
+        async with db.execute("SELECT COUNT(*) as cnt FROM referrals") as c:
+            total_referrals = (await c.fetchone())["cnt"]
+            
+        async with db.execute("SELECT COUNT(*) as cnt FROM sponsors WHERE is_active = 1") as c:
+            active_sponsors = (await c.fetchone())["cnt"]
+            
+        async with db.execute("SELECT COUNT(DISTINCT google_account_id) as cnt FROM user_tasks WHERE google_account_id IS NOT NULL AND google_account_id != ''") as c:
+            google_verified_count = (await c.fetchone())["cnt"]
+            
+        async with db.execute("SELECT COUNT(*) as cnt FROM users WHERE created_at >= datetime('now', '-1 day')") as c:
+            today_users = (await c.fetchone())["cnt"]
+
+        async with db.execute("SELECT COUNT(*) as cnt FROM winners") as c:
+            total_winners = (await c.fetchone())["cnt"]
+
+        return {
+            "total_users": total_users,
+            "total_tickets": total_tickets,
+            "total_referrals": total_referrals,
+            "active_sponsors": active_sponsors,
+            "google_verified_count": google_verified_count,
+            "today_users": today_users,
+            "total_winners": total_winners
+        }
+
+
+async def search_users(query: str, limit: int = 20) -> List[Dict[str, Any]]:
+    query_str = query.strip()
+    if not query_str:
+        return []
+    
+    async with get_db() as db:
+        if query_str.isdigit():
+            sql = """
+                SELECT u.id, u.first_name, u.last_name, u.username, u.tickets, u.phone_number, u.created_at,
+                       (SELECT COUNT(*) FROM referrals WHERE referrer_id = u.id) as referrals_count,
+                       (SELECT COUNT(*) FROM user_tasks WHERE user_id = u.id AND completed = 1) as tasks_count
+                FROM users u
+                WHERE u.id = ? OR CAST(u.id AS TEXT) LIKE ?
+                ORDER BY u.tickets DESC LIMIT ?
+            """
+            params = (int(query_str), f"%{query_str}%", limit)
+        else:
+            clean_q = query_str.lstrip("@")
+            sql = """
+                SELECT u.id, u.first_name, u.last_name, u.username, u.tickets, u.phone_number, u.created_at,
+                       (SELECT COUNT(*) FROM referrals WHERE referrer_id = u.id) as referrals_count,
+                       (SELECT COUNT(*) FROM user_tasks WHERE user_id = u.id AND completed = 1) as tasks_count
+                FROM users u
+                WHERE LOWER(u.username) LIKE LOWER(?) OR LOWER(u.first_name) LIKE LOWER(?) OR LOWER(u.last_name) LIKE LOWER(?)
+                ORDER BY u.tickets DESC LIMIT ?
+            """
+            params = (f"%{clean_q}%", f"%{clean_q}%", f"%{clean_q}%", limit)
+            
+        async with db.execute(sql, params) as cursor:
+            rows = await cursor.fetchall()
+            return [dict(r) for r in rows]
+
+
+async def admin_modify_user_tickets(user_id: int, delta: int, reason: str = "Admin tomonidan berildi") -> Dict[str, Any]:
+    async with get_db() as db:
+        async with db.execute("SELECT id, tickets FROM users WHERE id = ?", (user_id,)) as c:
+            user = await c.fetchone()
+            if not user:
+                return {"status": "error", "message": "Foydalanuvchi topilmadi"}
+
+        curr_tickets = user["tickets"]
+        new_tickets = max(0, curr_tickets + delta)
+        await db.execute("UPDATE users SET tickets = ? WHERE id = ?", (new_tickets, user_id))
+
+        if delta > 0:
+            async with db.execute("SELECT id FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c:
+                row_c = await c.fetchone()
+                contest_id = row_c["id"] if row_c else 1
+            
+            for _ in range(delta):
+                ticket_num = f"TICK-{user_id}-{random.randint(100000, 999999)}"
+                await db.execute("""
+                    INSERT INTO user_tickets (user_id, contest_id, ticket_number, reason)
+                    VALUES (?, ?, ?, ?)
+                """, (user_id, contest_id, ticket_num, reason))
+        elif delta < 0:
+            abs_delta = abs(delta)
+            await db.execute("""
+                DELETE FROM user_tickets WHERE id IN (
+                    SELECT id FROM user_tickets WHERE user_id = ? ORDER BY id DESC LIMIT ?
+                )
+            """, (user_id, abs_delta))
+
+        await db.commit()
+        return {
+            "status": "success",
+            "message": f"Foydalanuvchi biletlari yangilandi: {curr_tickets} -> {new_tickets}",
+            "new_tickets": new_tickets
+        }
+
+
+async def clear_winners() -> Dict[str, Any]:
+    async with get_db() as db:
+        await db.execute("DELETE FROM winners;")
+        await db.commit()
+        return {"status": "success", "message": "G'oliblar ro'yxati muvaffaqiyatli tozalandi."}
+
+

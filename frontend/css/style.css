@@ -714,3 +714,63 @@ body::before {
   50% { text-shadow: 0 0 16px rgba(197, 255, 0, 0.8), 0 0 24px rgba(197, 255, 0, 0.4); }
 }
 
+/* Admin Mini-Tabs Subnavigation & User Cards */
+.admin-subnav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 2px 10px 2px;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.admin-subnav::-webkit-scrollbar {
+  display: none;
+}
+.admin-subtab-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-subtab-btn:hover {
+  background: rgba(197, 255, 0, 0.1);
+  color: #fff;
+  border-color: rgba(197, 255, 0, 0.3);
+}
+.admin-subtab-btn.active {
+  background: var(--primary-color);
+  color: #000;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+.admin-subcontent {
+  display: none;
+  animation: tabFadeIn 0.3s ease forwards;
+}
+.admin-subcontent.active {
+  display: block;
+}
+
+.admin-user-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.admin-user-card:hover {
+  border-color: var(--primary-color);
+}
+
+

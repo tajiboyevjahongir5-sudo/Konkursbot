@@ -458,6 +458,43 @@ async def system_wipe_now():
 
 class BroadcastRequest(BaseModel):
     message: str
+    photo_url: Optional[str] = None
+    button_text: Optional[str] = None
+    button_url: Optional[str] = None
+
+
+class ModifyTicketsRequest(BaseModel):
+    user_id: int
+    delta: int
+    reason: Optional[str] = "Admin tomonidan berildi"
+
+
+@router.get("/admin/stats/detailed")
+async def admin_detailed_stats(admin: dict = Depends(get_current_admin)):
+    from backend.database import get_detailed_admin_stats
+    stats = await get_detailed_admin_stats()
+    return {"status": "success", "stats": stats}
+
+
+@router.get("/admin/users/search")
+async def admin_search_users(q: str = Query(""), admin: dict = Depends(get_current_admin)):
+    from backend.database import search_users
+    users = await search_users(q)
+    return {"status": "success", "users": users}
+
+
+@router.post("/admin/users/tickets")
+async def admin_modify_tickets(body: ModifyTicketsRequest, admin: dict = Depends(get_current_admin)):
+    from backend.database import admin_modify_user_tickets
+    res = await admin_modify_user_tickets(body.user_id, body.delta, body.reason or "Admin tomonidan berildi")
+    return res
+
+
+@router.post("/admin/winners/clear")
+async def admin_clear_winners_route(admin: dict = Depends(get_current_admin)):
+    from backend.database import clear_winners
+    res = await clear_winners()
+    return res
 
 
 @router.post("/admin/winners/pick")
@@ -522,13 +559,39 @@ async def admin_broadcast(body: BroadcastRequest, admin: dict = Depends(get_curr
         async with db.execute("SELECT id FROM users") as cursor:
             users = await cursor.fetchall()
 
+    reply_markup = None
+    if body.button_text and body.button_url and body.button_text.strip() and body.button_url.strip():
+        try:
+            from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+            reply_markup = InlineKeyboardMarkup(inline_keyboard=[[
+                InlineKeyboardButton(text=body.button_text.strip(), url=body.button_url.strip())
+            ]])
+        except Exception:
+            pass
+
     success_count = 0
     fail_count = 0
     import asyncio
 
+    has_photo = bool(body.photo_url and body.photo_url.strip().startswith("http"))
+
     for u in users:
         try:
-            await bot.send_message(chat_id=u["id"], text=body.message, parse_mode="HTML")
+            if has_photo:
+                await bot.send_photo(
+                    chat_id=u["id"],
+                    photo=body.photo_url.strip(),
+                    caption=body.message,
+                    parse_mode="HTML",
+                    reply_markup=reply_markup
+                )
+            else:
+                await bot.send_message(
+                    chat_id=u["id"],
+                    text=body.message,
+                    parse_mode="HTML",
+                    reply_markup=reply_markup
+                )
             success_count += 1
             await asyncio.sleep(0.04)
         except Exception:
