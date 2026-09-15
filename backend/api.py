@@ -683,37 +683,67 @@ async def google_auth_callback(code: str, state: str):
 
         sponsors = await get_sponsors(active_only=False)
         sponsor = next((s for s in sponsors if s["id"] == sponsor_id), None)
-        target_yt_id = sponsor.get("youtube_channel_id") if sponsor else None
+        sponsor_title = sponsor.get("title", "YouTube Channel") if sponsor else "YouTube Channel"
 
         is_subbed = False
         try:
-            yt_api_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50"
-            if target_yt_id and str(target_yt_id).startswith("UC"):
-                yt_api_url += f"&forChannelId={target_yt_id}"
+            # Build list of channel match keywords (handles, channel IDs, titles)
+            search_targets = set()
+            if sponsor:
+                if sponsor.get("youtube_channel_id"):
+                    search_targets.add(str(sponsor["youtube_channel_id"]).strip().lower())
+                if sponsor.get("channel_id"):
+                    search_targets.add(str(sponsor["channel_id"]).strip().lower())
+                if sponsor.get("title"):
+                    search_targets.add(str(sponsor["title"]).strip().lower())
+                if sponsor.get("invite_link"):
+                    inv = str(sponsor["invite_link"]).strip().lower()
+                    for p in inv.split("/"):
+                        if p.startswith("@"):
+                            search_targets.add(p.lower())
+                            search_targets.add(p.replace("@", "").lower())
+                        elif p and not p.startswith("http") and "youtube" not in p and "youtu.be" not in p:
+                            search_targets.add(p.lower())
 
-            yt_req = urllib.request.Request(yt_api_url, headers={"Authorization": f"Bearer {access_token}"})
-            with urllib.request.urlopen(yt_req) as yt_resp:
-                yt_data = json.loads(yt_resp.read().decode("utf-8"))
-                items = yt_data.get("items", [])
-                if len(items) > 0:
-                    is_subbed = True
+            clean_targets = {t.replace("@", "").strip() for t in search_targets if t and t.replace("@", "").strip()}
 
-            if not is_subbed and target_yt_id:
-                gen_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50"
+            # Check if an explicit Channel ID starting with UC is specified
+            uc_target = next((t for t in search_targets if t.startswith("uc")), None)
+
+            if uc_target:
+                yt_api_url = f"https://www.googleapis.com/youtube/v3/subscriptions?mine=true&forChannelId={uc_target}&part=snippet"
+                yt_req = urllib.request.Request(yt_api_url, headers={"Authorization": f"Bearer {access_token}"})
+                try:
+                    with urllib.request.urlopen(yt_req) as yt_resp:
+                        yt_data = json.loads(yt_resp.read().decode("utf-8"))
+                        items = yt_data.get("items", [])
+                        if len(items) > 0:
+                            is_subbed = True
+                except Exception:
+                    pass
+
+            # If not verified via UC ID, fetch user's subscriptions and STRICTLY search for channel title/ID/handle
+            if not is_subbed:
+                gen_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50&part=snippet"
                 gen_req = urllib.request.Request(gen_url, headers={"Authorization": f"Bearer {access_token}"})
                 with urllib.request.urlopen(gen_req) as gen_resp:
                     gen_data = json.loads(gen_resp.read().decode("utf-8"))
-                    for item in gen_data.get("items", []):
+                    sub_items = gen_data.get("items", [])
+
+                    for item in sub_items:
                         snippet = item.get("snippet", {})
-                        ch_id = snippet.get("resourceId", {}).get("channelId", "")
+                        resource_id = snippet.get("resourceId", {})
+                        ch_id = resource_id.get("channelId", "").lower()
                         ch_title = snippet.get("title", "").lower()
-                        t_str = str(target_yt_id).lower()
-                        sp_title = str(sponsor.get("title", "")).lower() if sponsor else ""
-                        if t_str in ch_id.lower() or t_str in ch_title or (sp_title and sp_title in ch_title):
-                            is_subbed = True
+
+                        for target in clean_targets:
+                            if target in ch_id or target in ch_title:
+                                is_subbed = True
+                                break
+                        if is_subbed:
                             break
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error(f"Error checking YouTube subscription via API: {e}")
 
         # Fetch Google User ID (sub)
         google_user_id = None
