@@ -439,6 +439,15 @@ async def admin_reset_tickets(admin: dict = Depends(get_current_admin)):
     return {"status": "success", "message": "🧹 Barcha biletlar va qatnashchilar yangi konkurs uchun tozalandi!"}
 
 
+@router.post("/admin/clear_users")
+@router.get("/admin/clear_users")
+async def admin_clear_users(admin: dict = Depends(get_current_admin)):
+    from backend.database import clear_all_users_data
+    res = await clear_all_users_data()
+    return res
+
+
+
 class BroadcastRequest(BaseModel):
     message: str
 

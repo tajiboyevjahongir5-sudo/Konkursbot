@@ -342,13 +342,18 @@
 
         <!-- Reset Tickets Section -->
         <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--danger-color);">🧹 Biletlarni Nolga Tushirish (Reset)</h4>
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--danger-color);">🧹 Baza va Foydalanuvchilarni Tozalash</h4>
           <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px;">
-            Yangi konkurs boshlash uchun barcha eski biletlar va qatnashchilarni o'chiradi.
+            Sinov biletlari, bajargan vazifalar va test foydalanuvchilarini bazadan to'liq o'chiradi.
           </p>
-          <button id="btn-reset-tickets" class="btn btn-secondary btn-sm" style="background: rgba(255, 59, 48, 0.15); border: 1px solid var(--danger-color); color: var(--danger-color); width: 100%;">
-            <i class="fa-solid fa-trash-can"></i> Barcha Biletlarni O'chirish (Nolga Tushirish)
-          </button>
+          <div style="display: flex; gap: 10px; flex-direction: column;">
+            <button id="btn-reset-tickets" class="btn btn-secondary btn-sm" style="background: rgba(255, 59, 48, 0.15); border: 1px solid var(--danger-color); color: var(--danger-color); width: 100%;">
+              <i class="fa-solid fa-trash-can"></i> Barcha Biletlarni Nolga Tushirish
+            </button>
+            <button id="btn-clear-users" class="btn btn-secondary btn-sm" style="background: rgba(255, 59, 48, 0.25); border: 1px solid var(--danger-color); color: #fff; width: 100%;">
+              <i class="fa-solid fa-user-slash"></i> Barcha Foydalanuvchi Ma'lumotlarini Tozalash (Reset All)
+            </button>
+          </div>
         </div>
 
         <!-- Admin Broadcast Form -->

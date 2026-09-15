@@ -762,3 +762,16 @@ async def save_user_phone(user_id: int, phone_number: str) -> bool:
         await db.execute("UPDATE users SET phone_number = ? WHERE id = ?", (full_phone, user_id))
         await db.commit()
         return True
+
+
+async def clear_all_users_data() -> dict:
+    async with get_db() as db:
+        await db.execute("DELETE FROM user_tasks;")
+        await db.execute("DELETE FROM user_tickets;")
+        await db.execute("DELETE FROM contest_participants;")
+        await db.execute("DELETE FROM referrals;")
+        await db.execute("DELETE FROM winners;")
+        await db.execute("DELETE FROM users;")
+        await db.commit()
+        return {"status": "success", "message": "Barcha foydalanuvchi ma'lumotlari to'liq tozalandi."}
+

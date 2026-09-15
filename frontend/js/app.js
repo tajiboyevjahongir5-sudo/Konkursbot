@@ -823,6 +823,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Clear All Users Handler
+  const clearUsersBtn = document.getElementById("btn-clear-users");
+  if (clearUsersBtn) {
+    clearUsersBtn.addEventListener("click", async () => {
+      if (confirm("Diqqat! Barcha foydalanuvchilar va ularning bajargan vazifalari to'liq o'chiriladi. Tasdiqlaysizmi?")) {
+        try {
+          const res = await apiFetch("/api/admin/clear_users", { method: "POST" });
+          showToast(res.message || "Barcha foydalanuvchilar tozalandi! 🧹", "success");
+          await loadAdminData();
+        } catch (e) {}
+      }
+    });
+  }
+
   // Export Buttons Handlers
   const exportCsvBtn = document.getElementById("btn-export-csv");
   if (exportCsvBtn) {
