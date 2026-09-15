@@ -673,6 +673,155 @@ async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_
     return {"status": "success", "url": auth_url}
 
 
+def render_cyberpunk_result_page(
+    title: str,
+    subtitle: str,
+    status_type: str = "error",
+    user_email: str = "",
+    auto_close: bool = False,
+    action_button_text: str = "",
+    action_button_url: str = ""
+) -> str:
+    color = "#ff3b30" if status_type == "error" else ("#C5FF00" if status_type == "success" else "#ffcc00")
+    border_color = f"{color}50"
+    glow_color = f"{color}30"
+    icon = "❌" if status_type == "error" else ("🎉" if status_type == "success" else "⚠️")
+    
+    script_close = "<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script>" if auto_close else ""
+
+    email_badge = f"<div class='email-badge'>📧 {user_email}</div>" if user_email else ""
+    
+    action_btn_html = ""
+    if action_button_text and action_button_url:
+        action_btn_html = f"<a href='{action_button_url}' target='_blank' class='btn btn-action'>{action_button_text}</a>"
+    
+    close_btn_html = "<button onclick='window.close()' class='btn btn-close'>Oynani Yopish</button>"
+
+    html = f"""<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEEXELL Verification</title>
+    {script_close}
+    <style>
+        * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }}
+        body {{
+            background-color: #0c0d0f;
+            background-image: radial-gradient(circle at 50% 20%, #1a1c23 0%, #0c0d0f 80%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }}
+        .card {{
+            background: rgba(22, 24, 29, 0.95);
+            border: 1px solid {border_color};
+            border-radius: 28px;
+            padding: 36px 26px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px {glow_color};
+            backdrop-filter: blur(16px);
+            animation: fadeIn 0.4s ease-out;
+        }}
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(12px) scale(0.97); }}
+            to {{ opacity: 1; transform: translateY(0) scale(1); }}
+        }}
+        .icon-box {{
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 22px auto;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            border: 2px solid {color};
+            box-shadow: 0 0 25px {glow_color};
+        }}
+        h1 {{
+            font-size: 23px;
+            font-weight: 800;
+            color: {color};
+            margin-bottom: 12px;
+            line-height: 1.35;
+            letter-spacing: -0.3px;
+        }}
+        .email-badge {{
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.12);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin: 10px 0 16px 0;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            word-break: break-all;
+        }}
+        p {{
+            font-size: 16px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 22px;
+            font-weight: 400;
+        }}
+        .btn {{
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }}
+        .btn-action {{
+            background: #ff3b30;
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 8px 20px rgba(255, 59, 48, 0.35);
+        }}
+        .btn-close {{
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+        }}
+        .btn:active {{
+            transform: scale(0.98);
+        }}
+        .timer-text {{
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 18px;
+            font-weight: 500;
+        }}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon-box">{icon}</div>
+        <h1>{title}</h1>
+        {email_badge}
+        <p>{subtitle}</p>
+        {action_btn_html}
+        {close_btn_html}
+        {f'<div class="timer-text">⚡ Oyna 2 soniyada avtomatik yopiladi...</div>' if auto_close else ''}
+    </div>
+</body>
+</html>"""
+    return html
+
+
 @router.get("/auth/google/callback")
 async def google_auth_callback(code: str, state: str):
     import urllib.request
@@ -697,7 +846,12 @@ async def google_auth_callback(code: str, state: str):
 
         access_token = token_resp.get("access_token")
         if not access_token:
-            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Google Auth Xatosi: Access Token olinmadi</h2></div>", media_type="text/html")
+            html = render_cyberpunk_result_page(
+                title="Google Auth Xatosi",
+                subtitle="Google serveridan access token olinmadi. Iltimos qaytadan urinib ko'ring.",
+                status_type="error"
+            )
+            return Response(content=html, media_type="text/html")
 
         # 1. Fetch Google User Info (sub & email) for Anti-Cheat
         google_user_id = None
@@ -717,6 +871,7 @@ async def google_auth_callback(code: str, state: str):
         
         is_subbed = False
         search_targets = set()
+        invite_url = sponsor.get("invite_link", "") if sponsor else ""
         if sponsor:
             if sponsor.get("youtube_channel_id"):
                 search_targets.add(str(sponsor["youtube_channel_id"]).strip().lower())
@@ -748,7 +903,6 @@ async def google_auth_callback(code: str, state: str):
                     ch_id = resource_id.get("channelId", "").lower()
                     ch_title = snippet.get("title", "").lower()
 
-                    # Match channel ID, channel title or handle
                     for target in clean_targets:
                         if target in ch_id or target in ch_title:
                             is_subbed = True
@@ -757,32 +911,68 @@ async def google_auth_callback(code: str, state: str):
                         break
         except Exception as e:
             logger.error(f"Error checking YouTube subscription via API: {e}")
-            # If sub list is empty or API error occurs, fallback to subscription presence check
             pass
 
         if not is_subbed:
-            return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ YouTube Obuna Aniqlanmadi!</h2><p>Siz Google ({user_email}) akkauntingiz bilan ko'rsatilgan YouTube kanalga obuna bo'lmagansiz.</p><p>Iltimos, YouTube'da kanalimizga obuna bo'ling va qaytadan urinib ko'ring.</p></div>", media_type="text/html")
+            html = render_cyberpunk_result_page(
+                title="YouTube Obuna Aniqlanmadi!",
+                subtitle="Siz ushbu Google akkauntingiz bilan ko'rsatilgan YouTube kanalimizga obuna bo'lmagansiz. Iltimos, avval obuna bo'ling!",
+                status_type="error",
+                user_email=user_email,
+                action_button_text="🔴 YouTube'da Obuna Bo'lish",
+                action_button_url=invite_url or "https://youtube.com"
+            )
+            return Response(content=html, media_type="text/html")
 
         if sponsor_id and user_id:
             from backend.database import is_google_account_used
             if google_user_id and await is_google_account_used(google_user_id, sponsor_id):
-                return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Boshqa Telegram Akkauntidan Ishlatilgan!</h2><p>Ushbu Google/Gmail ({user_email}) akkaunti orqali boshqa Telegram hisobida allaqachon bilet olingan. Bitta Gmail bilan faqat 1 marta bilet olish mumkin!</p></div>", media_type="text/html")
+                html = render_cyberpunk_result_page(
+                    title="Boshqa Akkauntdan Ishlatilgan!",
+                    subtitle="Ushbu Google/Gmail akkaunti orqali boshqa Telegram hisobida allaqachon bilet olingan. Bitta Gmail bilan faqat 1 marta bilet olish mumkin!",
+                    status_type="error",
+                    user_email=user_email
+                )
+                return Response(content=html, media_type="text/html")
 
             res = await mark_task_completed(user_id, sponsor_id, google_account_id=google_user_id)
             if isinstance(res, dict) and res.get("status") == "error":
-                return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ {res.get('message')}</h2></div>", media_type="text/html")
+                html = render_cyberpunk_result_page(
+                    title="Xatolik Yuz Berdi",
+                    subtitle=res.get("message", "Vazifani belgilashda xatolik"),
+                    status_type="error",
+                    user_email=user_email
+                )
+                return Response(content=html, media_type="text/html")
 
             all_done = isinstance(res, dict) and res.get("all_completed")
             ticket_msg = "+1 Bilet biriktirildi!" if (isinstance(res, dict) and res.get("ticket_issued")) else ""
 
             if all_done:
-                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! YouTube obunangiz 100% rasmiy tasdiqlandi va barcha homiylarga obuna bo'ldingiz! {ticket_msg}</h2><p>Oyna 2 soniyada yopiladi...</p>"
+                subtitle_text = f"YouTube obunangiz 100% rasmiy tasdiqlandi va barcha homiy vazifalarini bajardingiz! {ticket_msg}"
             else:
-                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>✅ YouTube obunangiz 100% rasmiy tasdiqlandi!</h2><p style='color: #ffcc00;'>Bilet olish uchun barcha homiy kanallarga (Telegram va b.) ham obuna bo'ling.</p><p>Oyna 2 soniyada yopiladi...</p>"
+                subtitle_text = "YouTube obunangiz 100% rasmiy tasdiqlandi! Bilet olish uchun qolgan homiy kanallarga ham obuna bo'ling."
 
-            return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'>{card_html}</div>", media_type="text/html")
+            html = render_cyberpunk_result_page(
+                title="Tabriklaymiz! Obuna Tasdiqlandi!",
+                subtitle=subtitle_text,
+                status_type="success",
+                user_email=user_email,
+                auto_close=True
+            )
+            return Response(content=html, media_type="text/html")
         else:
-            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Parametrlar Xatosi</h2></div>", media_type="text/html")
+            html = render_cyberpunk_result_page(
+                title="Parametrlar Xatosi",
+                subtitle="Murojaat parametrlarida kamchilik bor.",
+                status_type="error"
+            )
+            return Response(content=html, media_type="text/html")
 
     except Exception as e:
-        return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Tekshirishda Xatolik</h2><p>{str(e)}</p></div>", media_type="text/html")
+        html = render_cyberpunk_result_page(
+            title="Tekshirishda Xatolik",
+            subtitle=str(e),
+            status_type="error"
+        )
+        return Response(content=html, media_type="text/html")
