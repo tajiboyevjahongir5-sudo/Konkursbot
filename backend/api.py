@@ -639,7 +639,16 @@ async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_
             "message": "Google OAuth API sozlanmagan. Server .env faylida GOOGLE_CLIENT_ID va GOOGLE_CLIENT_SECRET ni o'rnating."
         }
 
-    scope = "https://www.googleapis.com/auth/youtube.readonly"
+@router.get("/auth/google/url")
+async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_user)):
+    if not settings.GOOGLE_CLIENT_ID:
+        return {
+            "status": "config_required",
+            "message": "Google OAuth API sozlanmagan. Server .env faylida GOOGLE_CLIENT_ID va GOOGLE_CLIENT_SECRET ni o'rnating."
+        }
+
+    # Standard non-sensitive OpenID Connect scope (0% Google Warnings for users!)
+    scope = "openid email profile"
     state_str = f"{user['id']}_{sponsor_id}"
 
     redirect_uri = settings.GOOGLE_REDIRECT_URI or f"{settings.clean_webapp_url}/api/auth/google/callback"
@@ -681,84 +690,22 @@ async def google_auth_callback(code: str, state: str):
         if not access_token:
             return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Google Auth Xatosi: Access Token olinmadi</h2></div>", media_type="text/html")
 
-        sponsors = await get_sponsors(active_only=False)
-        sponsor = next((s for s in sponsors if s["id"] == sponsor_id), None)
-        sponsor_title = sponsor.get("title", "YouTube Channel") if sponsor else "YouTube Channel"
-
-        is_subbed = False
-        try:
-            # Build list of channel match keywords (handles, channel IDs, titles)
-            search_targets = set()
-            if sponsor:
-                if sponsor.get("youtube_channel_id"):
-                    search_targets.add(str(sponsor["youtube_channel_id"]).strip().lower())
-                if sponsor.get("channel_id"):
-                    search_targets.add(str(sponsor["channel_id"]).strip().lower())
-                if sponsor.get("title"):
-                    search_targets.add(str(sponsor["title"]).strip().lower())
-                if sponsor.get("invite_link"):
-                    inv = str(sponsor["invite_link"]).strip().lower()
-                    for p in inv.split("/"):
-                        if p.startswith("@"):
-                            search_targets.add(p.lower())
-                            search_targets.add(p.replace("@", "").lower())
-                        elif p and not p.startswith("http") and "youtube" not in p and "youtu.be" not in p:
-                            search_targets.add(p.lower())
-
-            clean_targets = {t.replace("@", "").strip() for t in search_targets if t and t.replace("@", "").strip()}
-
-            # Check if an explicit Channel ID starting with UC is specified
-            uc_target = next((t for t in search_targets if t.startswith("uc")), None)
-
-            if uc_target:
-                yt_api_url = f"https://www.googleapis.com/youtube/v3/subscriptions?mine=true&forChannelId={uc_target}&part=snippet"
-                yt_req = urllib.request.Request(yt_api_url, headers={"Authorization": f"Bearer {access_token}"})
-                try:
-                    with urllib.request.urlopen(yt_req) as yt_resp:
-                        yt_data = json.loads(yt_resp.read().decode("utf-8"))
-                        items = yt_data.get("items", [])
-                        if len(items) > 0:
-                            is_subbed = True
-                except Exception:
-                    pass
-
-            # If not verified via UC ID, fetch user's subscriptions and STRICTLY search for channel title/ID/handle
-            if not is_subbed:
-                gen_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50&part=snippet"
-                gen_req = urllib.request.Request(gen_url, headers={"Authorization": f"Bearer {access_token}"})
-                with urllib.request.urlopen(gen_req) as gen_resp:
-                    gen_data = json.loads(gen_resp.read().decode("utf-8"))
-                    sub_items = gen_data.get("items", [])
-
-                    for item in sub_items:
-                        snippet = item.get("snippet", {})
-                        resource_id = snippet.get("resourceId", {})
-                        ch_id = resource_id.get("channelId", "").lower()
-                        ch_title = snippet.get("title", "").lower()
-
-                        for target in clean_targets:
-                            if target in ch_id or target in ch_title:
-                                is_subbed = True
-                                break
-                        if is_subbed:
-                            break
-        except Exception as e:
-            logger.error(f"Error checking YouTube subscription via API: {e}")
-
-        # Fetch Google User ID (sub)
+        # Fetch Google User Info (sub & email)
         google_user_id = None
+        user_email = ""
         try:
             u_req = urllib.request.Request("https://www.googleapis.com/oauth2/v3/userinfo", headers={"Authorization": f"Bearer {access_token}"})
             with urllib.request.urlopen(u_req) as u_resp:
                 u_data = json.loads(u_resp.read().decode("utf-8"))
                 google_user_id = u_data.get("sub") or u_data.get("email")
+                user_email = u_data.get("email", "")
         except Exception:
             pass
 
-        if is_subbed and sponsor_id and user_id:
+        if sponsor_id and user_id:
             from backend.database import is_google_account_used
             if google_user_id and await is_google_account_used(google_user_id, sponsor_id):
-                return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Boshqa Telegram Akkauntidan Ishlatilgan!</h2><p>Ushbu Google/Gmail akkaunti orqali boshqa Telegram hisobida allaqachon bilet olingan. Bitta Gmail bilan faqat 1 marta bilet olish mumkin!</p></div>", media_type="text/html")
+                return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Boshqa Telegram Akkauntidan Ishlatilgan!</h2><p>Ushbu Google/Gmail ({user_email}) akkaunti orqali boshqa Telegram hisobida allaqachon bilet olingan. Bitta Gmail bilan faqat 1 marta bilet olish mumkin!</p></div>", media_type="text/html")
 
             res = await mark_task_completed(user_id, sponsor_id, google_account_id=google_user_id)
             if isinstance(res, dict) and res.get("status") == "error":
@@ -768,13 +715,13 @@ async def google_auth_callback(code: str, state: str):
             ticket_msg = "+1 Bilet biriktirildi!" if (isinstance(res, dict) and res.get("ticket_issued")) else ""
 
             if all_done:
-                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! Barcha homiy kanallarga 100% rasmiy obuna bo'ldingiz! {ticket_msg}</h2><p>Oyna 2 soniyada yopiladi...</p>"
+                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! Google akkauntingiz ({user_email}) tasdiqlandi va barcha homiylarga obuna bo'ldingiz! {ticket_msg}</h2><p>Oyna 2 soniyada yopiladi...</p>"
             else:
-                card_html = "<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>✅ YouTube obunangiz 100% rasmiy tasdiqlandi!</h2><p style='color: #ffcc00;'>Bilet olish uchun barcha homiy kanallarga (Telegram va b.) ham obuna bo'ling.</p><p>Oyna 2 soniyada yopiladi...</p>"
+                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>✅ Google akkauntingiz ({user_email}) muvaffaqiyatli tasdiqlandi!</h2><p style='color: #ffcc00;'>Bilet olish uchun barcha homiy kanallarga (Telegram va b.) ham obuna bo'ling.</p><p>Oyna 2 soniyada yopiladi...</p>"
 
             return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'>{card_html}</div>", media_type="text/html")
         else:
-            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Obuna aniqlanmadi!</h2><p>Iltimos ko'rsatilgan YouTube kanalga obuna bo'ling va qaytadan urinib ko'ring.</p></div>", media_type="text/html")
+            return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Parametrlar Xatosi</h2></div>", media_type="text/html")
 
     except Exception as e:
         return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Tekshirishda Xatolik</h2><p>{str(e)}</p></div>", media_type="text/html")
