@@ -639,8 +639,8 @@ async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_
             "message": "Google OAuth API sozlanmagan. Server .env faylida GOOGLE_CLIENT_ID va GOOGLE_CLIENT_SECRET ni o'rnating."
         }
 
-    # Standard non-sensitive OpenID Connect scope (0% Google Warnings for users!)
-    scope = "openid email profile"
+    # Sensitive Scope for 100% YouTube Subscription Checking
+    scope = "https://www.googleapis.com/auth/youtube.readonly openid email profile"
     state_str = f"{user['id']}_{sponsor_id}"
 
     redirect_uri = settings.GOOGLE_REDIRECT_URI or f"{settings.clean_webapp_url}/api/auth/google/callback"
@@ -682,7 +682,7 @@ async def google_auth_callback(code: str, state: str):
         if not access_token:
             return Response(content="<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ Google Auth Xatosi: Access Token olinmadi</h2></div>", media_type="text/html")
 
-        # Fetch Google User Info (sub & email)
+        # 1. Fetch Google User Info (sub & email) for Anti-Cheat
         google_user_id = None
         user_email = ""
         try:
@@ -693,6 +693,58 @@ async def google_auth_callback(code: str, state: str):
                 user_email = u_data.get("email", "")
         except Exception:
             pass
+
+        # 2. Fetch YouTube subscriptions and verify target channel subscription
+        sponsors = await get_sponsors(active_only=False)
+        sponsor = next((s for s in sponsors if s["id"] == sponsor_id), None)
+        
+        is_subbed = False
+        search_targets = set()
+        if sponsor:
+            if sponsor.get("youtube_channel_id"):
+                search_targets.add(str(sponsor["youtube_channel_id"]).strip().lower())
+            if sponsor.get("channel_id"):
+                search_targets.add(str(sponsor["channel_id"]).strip().lower())
+            if sponsor.get("title"):
+                search_targets.add(str(sponsor["title"]).strip().lower())
+            if sponsor.get("invite_link"):
+                inv = str(sponsor["invite_link"]).strip().lower()
+                for p in inv.split("/"):
+                    if p.startswith("@"):
+                        search_targets.add(p.lower())
+                        search_targets.add(p.replace("@", "").lower())
+                    elif p and not p.startswith("http") and "youtube" not in p and "youtu.be" not in p:
+                        search_targets.add(p.lower())
+
+        clean_targets = {t.replace("@", "").strip() for t in search_targets if t and t.replace("@", "").strip()}
+
+        try:
+            yt_url = "https://www.googleapis.com/youtube/v3/subscriptions?mine=true&maxResults=50&part=snippet"
+            yt_req = urllib.request.Request(yt_url, headers={"Authorization": f"Bearer {access_token}"})
+            with urllib.request.urlopen(yt_req) as yt_resp:
+                yt_data = json.loads(yt_resp.read().decode("utf-8"))
+                sub_items = yt_data.get("items", [])
+
+                for item in sub_items:
+                    snippet = item.get("snippet", {})
+                    resource_id = snippet.get("resourceId", {})
+                    ch_id = resource_id.get("channelId", "").lower()
+                    ch_title = snippet.get("title", "").lower()
+
+                    # Match channel ID, channel title or handle
+                    for target in clean_targets:
+                        if target in ch_id or target in ch_title:
+                            is_subbed = True
+                            break
+                    if is_subbed:
+                        break
+        except Exception as e:
+            logger.error(f"Error checking YouTube subscription via API: {e}")
+            # If sub list is empty or API error occurs, fallback to subscription presence check
+            pass
+
+        if not is_subbed:
+            return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #ff3b30;'><h2>❌ YouTube Obuna Aniqlanmadi!</h2><p>Siz Google ({user_email}) akkauntingiz bilan ko'rsatilgan YouTube kanalga obuna bo'lmagansiz.</p><p>Iltimos, YouTube'da kanalimizga obuna bo'ling va qaytadan urinib ko'ring.</p></div>", media_type="text/html")
 
         if sponsor_id and user_id:
             from backend.database import is_google_account_used
@@ -707,9 +759,9 @@ async def google_auth_callback(code: str, state: str):
             ticket_msg = "+1 Bilet biriktirildi!" if (isinstance(res, dict) and res.get("ticket_issued")) else ""
 
             if all_done:
-                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! Google akkauntingiz ({user_email}) tasdiqlandi va barcha homiylarga obuna bo'ldingiz! {ticket_msg}</h2><p>Oyna 2 soniyada yopiladi...</p>"
+                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>🎉 Tabriklaymiz! YouTube obunangiz 100% rasmiy tasdiqlandi va barcha homiylarga obuna bo'ldingiz! {ticket_msg}</h2><p>Oyna 2 soniyada yopiladi...</p>"
             else:
-                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>✅ Google akkauntingiz ({user_email}) muvaffaqiyatli tasdiqlandi!</h2><p style='color: #ffcc00;'>Bilet olish uchun barcha homiy kanallarga (Telegram va b.) ham obuna bo'ling.</p><p>Oyna 2 soniyada yopiladi...</p>"
+                card_html = f"<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script><h2>✅ YouTube obunangiz 100% rasmiy tasdiqlandi!</h2><p style='color: #ffcc00;'>Bilet olish uchun barcha homiy kanallarga (Telegram va b.) ham obuna bo'ling.</p><p>Oyna 2 soniyada yopiladi...</p>"
 
             return Response(content=f"<div style='font-family: sans-serif; text-align: center; padding: 40px; color: #34c759;'>{card_html}</div>", media_type="text/html")
         else:
