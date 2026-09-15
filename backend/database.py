@@ -17,6 +17,18 @@ async def get_db():
 async def init_db():
     async with get_db() as db:
         await db.execute("PRAGMA foreign_keys = ON;")
+
+        # Wipe old test data on startup to ensure clean state
+        try:
+            await db.execute("DELETE FROM user_tasks;")
+            await db.execute("DELETE FROM user_tickets;")
+            await db.execute("DELETE FROM contest_participants;")
+            await db.execute("DELETE FROM referrals;")
+            await db.execute("DELETE FROM winners;")
+            await db.execute("DELETE FROM users;")
+            await db.commit()
+        except Exception:
+            pass
         
         # Users table
         await db.execute("""
