@@ -639,14 +639,6 @@ async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_
             "message": "Google OAuth API sozlanmagan. Server .env faylida GOOGLE_CLIENT_ID va GOOGLE_CLIENT_SECRET ni o'rnating."
         }
 
-@router.get("/auth/google/url")
-async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_user)):
-    if not settings.GOOGLE_CLIENT_ID:
-        return {
-            "status": "config_required",
-            "message": "Google OAuth API sozlanmagan. Server .env faylida GOOGLE_CLIENT_ID va GOOGLE_CLIENT_SECRET ni o'rnating."
-        }
-
     # Standard non-sensitive OpenID Connect scope (0% Google Warnings for users!)
     scope = "openid email profile"
     state_str = f"{user['id']}_{sponsor_id}"
