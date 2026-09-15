@@ -697,12 +697,8 @@ def render_cyberpunk_result_page(
             }} catch (e) {{}}
             
             window.close();
-            
-            setTimeout(function() {{
-                window.location.href = "https://t.me/peexell_contest_bot";
-            }}, 200);
         }}
-        { "setTimeout(returnToBot, 3000);" if auto_close else "" }
+        { "setTimeout(returnToBot, 2500);" if auto_close else "" }
     </script>
     """
 
@@ -712,7 +708,7 @@ def render_cyberpunk_result_page(
     if action_button_text and action_button_url:
         action_btn_html = f"<a href='{action_button_url}' target='_blank' class='btn btn-action'>{action_button_text}</a>"
     
-    close_btn_html = "<button onclick='returnToBot()' class='btn btn-close'>✈️ Telegram Botga Qaytish</button>"
+    close_btn_html = "<button onclick='returnToBot()' class='btn btn-close'>Oynani Yopish</button>"
 
     progress_bar_html = "<div class='progress-bar-container'><div class='progress-bar-fill'></div></div>" if auto_close else ""
 
@@ -871,7 +867,7 @@ def render_cyberpunk_result_page(
             height: 100%;
             background: {color};
             width: 100%;
-            animation: countdownBar 3s linear forwards;
+            animation: countdownBar 2.5s linear forwards;
         }}
         @keyframes countdownBar {{
             from {{ width: 100%; }}
@@ -887,7 +883,7 @@ def render_cyberpunk_result_page(
         <p>{subtitle}</p>
         {action_btn_html}
         {close_btn_html}
-        {f'<div class="timer-text">⚡ 3 soniyada avtomatik Telegram Botga qaytariladi...</div>' if auto_close else ''}
+        {f'<div class="timer-text">⚡ 2.5 soniyada avtomatik yopiladi...</div>' if auto_close else ''}
         {progress_bar_html}
     </div>
 </body>
