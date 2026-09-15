@@ -280,8 +280,63 @@
             <input type="text" id="admin-contest-prizes" class="form-input" placeholder="10,000,000 UZS + iPhone 15 Pro">
           </div>
           <div class="form-group">
-            <label>Konkurs Tugash Vaqti (Kun va Soat):</label>
-            <input type="datetime-local" id="admin-contest-endtime" class="form-input">
+            <label><i class="fa-regular fa-clock" style="color: var(--primary-color);"></i> Konkurs Tugash Vaqti (24-soatlik tizim):</label>
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px;">
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 3px;">Sana:</span>
+                <input type="date" id="admin-contest-enddate" class="form-input" style="padding: 10px 8px; background: var(--card-bg); color: #fff;">
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 3px;">Soat (00-23):</span>
+                <select id="admin-contest-hour" class="form-input" style="padding: 10px 4px; background: var(--card-bg); color: #fff; text-align: center;">
+                  <option value="00">00:00</option>
+                  <option value="01">01:00</option>
+                  <option value="02">02:00</option>
+                  <option value="03">03:00</option>
+                  <option value="04">04:00</option>
+                  <option value="05">05:00</option>
+                  <option value="06">06:00</option>
+                  <option value="07">07:00</option>
+                  <option value="08">08:00</option>
+                  <option value="09">09:00</option>
+                  <option value="10">10:00</option>
+                  <option value="11">11:00</option>
+                  <option value="12">12:00</option>
+                  <option value="13">13:00</option>
+                  <option value="14">14:00</option>
+                  <option value="15">15:00</option>
+                  <option value="16">16:00</option>
+                  <option value="17">17:00</option>
+                  <option value="18">18:00</option>
+                  <option value="19">19:00</option>
+                  <option value="20">20:00</option>
+                  <option value="21">21:00</option>
+                  <option value="22">22:00</option>
+                  <option value="23" selected>23:00</option>
+                </select>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 3px;">Daqiqa (00-59):</span>
+                <select id="admin-contest-minute" class="form-input" style="padding: 10px 4px; background: var(--card-bg); color: #fff; text-align: center;">
+                  <option value="00">00 daq</option>
+                  <option value="05">05 daq</option>
+                  <option value="10">10 daq</option>
+                  <option value="15">15 daq</option>
+                  <option value="20">20 daq</option>
+                  <option value="25">25 daq</option>
+                  <option value="30">30 daq</option>
+                  <option value="35">35 daq</option>
+                  <option value="40">40 daq</option>
+                  <option value="45">45 daq</option>
+                  <option value="50">50 daq</option>
+                  <option value="55">55 daq</option>
+                  <option value="59" selected>59 daq</option>
+                </select>
+              </div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--primary-color); margin-top: 5px;">
+              <i class="fa-solid fa-circle-check"></i> O'zbekiston 24-soatlik tizimi (AM / PM siz)
+            </div>
           </div>
           <button id="btn-save-contest" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
             <i class="fa-solid fa-circle-check"></i> Konkurs Ma'lumotlarini Saqlash

@@ -652,16 +652,38 @@ document.addEventListener("DOMContentLoaded", () => {
         const titleInput = document.getElementById("admin-contest-title");
         const descInput = document.getElementById("admin-contest-desc");
         const prizeInput = document.getElementById("admin-contest-prizes");
-        const endInput = document.getElementById("admin-contest-endtime");
+        const dateInput = document.getElementById("admin-contest-enddate");
+        const hourSelect = document.getElementById("admin-contest-hour");
+        const minSelect = document.getElementById("admin-contest-minute");
 
         if (titleInput) titleInput.value = activeContest.title || "";
         if (descInput) descInput.value = activeContest.description || "";
         if (prizeInput) prizeInput.value = activeContest.prize_pool || "";
-        if (endInput && activeContest.end_time) {
+        if (activeContest.end_time) {
           try {
             const dt = new Date(activeContest.end_time);
-            const localIso = new Date(dt.getTime() - (dt.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-            endInput.value = localIso;
+            const yyyy = dt.getFullYear();
+            const mm = String(dt.getMonth() + 1).padStart(2, '0');
+            const dd = String(dt.getDate()).padStart(2, '0');
+            const hh = String(dt.getHours()).padStart(2, '0');
+            const min = String(dt.getMinutes()).padStart(2, '0');
+
+            if (dateInput) dateInput.value = `${yyyy}-${mm}-${dd}`;
+            if (hourSelect) hourSelect.value = hh;
+            if (minSelect) {
+              let matched = false;
+              for (let opt of minSelect.options) {
+                if (opt.value === min) {
+                  minSelect.value = min;
+                  matched = true;
+                  break;
+                }
+              }
+              if (!matched) {
+                const newOpt = new Option(`${min} daq`, min, true, true);
+                minSelect.add(newOpt);
+              }
+            }
           } catch (e) {}
         }
       }
@@ -718,14 +740,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const title = document.getElementById("admin-contest-title").value.trim();
       const description = document.getElementById("admin-contest-desc").value.trim();
       const prize_pool = document.getElementById("admin-contest-prizes").value.trim();
-      const end_time_val = document.getElementById("admin-contest-endtime").value;
+      const dateVal = document.getElementById("admin-contest-enddate")?.value;
+      const hourVal = document.getElementById("admin-contest-hour")?.value || "23";
+      const minVal = document.getElementById("admin-contest-minute")?.value || "59";
 
-      if (!title || !description || !prize_pool || !end_time_val) {
+      if (!title || !description || !prize_pool || !dateVal) {
         showToast("Barcha maydonlarni to'ldiring!", "warning");
         return;
       }
 
-      const end_time = new Date(end_time_val).toISOString();
+      const end_time = new Date(`${dateVal}T${hourVal}:${minVal}:00`).toISOString();
 
       try {
         await apiFetch("/api/admin/contest/update", {

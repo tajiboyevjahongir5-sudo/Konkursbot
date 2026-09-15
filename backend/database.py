@@ -17,18 +17,6 @@ async def get_db():
 async def init_db():
     async with get_db() as db:
         await db.execute("PRAGMA foreign_keys = ON;")
-
-        # Wipe old test data on startup to ensure clean state
-        try:
-            await db.execute("DELETE FROM user_tasks;")
-            await db.execute("DELETE FROM user_tickets;")
-            await db.execute("DELETE FROM contest_participants;")
-            await db.execute("DELETE FROM referrals;")
-            await db.execute("DELETE FROM winners;")
-            await db.execute("DELETE FROM users;")
-            await db.commit()
-        except Exception:
-            pass
         
         # Users table
         await db.execute("""
@@ -467,8 +455,14 @@ async def check_and_handle_contest_expiration(db):
         contest_dict = dict(row)
 
     try:
-        end_dt = datetime.fromisoformat(contest_dict["end_time"])
-        if datetime.now() >= end_dt:
+        raw_end = contest_dict["end_time"]
+        if raw_end.endswith("Z"):
+            end_dt = datetime.fromisoformat(raw_end.replace("Z", "+00:00"))
+        else:
+            end_dt = datetime.fromisoformat(raw_end)
+        
+        now = datetime.now(end_dt.tzinfo) if end_dt.tzinfo else datetime.now()
+        if now >= end_dt:
             await db.execute("UPDATE contests SET is_active = 0 WHERE id = ?", (contest_dict["id"],))
             await db.commit()
             await clear_all_tickets_and_participants(db)
