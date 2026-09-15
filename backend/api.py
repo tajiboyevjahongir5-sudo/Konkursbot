@@ -684,7 +684,7 @@ def render_cyberpunk_result_page(
 ) -> str:
     color = "#ff3b30" if status_type == "error" else ("#C5FF00" if status_type == "success" else "#ffcc00")
     border_color = f"{color}50"
-    glow_color = f"{color}30"
+    glow_color = f"{color}40"
     icon = "❌" if status_type == "error" else ("🎉" if status_type == "success" else "⚠️")
     
     script_close = "<script>window.opener ? window.opener.postMessage('yt_success', '*') : null; setTimeout(() => window.close(), 2500);</script>" if auto_close else ""
@@ -696,6 +696,8 @@ def render_cyberpunk_result_page(
         action_btn_html = f"<a href='{action_button_url}' target='_blank' class='btn btn-action'>{action_button_text}</a>"
     
     close_btn_html = "<button onclick='window.close()' class='btn btn-close'>Oynani Yopish</button>"
+
+    progress_bar_html = "<div class='progress-bar-container'><div class='progress-bar-fill'></div></div>" if auto_close else ""
 
     html = f"""<!DOCTYPE html>
 <html lang="uz">
@@ -715,6 +717,7 @@ def render_cyberpunk_result_page(
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
+            overflow: hidden;
         }}
         .card {{
             background: rgba(22, 24, 29, 0.95);
@@ -724,34 +727,42 @@ def render_cyberpunk_result_page(
             max-width: 440px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px {glow_color};
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px {glow_color};
             backdrop-filter: blur(16px);
-            animation: fadeIn 0.4s ease-out;
+            animation: cardPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
         }}
-        @keyframes fadeIn {{
-            from {{ opacity: 0; transform: translateY(12px) scale(0.97); }}
-            to {{ opacity: 1; transform: translateY(0) scale(1); }}
+        @keyframes cardPopIn {{
+            0% {{ opacity: 0; transform: translateY(24px) scale(0.9); }}
+            100% {{ opacity: 1; transform: translateY(0) scale(1); }}
         }}
         .icon-box {{
-            width: 80px;
-            height: 80px;
+            width: 86px;
+            height: 86px;
             margin: 0 auto 22px auto;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.04);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 42px;
+            font-size: 44px;
             border: 2px solid {color};
-            box-shadow: 0 0 25px {glow_color};
+            box-shadow: 0 0 30px {glow_color};
+            animation: pulseGlow 2s infinite ease-in-out;
+        }}
+        @keyframes pulseGlow {{
+            0%, 100% {{ transform: scale(1); box-shadow: 0 0 20px {glow_color}; }}
+            50% {{ transform: scale(1.06); box-shadow: 0 0 40px {glow_color}; }}
         }}
         h1 {{
-            font-size: 23px;
+            font-size: 24px;
             font-weight: 800;
             color: {color};
             margin-bottom: 12px;
             line-height: 1.35;
             letter-spacing: -0.3px;
+            text-shadow: 0 0 16px {glow_color};
         }}
         .email-badge {{
             display: inline-block;
@@ -764,6 +775,11 @@ def render_cyberpunk_result_page(
             margin: 10px 0 16px 0;
             border: 1px solid rgba(56, 189, 248, 0.25);
             word-break: break-all;
+            animation: floatBadge 3s ease-in-out infinite;
+        }}
+        @keyframes floatBadge {{
+            0%, 100% {{ transform: translateY(0); }}
+            50% {{ transform: translateY(-3px); }}
         }}
         p {{
             font-size: 16px;
@@ -784,26 +800,65 @@ def render_cyberpunk_result_page(
             transition: all 0.2s ease;
             box-sizing: border-box;
             margin-top: 10px;
+            position: relative;
+            overflow: hidden;
         }}
         .btn-action {{
-            background: #ff3b30;
+            background: linear-gradient(135deg, #ff3b30 0%, #d62d23 100%);
             color: #ffffff;
             border: none;
-            box-shadow: 0 8px 20px rgba(255, 59, 48, 0.35);
+            box-shadow: 0 8px 24px rgba(255, 59, 48, 0.4);
+            animation: shimmer 2.5s infinite;
+        }}
+        .btn-action::after {{
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: rotate(30deg);
+            animation: lightShimmer 3s infinite;
+        }}
+        @keyframes lightShimmer {{
+            0% {{ transform: translateX(-100%) rotate(30deg); }}
+            100% {{ transform: translateX(100%) rotate(30deg); }}
         }}
         .btn-close {{
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.18);
             color: #ffffff;
         }}
+        .btn:hover {{
+            transform: translateY(-2px);
+        }}
         .btn:active {{
-            transform: scale(0.98);
+            transform: scale(0.97);
         }}
         .timer-text {{
             font-size: 13px;
             color: #64748b;
             margin-top: 18px;
             font-weight: 500;
+        }}
+        .progress-bar-container {{
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }}
+        .progress-bar-fill {{
+            height: 100%;
+            background: {color};
+            width: 100%;
+            animation: countdownBar 2.5s linear forwards;
+        }}
+        @keyframes countdownBar {{
+            from {{ width: 100%; }}
+            to {{ width: 0%; }}
         }}
     </style>
 </head>
@@ -815,7 +870,8 @@ def render_cyberpunk_result_page(
         <p>{subtitle}</p>
         {action_btn_html}
         {close_btn_html}
-        {f'<div class="timer-text">⚡ Oyna 2 soniyada avtomatik yopiladi...</div>' if auto_close else ''}
+        {f'<div class="timer-text">⚡ Oyna 2.5 soniyada avtomatik yopiladi...</div>' if auto_close else ''}
+        {progress_bar_html}
     </div>
 </body>
 </html>"""
