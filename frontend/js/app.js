@@ -466,20 +466,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (platform === "youtube") {
               try {
-                const checkRes = await apiFetch("/api/tasks/check", {
-                  method: "POST",
-                  body: JSON.stringify({ sponsor_id: sponsorId })
-                });
-
-                if (checkRes.completed) {
-                  showToast(checkRes.message, "success");
-                  await loadUserData();
-                  await loadTasks();
+                const gRes = await apiFetch(`/api/auth/google/url?sponsor_id=${sponsorId}`);
+                if (gRes.status === "success" && gRes.url) {
+                  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                    window.Telegram.WebApp.openLink(gRes.url);
+                  } else {
+                    window.open(gRes.url, '_blank', 'width=500,height=600');
+                  }
+                  showToast("🔐 Google akkauntingiz orqali YouTube Data API obunasi 100% rasmiy tekshirilmoqda...", "warning");
                 } else {
-                  showToast(checkRes.message, "danger");
+                  showToast(gRes.message || "YouTube API bilan ulanishda xatolik!", "danger");
                 }
               } catch (err) {
-                showToast("Tekshirishda xatolik yuz berdi", "danger");
+                showToast("Google API bilan ulanishda xatolik!", "danger");
               } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
