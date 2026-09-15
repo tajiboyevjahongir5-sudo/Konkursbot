@@ -341,13 +341,13 @@ async def get_user_tasks(user_id: int) -> List[Dict[str, Any]]:
             return [dict(r) for r in rows]
 
 
-async def is_google_account_used(google_account_id: str, sponsor_id: int) -> bool:
+async def is_google_account_used(google_account_id: str, sponsor_id: int, current_user_id: int = 0) -> bool:
     if not google_account_id:
         return False
     async with get_db() as db:
         async with db.execute(
-            "SELECT id FROM user_tasks WHERE sponsor_id = ? AND google_account_id = ? AND completed = 1",
-            (sponsor_id, google_account_id)
+            "SELECT id FROM user_tasks WHERE sponsor_id = ? AND google_account_id = ? AND completed = 1 AND user_id != ?",
+            (sponsor_id, google_account_id, current_user_id)
         ) as cursor:
             row = await cursor.fetchone()
             return row is not None

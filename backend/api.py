@@ -982,7 +982,7 @@ async def google_auth_callback(code: str, state: str):
 
         if sponsor_id and user_id:
             from backend.database import is_google_account_used
-            if google_user_id and await is_google_account_used(google_user_id, sponsor_id):
+            if google_user_id and await is_google_account_used(google_user_id, sponsor_id, current_user_id=user_id):
                 html = render_cyberpunk_result_page(
                     title="Boshqa Akkauntdan Ishlatilgan!",
                     subtitle="Ushbu Google/Gmail akkaunti orqali boshqa Telegram hisobida allaqachon bilet olingan. Bitta Gmail bilan faqat 1 marta bilet olish mumkin!",
