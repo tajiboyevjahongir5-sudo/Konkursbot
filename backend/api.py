@@ -635,13 +635,19 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
     if format == "csv":
         import csv
         import io
+        from datetime import datetime
         output = io.StringIO()
-        # Write UTF-8 BOM for Excel auto-encoding
+        # Write UTF-8 BOM so Excel opens with correct characters (o', g', etc.)
         output.write('\ufeff')
+        output.write('sep=;\n')
         writer = csv.writer(output, delimiter=';')
         
-        # Report Header
-        writer.writerow([f"PEEXELL KONKURS HISOBOT FAYLI - {contest_name}"])
+        # Professional Report Header
+        export_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        writer.writerow(["PEEXELL KONKURS RASMIY HISOBOTI"])
+        writer.writerow(["Konkurs Nomi:", contest_name])
+        writer.writerow(["Eksport Sanasi:", export_time])
+        writer.writerow(["Jami Qatnashchilar:", f"{len(users_data)} nafar"])
         writer.writerow([])
         writer.writerow([
             "T/r",
@@ -650,8 +656,8 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
             "Username",
             "Telefon Raqami",
             "Biletlar Soni",
-            "Bilet Raqamlari (Seriya)",
-            "Chaqirgan Do'stlari",
+            "Taklif Qilgan Do'stlari",
+            "Bilet Kodlari (Seriya)",
             "Ro'yxatdan O'tgan Vaqti"
         ])
 
@@ -666,25 +672,26 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
 
             writer.writerow([
                 idx,
-                u["id"],
+                f"ID:{u['id']}",
                 full_name,
                 uname,
                 phone,
-                f"{ticket_count} ta",
+                ticket_count,
+                ref_cnt,
                 tickets_str,
-                f"{ref_cnt} ta",
                 created
             ])
 
         csv_data = output.getvalue().encode('utf-8-sig')
-        filename = f"peexell_konkurs_hisoboti.csv"
+        filename = "peexell_konkurs_hisoboti.csv"
         return Response(
             content=csv_data,
             media_type="text/csv; charset=utf-8",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
 
-    # Return structured JSON format
+    # Return structured, clean JSON format
+    from datetime import datetime
     export_list = []
     for idx, u in enumerate(users_data, start=1):
         full_name = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Foydalanuvchi"
@@ -696,14 +703,15 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
             "username": f"@{u['username']}" if u.get("username") else None,
             "phone_number": u.get("phone_number"),
             "tickets_count": u.get("ticket_count", 0),
-            "ticket_numbers": t_list,
             "referrals_count": u.get("referrals_count", 0),
+            "ticket_numbers": t_list,
             "created_at": u.get("created_at")
         })
 
     return {
         "status": "success",
         "contest": contest_name,
+        "exported_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "total_participants": len(export_list),
         "data": export_list
     }

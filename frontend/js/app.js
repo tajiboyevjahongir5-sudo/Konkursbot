@@ -1045,24 +1045,64 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Export Buttons Handlers
+  // Export Buttons Handlers (Blob-based clean downloads for Telegram WebApp)
   const exportCsvBtn = document.getElementById("btn-export-csv");
   if (exportCsvBtn) {
-    exportCsvBtn.addEventListener("click", () => {
-      window.open(`/api/admin/export?format=csv&initData=${encodeURIComponent(initData)}`, '_blank');
+    exportCsvBtn.addEventListener("click", async () => {
+      try {
+        exportCsvBtn.disabled = true;
+        exportCsvBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CSV Yuklanmoqda...';
+
+        const res = await fetch(`/api/admin/export?format=csv`, {
+          headers: {
+            'X-Telegram-Init-Data': initData
+          }
+        });
+
+        if (!res.ok) throw new Error("Yuklab olishda xatolik");
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "peexell_konkurs_foydalanuvchilar.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("CSV fayl muvaffaqiyatli yuklab olindi! 📊", "success");
+      } catch (err) {
+        showToast("CSV faylni yuklab olishda xatolik!", "danger");
+      } finally {
+        exportCsvBtn.disabled = false;
+        exportCsvBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down"></i> CSV Yuklab Olish';
+      }
     });
   }
 
   const exportJsonBtn = document.getElementById("btn-export-json");
   if (exportJsonBtn) {
     exportJsonBtn.addEventListener("click", async () => {
-      const data = await apiFetch("/api/admin/export?format=json");
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "peexell_contest_export.json";
-      a.click();
-      URL.revokeObjectURL(url);
+      try {
+        exportJsonBtn.disabled = true;
+        exportJsonBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> JSON Yuklanmoqda...';
+
+        const data = await apiFetch("/api/admin/export?format=json");
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "peexell_konkurs_backup.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("JSON fayl muvaffaqiyatli yuklab olindi! 💻", "success");
+      } catch (err) {
+        showToast("JSON faylni yuklab olishda xatolik!", "danger");
+      } finally {
+        exportJsonBtn.disabled = false;
+        exportJsonBtn.innerHTML = '<i class="fa-solid fa-code"></i> JSON Yuklab Olish';
+      }
     });
   }
 
