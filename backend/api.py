@@ -983,7 +983,34 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
             ])
 
         csv_data = output.getvalue().encode('utf-8-sig')
-        filename = "peexell_konkurs_hisoboti.csv"
+        filename = f"peexell_konkurs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
+        from backend.main import get_bot_instance
+        from aiogram.types import BufferedInputFile
+        bot = get_bot_instance()
+        admin_id = admin.get("id")
+
+        if bot and admin_id:
+            try:
+                doc = BufferedInputFile(csv_data, filename=filename)
+                caption = (
+                    f"📊 <b>PEEXELL KONKURS RASMIY HISOBOTI (CSV)</b>\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"🏆 <b>Konkurs:</b> {contest_name}\n"
+                    f"👥 <b>Qatnashchilar:</b> {len(users_data)} nafar\n"
+                    f"📅 <b>Sana:</b> {export_time}\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"📁 <i>Faylni Microsoft Excel yoki Google Sheets dasturlarida bemalol ochishingiz mumkin.</i>"
+                )
+                await bot.send_document(chat_id=admin_id, document=doc, caption=caption, parse_mode="HTML")
+                return {
+                    "status": "success",
+                    "sent_to_bot": True,
+                    "message": "CSV hisobot fayli Telegram botingizga yuborildi! 📥 Chatga qarang."
+                }
+            except Exception as e:
+                logger.error(f"Failed to send CSV to admin: {e}")
+
         return Response(
             content=csv_data,
             media_type="text/csv; charset=utf-8",
@@ -992,6 +1019,7 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
 
     # Return structured, clean JSON format
     from datetime import datetime
+    export_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     export_list = []
     for idx, u in enumerate(users_data, start=1):
         full_name = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Foydalanuvchi"
@@ -1008,13 +1036,41 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
             "created_at": u.get("created_at")
         })
 
-    return {
+    json_result = {
         "status": "success",
         "contest": contest_name,
-        "exported_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "exported_at": export_time,
         "total_participants": len(export_list),
         "data": export_list
     }
+
+    from backend.main import get_bot_instance
+    from aiogram.types import BufferedInputFile
+    bot = get_bot_instance()
+    admin_id = admin.get("id")
+
+    if bot and admin_id:
+        try:
+            json_bytes = json.dumps(json_result, ensure_ascii=False, indent=2).encode('utf-8')
+            filename = f"peexell_konkurs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            doc = BufferedInputFile(json_bytes, filename=filename)
+            caption = (
+                f"💻 <b>PEEXELL KONKURS BAZA HISOBOTI (JSON)</b>\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"🏆 <b>Konkurs:</b> {contest_name}\n"
+                f"👥 <b>Qatnashchilar:</b> {len(users_data)} nafar\n"
+                f"📅 <b>Sana:</b> {export_time}"
+            )
+            await bot.send_document(chat_id=admin_id, document=doc, caption=caption, parse_mode="HTML")
+            return {
+                "status": "success",
+                "sent_to_bot": True,
+                "message": "JSON hisobot fayli Telegram botingizga yuborildi! 📥 Chatga qarang."
+            }
+        except Exception as e:
+            logger.error(f"Failed to send JSON to admin: {e}")
+
+    return json_result
 
 
 # --- YOUTUBE DATA API (GOOGLE OAUTH 2.0) ENDPOINTS ---
