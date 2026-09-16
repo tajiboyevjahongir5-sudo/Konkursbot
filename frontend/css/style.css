@@ -174,14 +174,15 @@ body::before {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  gap: 4px;
+  gap: 3px;
   cursor: pointer;
   transition: var(--transition-fast);
-  padding: 6px 8px;
+  padding: 6px 4px;
   border-radius: var(--radius-md);
   flex: 1;
+  white-space: nowrap;
 }
 
 .nav-item .icon {

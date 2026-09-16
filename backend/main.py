@@ -2,9 +2,10 @@ import asyncio
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, HTMLResponse
 from aiogram import Bot, Dispatcher
 
 from backend.config import settings
@@ -94,8 +95,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-from fastapi.responses import FileResponse
 
 # Explicit Root FileResponse endpoints for Privacy Policy and Terms of Service (Google OAuth Verification requirement)
 frontend_dir = Path(__file__).resolve().parent.parent / "frontend"

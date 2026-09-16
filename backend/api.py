@@ -1,10 +1,13 @@
 import hmac
 import hashlib
 import json
+import logging
 import urllib.parse
 from typing import Optional, List
 from fastapi import APIRouter, Header, HTTPException, Depends, Query, Response, Request
 from pydantic import BaseModel
+
+logger = logging.getLogger("PEEXELL_API")
 
 from backend.config import settings
 from backend.database import (

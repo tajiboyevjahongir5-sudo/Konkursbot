@@ -1,3 +1,4 @@
+import sqlite3
 import aiosqlite
 import random
 from contextlib import asynccontextmanager
@@ -541,6 +542,9 @@ async def pick_random_winners(contest_id: int, count: int = 3, prizes: Optional[
             if len(selected_ids) >= count:
                 break
 
+        # Clean previous winners for this contest cycle
+        await db.execute("DELETE FROM winners WHERE contest_id = ?", (contest_id,))
+
         # Record winners
         winners_list = []
         for idx, uid in enumerate(selected_ids):
@@ -636,7 +640,7 @@ async def issue_ticket_db(db, user_id: int, contest_id: int, reason: str = "Konk
             """, (user_id, candidate_number, contest_id, reason))
             ticket_number = candidate_number
             break
-        except sqlite3.IntegrityError:
+        except (sqlite3.IntegrityError, aiosqlite.IntegrityError, Exception):
             retry_count += 1
             continue
 
@@ -872,6 +876,11 @@ async def admin_modify_user_tickets(user_id: int, delta: int, reason: str = "Adm
                 row_c = await c.fetchone()
                 contest_id = row_c["id"] if row_c else 1
             
+            await db.execute("""
+                INSERT OR IGNORE INTO contest_participants (user_id, contest_id)
+                VALUES (?, ?)
+            """, (user_id, contest_id))
+
             for _ in range(delta):
                 ticket_num = f"TICK-{user_id}-{random.randint(100000, 999999)}"
                 await db.execute("""

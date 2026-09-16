@@ -147,6 +147,18 @@ async def contact_handler(message: Message):
     except Exception:
         pass
 
+    # Set Telegram Chat Menu Button
+    try:
+        await message.bot.set_chat_menu_button(
+            chat_id=message.chat.id,
+            menu_button=MenuButtonWebApp(
+                text="🚀 PEEXELL Web App",
+                web_app=WebAppInfo(url=settings.clean_webapp_url)
+            )
+        )
+    except Exception:
+        pass
+
     await message.answer(
         success_text,
         parse_mode="Markdown",

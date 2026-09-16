@@ -244,6 +244,49 @@
       </div>
     </section>
 
+    <!-- TAB: REYTING (LEADERBOARD) -->
+    <section id="tab-leaderboard" class="tab-content">
+      <div class="card">
+        <div class="card-header-title">
+          <i class="fa-solid fa-trophy" style="color: var(--secondary-color);"></i>
+          <span>🏆 Ishtirokchilar Reytingi</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Eng ko'p biletga ega ishtirokchilar ro'yxati. Har bir bilet g'olib bo'lish imkoniyatingizni oshiradi!
+        </p>
+
+        <!-- TOP 3 PODIUM -->
+        <div class="podium-container">
+          <!-- Rank 2 -->
+          <div class="podium-card rank-2">
+            <div class="podium-crown">🥈</div>
+            <div id="podium-2-name" class="podium-name">---</div>
+            <div id="podium-2-tickets" class="podium-tickets">0 Bilet</div>
+          </div>
+          <!-- Rank 1 -->
+          <div class="podium-card rank-1">
+            <div class="podium-crown">👑</div>
+            <div id="podium-1-name" class="podium-name">---</div>
+            <div id="podium-1-tickets" class="podium-tickets">0 Bilet</div>
+          </div>
+          <!-- Rank 3 -->
+          <div class="podium-card rank-3">
+            <div class="podium-crown">🥉</div>
+            <div id="podium-3-name" class="podium-name">---</div>
+            <div id="podium-3-tickets" class="podium-tickets">0 Bilet</div>
+          </div>
+        </div>
+
+        <!-- Leaderboard List -->
+        <div style="border-top: 1px solid var(--card-border); padding-top: 14px;">
+          <h4 style="font-size: 0.95rem; color: var(--primary-color); margin-bottom: 12px;">📊 Barcha Ishtirokchilar</h4>
+          <div id="leaderboard-list">
+            <div style="text-align: center; color: var(--text-secondary); padding: 15px;">Yuklanmoqda...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- TAB 4: ADMIN PANEL (Only visible for Admins) -->
     <section id="tab-admin" class="tab-content">
       <div class="card">
@@ -594,9 +637,17 @@
         <i class="fa-solid fa-user-plus icon"></i>
         <span>Do'stlar</span>
       </button>
+      <button class="nav-item" data-tab="tab-leaderboard">
+        <i class="fa-solid fa-trophy icon"></i>
+        <span>Reyting</span>
+      </button>
       <button class="nav-item" data-tab="tab-profile">
         <i class="fa-solid fa-user icon"></i>
         <span>Profil</span>
+      </button>
+      <button id="nav-item-admin" class="nav-item" data-tab="tab-admin" style="display: none;">
+        <i class="fa-solid fa-sliders icon"></i>
+        <span>Admin</span>
       </button>
     </nav>
 

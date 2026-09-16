@@ -113,14 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateNavVisibility(targetTab) {
     const bottomNav = document.querySelector(".bottom-nav");
     if (!bottomNav) return;
-
-    if (targetTab === "tab-admin" || targetTab === "admin") {
-      bottomNav.style.display = "none";
-      document.body.style.paddingBottom = "20px";
-    } else {
-      bottomNav.style.display = "flex";
-      document.body.style.paddingBottom = "80px";
-    }
+    bottomNav.style.display = "flex";
+    document.body.style.paddingBottom = "85px";
   }
 
   navItems.forEach(item => {
@@ -141,6 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
         loadContestData();
         loadTasks();
         loadPublicWinners();
+      }
+      if (targetTab === "tab-leaderboard") {
+        loadLeaderboard();
       }
       if (targetTab === "tab-profile" || targetTab === "tab-friends") {
         loadUserData();
@@ -250,6 +247,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (rInput) rInput.value = currentUser.ref_link;
         if (rCount) rCount.textContent = currentUser.referrals_count;
         if (rTickets) rTickets.textContent = currentUser.tickets;
+
+        // Show Admin Nav Button if user is an Admin
+        if (currentUser.is_admin) {
+          const adminNavBtn = document.getElementById("nav-item-admin");
+          if (adminNavBtn) adminNavBtn.style.display = "flex";
+        }
       }
     } catch (err) {
       console.log("Could not load user data");
@@ -262,11 +265,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (res.status === "success" && res.contest) {
         activeContest = res.contest;
 
-        document.getElementById("contest-title").textContent = activeContest.title;
-        document.getElementById("contest-description").textContent = activeContest.description;
-        document.getElementById("contest-prizes-list").textContent = activeContest.prize_pool;
+        const titleEl = document.getElementById("contest-title");
+        const descEl = document.getElementById("contest-description");
+        const prizesEl = document.getElementById("contest-prizes-list");
 
-        startCountdown(activeContest.end_time);
+        if (titleEl) titleEl.textContent = activeContest.title || "";
+        if (descEl) descEl.textContent = activeContest.description || "";
+        if (prizesEl) prizesEl.textContent = activeContest.prize_pool || "";
+
+        if (activeContest.end_time) {
+          startCountdown(activeContest.end_time);
+        }
       }
     } catch (err) {
       console.log("Could not load contest data");
@@ -283,12 +292,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const now = new Date().getTime();
       const distance = endTime - now;
 
+      const dEl = document.getElementById("timer-days");
+      const hEl = document.getElementById("timer-hours");
+      const mEl = document.getElementById("timer-mins");
+      const sEl = document.getElementById("timer-secs");
+
       if (distance <= 0) {
         clearInterval(countdownInterval);
-        document.getElementById("timer-days").textContent = "00";
-        document.getElementById("timer-hours").textContent = "00";
-        document.getElementById("timer-mins").textContent = "00";
-        document.getElementById("timer-secs").textContent = "00";
+        if (dEl) dEl.textContent = "00";
+        if (hEl) hEl.textContent = "00";
+        if (mEl) mEl.textContent = "00";
+        if (sEl) sEl.textContent = "00";
         return;
       }
 
@@ -297,10 +311,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      document.getElementById("timer-days").textContent = String(days).padStart(2, '0');
-      document.getElementById("timer-hours").textContent = String(hours).padStart(2, '0');
-      document.getElementById("timer-mins").textContent = String(minutes).padStart(2, '0');
-      document.getElementById("timer-secs").textContent = String(seconds).padStart(2, '0');
+      if (dEl) dEl.textContent = String(days).padStart(2, '0');
+      if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+      if (mEl) mEl.textContent = String(minutes).padStart(2, '0');
+      if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
     }
 
     updateTimer();
@@ -526,17 +540,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const board = res.leaderboard;
 
         // Top 3 Podium update
+        const p1Name = document.getElementById("podium-1-name");
+        const p1Tickets = document.getElementById("podium-1-tickets");
+        const p2Name = document.getElementById("podium-2-name");
+        const p2Tickets = document.getElementById("podium-2-tickets");
+        const p3Name = document.getElementById("podium-3-name");
+        const p3Tickets = document.getElementById("podium-3-tickets");
+
         if (board[0]) {
-          document.getElementById("podium-1-name").textContent = board[0].first_name || board[0].username || "Foydalanuvchi";
-          document.getElementById("podium-1-tickets").textContent = `${board[0].tickets} Bilet`;
+          if (p1Name) p1Name.textContent = board[0].first_name || board[0].username || "Foydalanuvchi";
+          if (p1Tickets) p1Tickets.textContent = `${board[0].tickets} Bilet`;
         }
         if (board[1]) {
-          document.getElementById("podium-2-name").textContent = board[1].first_name || board[1].username || "Foydalanuvchi";
-          document.getElementById("podium-2-tickets").textContent = `${board[1].tickets} Bilet`;
+          if (p2Name) p2Name.textContent = board[1].first_name || board[1].username || "Foydalanuvchi";
+          if (p2Tickets) p2Tickets.textContent = `${board[1].tickets} Bilet`;
         }
         if (board[2]) {
-          document.getElementById("podium-3-name").textContent = board[2].first_name || board[2].username || "Foydalanuvchi";
-          document.getElementById("podium-3-tickets").textContent = `${board[2].tickets} Bilet`;
+          if (p3Name) p3Name.textContent = board[2].first_name || board[2].username || "Foydalanuvchi";
+          if (p3Tickets) p3Tickets.textContent = `${board[2].tickets} Bilet`;
         }
 
         // List render for rank 4+
@@ -1047,10 +1068,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (res.status === "success" && res.winners) {
           showToast("G'oliblar muvaffaqiyatli aniqlandi! 🏆", "success");
           const resultDiv = document.getElementById("admin-winners-result");
-          resultDiv.innerHTML = '<b>🏆 Konkurs G\'oliblari:</b><br>';
-          res.winners.forEach(w => {
-            resultDiv.innerHTML += `<div>${w.place}-O'rin: <b>${w.first_name}</b> (@${w.username || 'no_user'}) - <i>${w.prize}</i></div>`;
-          });
+          if (resultDiv) {
+            resultDiv.innerHTML = '<b>🏆 Konkurs G\'oliblari:</b><br>';
+            res.winners.forEach(w => {
+              resultDiv.innerHTML += `<div>${w.place}-O'rin: <b>${w.first_name}</b> (@${w.username || 'no_user'}) - <i>${w.prize}</i></div>`;
+            });
+          }
           await loadPublicWinners();
         }
       } catch (err) {
@@ -1311,6 +1334,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const adminTab = document.getElementById("tab-admin");
       if (adminTab) adminTab.classList.add("active");
+
+      const adminNavBtn = document.getElementById("nav-item-admin");
+      if (adminNavBtn) adminNavBtn.classList.add("active");
 
       updateNavVisibility("tab-admin");
       await loadAdminData();
