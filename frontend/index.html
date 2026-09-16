@@ -438,6 +438,31 @@
 
         <!-- SUBTAB 3: SPONSORLAR -->
         <div id="subtab-sponsors" class="admin-subcontent">
+          <!-- G'OLIBLARNI E'LON QILISH KANALI SOZLAMASI -->
+          <div style="background: rgba(197, 255, 0, 0.05); border: 1px solid rgba(197, 255, 0, 0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-bullhorn" style="color: var(--primary-color); font-size: 1.15rem;"></i>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #fff; font-weight: 700;">📢 G'oliblar E'lon Qilinadigan Kanal</h4>
+              </div>
+              <span id="badge-winner-channel-active" class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-size: 0.75rem; border: 1px solid var(--primary-color); display: none;">
+                <i class="fa-solid fa-circle-check"></i> Faol
+              </span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+              Konkurs g'oliblari aniqlanganda (<i class="fa-solid fa-dice-five"></i> Random), natijalar avtomatik ravishda ushbu tanlangan Telegram kanaliga rasmiy post ko'rinishida yuboriladi.
+            </p>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <select id="admin-winner-channel-select" class="form-input" style="flex: 1; margin-bottom: 0; background: var(--card-bg); color: #fff; font-size: 0.85rem;">
+                <option value="">-- Tanlanmagan (Kanalga e'lon yuborilmaydi) --</option>
+              </select>
+              <button id="btn-save-winner-channel" class="btn btn-primary btn-sm" style="width: auto; padding: 10px 16px; white-space: nowrap; font-size: 0.82rem;">
+                <i class="fa-solid fa-check"></i> Saqlash
+              </button>
+            </div>
+            <div id="admin-winner-channel-info" style="font-size: 0.75rem; color: var(--primary-color); margin-top: 8px; display: none;"></div>
+          </div>
+
           <h4 style="margin-bottom: 12px; font-size: 0.95rem;">📢 Yangi Sponsor Qo'shish</h4>
           <div class="form-group">
             <label>Platforma Turi:</label>
@@ -461,6 +486,12 @@
           <div class="form-group">
             <label id="lbl-sponsor-link">✈️ Taklif Havolasi (Invite Link):</label>
             <input type="text" id="admin-sponsor-link" class="form-input" placeholder="https://t.me/peexell_official">
+          </div>
+          <div class="form-group" id="group-sponsor-winner-channel" style="margin-top: 4px; margin-bottom: 12px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; font-weight: 500; font-size: 0.82rem; color: #fff;">
+              <input type="checkbox" id="admin-sponsor-is-winner-channel" style="accent-color: var(--primary-color); width: 18px; height: 18px; cursor: pointer;">
+              <span>🏆 Ushbu kanalni g'oliblarni e'lon qilish kanali deb belgilash</span>
+            </label>
           </div>
           <div class="form-group" id="yt-channel-id-group" style="display: none;">
             <label id="lbl-sponsor-yt-id">🔴 YouTube Channel ID (Google API UC...):</label>
@@ -517,6 +548,14 @@
               <option value="5">5 ta G'olib (TOP 5 sovrindor)</option>
               <option value="10">10 ta G'olib (TOP 10 sovrindor)</option>
             </select>
+          </div>
+
+          <div id="admin-winners-channel-hint" style="margin-top: 10px; margin-bottom: 12px; padding: 10px 12px; background: rgba(197, 255, 0, 0.06); border: 1px dashed rgba(197, 255, 0, 0.3); border-radius: 8px; font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-bullhorn" style="color: var(--primary-color); font-size: 1.05rem;"></i>
+            <div>
+              E'lon qilinadigan rasmiy kanal: <b id="winners-target-channel-label" style="color: var(--primary-color);">Tanlanmagan</b>
+              <div style="font-size: 0.71rem; color: var(--text-muted); margin-top: 2px;">(Sponsorlar bo'limidan istalgan Telegram kanalni belgilashingiz mumkin)</div>
+            </div>
           </div>
 
           <div style="display: flex; gap: 10px; margin-top: 10px;">

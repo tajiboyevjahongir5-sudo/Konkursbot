@@ -40,6 +40,11 @@ class AddSponsorRequest(BaseModel):
     invite_link: str
     platform: Optional[str] = "telegram"
     youtube_channel_id: Optional[str] = None
+    is_winner_channel: Optional[bool] = False
+
+
+class SetWinnerChannelRequest(BaseModel):
+    sponsor_id: Optional[int] = None
 
 
 class UpdateContestRequest(BaseModel):
@@ -413,14 +418,39 @@ async def admin_stats(admin: dict = Depends(get_current_admin)):
 
 @router.get("/admin/sponsors")
 async def admin_get_sponsors(admin: dict = Depends(get_current_admin)):
+    from backend.database import get_winner_channel
     sponsors = await get_sponsors(active_only=False)
-    return {"status": "success", "sponsors": sponsors}
+    winner_ch = await get_winner_channel()
+    return {"status": "success", "sponsors": sponsors, "winner_channel": winner_ch}
 
 
 @router.post("/admin/sponsors")
 async def admin_add_sponsor(body: AddSponsorRequest, admin: dict = Depends(get_current_admin)):
-    sp_id = await add_sponsor(body.title, body.channel_id, body.invite_link, body.platform or "telegram", body.youtube_channel_id)
+    sp_id = await add_sponsor(
+        body.title, 
+        body.channel_id, 
+        body.invite_link, 
+        body.platform or "telegram", 
+        body.youtube_channel_id,
+        is_winner_channel=1 if body.is_winner_channel else 0
+    )
     return {"status": "success", "message": "Sponsor muvaffaqiyatli qo'shildi", "sponsor_id": sp_id}
+
+
+@router.post("/admin/sponsors/winner-channel")
+async def admin_set_winner_channel(body: SetWinnerChannelRequest, admin: dict = Depends(get_current_admin)):
+    from backend.database import set_winner_channel, get_winner_channel
+    await set_winner_channel(body.sponsor_id)
+    winner_ch = await get_winner_channel()
+    msg = f"G'oliblarni e'lon qilish kanali belgilandi: {winner_ch['title']}" if winner_ch else "E'lon qilish kanali o'chirildi"
+    return {"status": "success", "message": msg, "winner_channel": winner_ch}
+
+
+@router.get("/admin/sponsors/winner-channel")
+async def admin_get_winner_channel_info(admin: dict = Depends(get_current_admin)):
+    from backend.database import get_winner_channel
+    winner_ch = await get_winner_channel()
+    return {"status": "success", "winner_channel": winner_ch}
 
 
 @router.delete("/admin/sponsors/{sponsor_id}")
@@ -544,7 +574,57 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
             except Exception:
                 pass
 
-    return {"status": "success", "winners": winners}
+    # Auto-announce winners to the designated Telegram sponsor channel if configured
+    announced_channel_info = None
+    from backend.database import get_winner_channel
+    winner_channel = await get_winner_channel()
+
+    if bot and winners and winner_channel:
+        try:
+            target_chat_id = winner_channel["channel_id"]
+            contest_title = contest.get("title", "PEEXELL GRAND KONKURS") if contest else "PEEXELL GRAND KONKURS"
+            
+            medals = ["🥇", "🥈", "🥉", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖"]
+            lines = [
+                f"🏆 <b>{contest_title.upper()} G'OLIBLARI E'LON QILINDI!</b> 🎉\n",
+                "Hurmatli ishtirokchilar! Uzoq kutilgan konkursimiz o'z nihoyasiga yetdi va tasodifiy biletlar algoritmi orqali haqqoniy tarzda g'oliblarimiz aniqlandi:\n"
+            ]
+            
+            for idx, w in enumerate(winners):
+                medal = medals[idx] if idx < len(medals) else "🎖"
+                first_name = w.get("first_name") or "Ishtirokchi"
+                uname = f"@{w['username']}" if w.get("username") else f"<a href=\"tg://user?id={w['user_id']}\">{first_name}</a>"
+                prize = w.get("prize", f"{w['place']}-O'rin")
+                ticket_str = f" <i>(Bilet: #{w['ticket_number']})</i>" if w.get("ticket_number") else ""
+                lines.append(f"{medal} <b>{w['place']}-O'rin:</b> {uname} — <b>{prize}</b>{ticket_str}")
+            
+            lines.append("\n🥳 <i>Barcha g'oliblarni tabriklaymiz! Sovrinlarni topshirish bo'yicha adminlarimiz siz bilan tez orada bog'lanadi.</i>")
+            
+            from backend.config import settings
+            from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+            
+            kb = None
+            if settings.clean_webapp_url:
+                kb = InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🚀 PEEXELL Web App", url=settings.clean_webapp_url)]
+                ])
+            
+            channel_post_text = "\n".join(lines)
+            await bot.send_message(chat_id=target_chat_id, text=channel_post_text, parse_mode="HTML", reply_markup=kb)
+            announced_channel_info = {
+                "id": winner_channel["id"],
+                "title": winner_channel["title"],
+                "channel_id": winner_channel["channel_id"]
+            }
+        except Exception as e:
+            logger.error(f"Failed to announce winners to channel: {e}")
+            announced_channel_info = {
+                "id": winner_channel["id"],
+                "title": winner_channel["title"],
+                "error": str(e)
+            }
+
+    return {"status": "success", "winners": winners, "announced_channel": announced_channel_info}
 
 
 async def _send_single_broadcast(bot, user_id, message, photo_id, video_id, photo_url, is_video, reply_markup, semaphore, results):

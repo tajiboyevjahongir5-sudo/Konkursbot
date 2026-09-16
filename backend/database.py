@@ -64,6 +64,8 @@ async def init_db():
                 await db.execute("ALTER TABLE sponsors ADD COLUMN platform TEXT DEFAULT 'telegram'")
             if "youtube_channel_id" not in columns:
                 await db.execute("ALTER TABLE sponsors ADD COLUMN youtube_channel_id TEXT")
+            if "is_winner_channel" not in columns:
+                await db.execute("ALTER TABLE sponsors ADD COLUMN is_winner_channel INTEGER DEFAULT 0")
 
         # Contests table
         await db.execute("""
@@ -292,14 +294,37 @@ async def get_sponsors(active_only: bool = True) -> List[Dict[str, Any]]:
             return [dict(r) for r in rows]
 
 
-async def add_sponsor(title: str, channel_id: str, invite_link: str, platform: str = "telegram", youtube_channel_id: Optional[str] = None) -> int:
+async def add_sponsor(title: str, channel_id: str, invite_link: str, platform: str = "telegram", youtube_channel_id: Optional[str] = None, is_winner_channel: int = 0) -> int:
     async with get_db() as db:
+        if is_winner_channel:
+            await db.execute("UPDATE sponsors SET is_winner_channel = 0")
         cursor = await db.execute("""
-            INSERT INTO sponsors (title, channel_id, invite_link, platform, youtube_channel_id, is_active)
-            VALUES (?, ?, ?, ?, ?, 1)
-        """, (title, channel_id, invite_link, platform, youtube_channel_id))
+            INSERT INTO sponsors (title, channel_id, invite_link, platform, youtube_channel_id, is_winner_channel, is_active)
+            VALUES (?, ?, ?, ?, ?, ?, 1)
+        """, (title, channel_id, invite_link, platform, youtube_channel_id, 1 if is_winner_channel else 0))
         await db.commit()
         return cursor.lastrowid
+
+
+async def set_winner_channel(sponsor_id: Optional[int]) -> bool:
+    """Sets a sponsor Telegram channel as the designated winner announcement channel.
+    If sponsor_id is None or <= 0, disables announcement channel."""
+    async with get_db() as db:
+        await db.execute("UPDATE sponsors SET is_winner_channel = 0")
+        if sponsor_id and sponsor_id > 0:
+            await db.execute("UPDATE sponsors SET is_winner_channel = 1 WHERE id = ?", (sponsor_id,))
+        await db.commit()
+        return True
+
+
+async def get_winner_channel() -> Optional[Dict[str, Any]]:
+    """Returns the sponsor Telegram channel currently designated for winner announcements."""
+    async with get_db() as db:
+        async with db.execute(
+            "SELECT * FROM sponsors WHERE is_winner_channel = 1 AND platform = 'telegram' AND is_active = 1 LIMIT 1"
+        ) as cursor:
+            row = await cursor.fetchone()
+            return dict(row) if row else None
 
 
 async def delete_sponsor(sponsor_id: int) -> bool:
@@ -558,13 +583,17 @@ async def pick_random_winners(contest_id: int, count: int = 3, prizes: Optional[
 
             async with db.execute("SELECT first_name, username FROM users WHERE id = ?", (uid,)) as c_u:
                 u_info = await c_u.fetchone()
-                winners_list.append({
-                    "user_id": uid,
-                    "first_name": u_info["first_name"] if u_info else f"User {uid}",
-                    "username": u_info["username"] if u_info else None,
-                    "place": place,
-                    "prize": prize_name
-                })
+            async with db.execute("SELECT ticket_number FROM user_tickets WHERE user_id = ? AND contest_id = ? LIMIT 1", (uid, contest_id)) as c_t:
+                t_info = await c_t.fetchone()
+                ticket_num = t_info["ticket_number"] if t_info else None
+            winners_list.append({
+                "user_id": uid,
+                "first_name": u_info["first_name"] if u_info else f"User {uid}",
+                "username": u_info["username"] if u_info else None,
+                "place": place,
+                "prize": prize_name,
+                "ticket_number": ticket_num
+            })
 
         await db.commit()
         return winners_list

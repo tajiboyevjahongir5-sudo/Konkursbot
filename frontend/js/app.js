@@ -736,33 +736,116 @@ document.addEventListener("DOMContentLoaded", () => {
       const sponsorsRes = await apiFetch("/api/admin/sponsors");
       if (sponsorsRes.status === "success") {
         const spList = document.getElementById("admin-sponsors-list");
+        const winnerSelect = document.getElementById("admin-winner-channel-select");
+        const winnerBadge = document.getElementById("badge-winner-channel-active");
+        const winnerInfo = document.getElementById("admin-winner-channel-info");
+        const winnersHintLabel = document.getElementById("winners-target-channel-label");
+
+        // Update Winner Channel Select Dropdown
+        if (winnerSelect) {
+          const currentVal = winnerSelect.value;
+          winnerSelect.innerHTML = '<option value="">-- Tanlanmagan (Kanalga e\'lon yuborilmaydi) --</option>';
+          const tgSponsors = (sponsorsRes.sponsors || []).filter(s => (s.platform || "telegram") === "telegram");
+          tgSponsors.forEach(s => {
+            const opt = document.createElement("option");
+            opt.value = s.id;
+            opt.textContent = `✈️ ${s.title} (${s.channel_id})`;
+            if (s.is_winner_channel) {
+              opt.selected = true;
+            }
+            winnerSelect.appendChild(opt);
+          });
+        }
+
+        const activeWinnerCh = sponsorsRes.winner_channel || (sponsorsRes.sponsors || []).find(s => s.is_winner_channel);
+        if (activeWinnerCh) {
+          if (winnerBadge) winnerBadge.style.display = "inline-flex";
+          if (winnerInfo) {
+            winnerInfo.style.display = "block";
+            winnerInfo.innerHTML = `<i class="fa-solid fa-bullhorn"></i> Hozirgi e'lon kanali: <b>${activeWinnerCh.title}</b> (<code>${activeWinnerCh.channel_id}</code>)`;
+          }
+          if (winnersHintLabel) {
+            winnersHintLabel.textContent = `${activeWinnerCh.title} (${activeWinnerCh.channel_id})`;
+          }
+        } else {
+          if (winnerBadge) winnerBadge.style.display = "none";
+          if (winnerInfo) winnerInfo.style.display = "none";
+          if (winnersHintLabel) winnersHintLabel.textContent = "Tanlanmagan";
+        }
+
         if (spList) {
           spList.innerHTML = "";
-          sponsorsRes.sponsors.forEach(s => {
-            const item = document.createElement("div");
-            item.className = "task-item";
-            item.innerHTML = `
-              <div>
-                <div class="task-title">${s.title} (${s.channel_id})</div>
-                <div class="task-reward"><a href="${s.invite_link}" target="_blank" style="color: var(--secondary-color);">${s.invite_link}</a></div>
-              </div>
-              <button class="btn btn-sm btn-delete-sponsor" data-id="${s.id}" style="background: var(--danger-color); color: #fff;">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            `;
-            spList.appendChild(item);
-          });
+          if (!sponsorsRes.sponsors || sponsorsRes.sponsors.length === 0) {
+            spList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px;">Hozircha sponsorlar qo\'shilmagan.</div>';
+          } else {
+            sponsorsRes.sponsors.forEach(s => {
+              const item = document.createElement("div");
+              item.className = "task-item";
+              
+              const isTelegram = (s.platform || "telegram") === "telegram";
+              const isWinner = !!s.is_winner_channel;
+              
+              let platformIcon = "✈️";
+              if (s.platform === "youtube") platformIcon = "🔴";
+              else if (s.platform === "instagram") platformIcon = "📸";
 
-          document.querySelectorAll(".btn-delete-sponsor").forEach(b => {
-            b.addEventListener("click", async () => {
-              const sid = b.getAttribute("data-id");
-              if (confirm("Ushbu sponsor kanalni o'chirmoqchimisiz?")) {
-                await apiFetch(`/api/admin/sponsors/${sid}`, { method: "DELETE" });
-                showToast("Sponsor o'chirildi", "success");
-                loadAdminData();
-              }
+              const winnerBadgeHtml = isWinner 
+                ? `<span class="badge" style="background: rgba(197, 255, 0, 0.2); color: var(--primary-color); border: 1px solid var(--primary-color); font-size: 0.72rem; padding: 2px 7px; border-radius: 5px; margin-left: 6px; font-weight: 700;"><i class="fa-solid fa-bullhorn"></i> G'oliblar Kanali</span>`
+                : "";
+
+              const makeWinnerBtnHtml = (isTelegram && !isWinner)
+                ? `<button class="btn btn-sm btn-set-winner" data-id="${s.id}" data-title="${s.title}" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;" title="G'oliblarni e'lon qilish kanali qilib belgilash"><i class="fa-solid fa-bullhorn"></i> E'lon kanali qilish</button>`
+                : "";
+
+              item.innerHTML = `
+                <div style="flex: 1; min-width: 0;">
+                  <div class="task-title" style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    ${platformIcon} <b>${s.title}</b> <span style="font-size: 0.78rem; color: var(--text-secondary);">(${s.channel_id})</span>
+                    ${winnerBadgeHtml}
+                  </div>
+                  <div class="task-reward" style="margin-top: 3px;">
+                    <a href="${s.invite_link}" target="_blank" style="color: var(--secondary-color); font-size: 0.78rem; word-break: break-all;">${s.invite_link}</a>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0; margin-left: 8px;">
+                  ${makeWinnerBtnHtml}
+                  <button class="btn btn-sm btn-delete-sponsor" data-id="${s.id}" style="background: var(--danger-color); color: #fff; padding: 6px 10px;">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              `;
+              spList.appendChild(item);
             });
-          });
+
+            document.querySelectorAll(".btn-delete-sponsor").forEach(b => {
+              b.addEventListener("click", async () => {
+                const sid = b.getAttribute("data-id");
+                if (confirm("Ushbu sponsor kanalni o'chirmoqchimisiz?")) {
+                  await apiFetch(`/api/admin/sponsors/${sid}`, { method: "DELETE" });
+                  showToast("Sponsor o'chirildi", "success");
+                  await loadAdminData();
+                }
+              });
+            });
+
+            document.querySelectorAll(".btn-set-winner").forEach(b => {
+              b.addEventListener("click", async () => {
+                const sid = parseInt(b.getAttribute("data-id"));
+                try {
+                  const res = await apiFetch("/api/admin/sponsors/winner-channel", {
+                    method: "POST",
+                    body: JSON.stringify({ sponsor_id: sid })
+                  });
+                  if (res.status === "success") {
+                    showToast(res.message, "success");
+                    await loadAdminData();
+                  }
+                } catch (e) {
+                  showToast("Xatolik yuz berdi", "danger");
+                }
+              });
+            });
+          }
         }
       }
       // Auto-load users list
@@ -813,6 +896,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const lblLink = document.getElementById("lbl-sponsor-link");
     const linkInput = document.getElementById("admin-sponsor-link");
     const ytGroup = document.getElementById("yt-channel-id-group");
+    const winnerGroup = document.getElementById("group-sponsor-winner-channel");
+    const isWinnerChk = document.getElementById("admin-sponsor-is-winner-channel");
 
     if (platform === "telegram") {
       if (lblTitle) lblTitle.textContent = "✈️ Telegram Kanal Nomi:";
@@ -826,6 +911,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (linkInput) linkInput.placeholder = "https://t.me/peexell_news";
 
       if (ytGroup) ytGroup.style.display = "none";
+      if (winnerGroup) winnerGroup.style.display = "block";
     } else if (platform === "youtube") {
       if (lblTitle) lblTitle.textContent = "🔴 YouTube Kanal Nomi:";
       if (titleInput) titleInput.placeholder = "Masalan: Jahongir Projects";
@@ -838,6 +924,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (linkInput) linkInput.placeholder = "https://youtube.com/@JahongirProjects";
 
       if (ytGroup) ytGroup.style.display = "block";
+      if (winnerGroup) winnerGroup.style.display = "none";
+      if (isWinnerChk) isWinnerChk.checked = false;
     } else if (platform === "instagram") {
       if (lblTitle) lblTitle.textContent = "📸 Instagram Profil Nomi:";
       if (titleInput) titleInput.placeholder = "Masalan: PEEXELL Official";
@@ -850,12 +938,45 @@ document.addEventListener("DOMContentLoaded", () => {
       if (linkInput) linkInput.placeholder = "https://instagram.com/peexell.uz";
 
       if (ytGroup) ytGroup.style.display = "none";
+      if (winnerGroup) winnerGroup.style.display = "none";
+      if (isWinnerChk) isWinnerChk.checked = false;
     }
   }
 
   if (platformSelect) {
     platformSelect.addEventListener("change", updateSponsorFormUI);
     updateSponsorFormUI();
+  }
+
+  // Save Winner Announcement Channel Handler
+  const saveWinnerChannelBtn = document.getElementById("btn-save-winner-channel");
+  if (saveWinnerChannelBtn) {
+    saveWinnerChannelBtn.addEventListener("click", async () => {
+      const selectEl = document.getElementById("admin-winner-channel-select");
+      const val = selectEl ? selectEl.value : "";
+      const sponsorId = val ? parseInt(val) : null;
+
+      saveWinnerChannelBtn.disabled = true;
+      saveWinnerChannelBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saqlanmoqda...';
+
+      try {
+        const res = await apiFetch("/api/admin/sponsors/winner-channel", {
+          method: "POST",
+          body: JSON.stringify({ sponsor_id: sponsorId })
+        });
+        if (res.status === "success") {
+          showToast(res.message, "success");
+          await loadAdminData();
+        } else {
+          showToast(res.message || "Xatolik yuz berdi", "danger");
+        }
+      } catch (err) {
+        showToast("E'lon kanalini saqlashda xatolik!", "danger");
+      } finally {
+        saveWinnerChannelBtn.disabled = false;
+        saveWinnerChannelBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saqlash';
+      }
+    });
   }
 
   // Add Sponsor Form Handler
@@ -867,6 +988,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const channel_id = document.getElementById("admin-sponsor-channel-id").value.trim();
       const invite_link = document.getElementById("admin-sponsor-link").value.trim();
       const youtube_channel_id = document.getElementById("admin-sponsor-yt-id") ? document.getElementById("admin-sponsor-yt-id").value.trim() : null;
+      const is_winner_channel = document.getElementById("admin-sponsor-is-winner-channel")?.checked || false;
 
       if (!title || !channel_id || !invite_link) {
         showToast("Barcha maydonlarni to'ldiring!", "warning");
@@ -876,14 +998,15 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         await apiFetch("/api/admin/sponsors", {
           method: "POST",
-          body: JSON.stringify({ title, channel_id, invite_link, platform, youtube_channel_id })
+          body: JSON.stringify({ title, channel_id, invite_link, platform, youtube_channel_id, is_winner_channel })
         });
         showToast("Sponsor qo'shildi! 🎉", "success");
         document.getElementById("admin-sponsor-title").value = "";
         document.getElementById("admin-sponsor-channel-id").value = "";
         document.getElementById("admin-sponsor-link").value = "";
+        if (document.getElementById("admin-sponsor-is-winner-channel")) document.getElementById("admin-sponsor-is-winner-channel").checked = false;
         if (document.getElementById("admin-sponsor-yt-id")) document.getElementById("admin-sponsor-yt-id").value = "";
-        loadAdminData();
+        await loadAdminData();
       } catch (err) {}
     });
   }
@@ -1066,12 +1189,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === "success" && res.winners) {
-          showToast("G'oliblar muvaffaqiyatli aniqlandi! 🏆", "success");
+          if (res.announced_channel) {
+            if (res.announced_channel.error) {
+              showToast(`G'oliblar aniqlandi, lekin kanalga e'lon yuborishda xatolik: ${res.announced_channel.error}`, "warning");
+            } else {
+              showToast(`G'oliblar aniqlandi va "${res.announced_channel.title}" kanalida e'lon qilindi! 🏆📢`, "success");
+            }
+          } else {
+            showToast("G'oliblar muvaffaqiyatli aniqlandi! 🏆", "success");
+          }
           const resultDiv = document.getElementById("admin-winners-result");
           if (resultDiv) {
-            resultDiv.innerHTML = '<b>🏆 Konkurs G\'oliblari:</b><br>';
+            let channelNotice = "";
+            if (res.announced_channel && !res.announced_channel.error) {
+              channelNotice = `<div style="margin-bottom: 12px; padding: 10px; background: rgba(197, 255, 0, 0.12); border: 1px solid var(--primary-color); border-radius: 8px; font-size: 0.82rem; color: var(--primary-color); font-weight: 600;"><i class="fa-solid fa-bullhorn"></i> <b>${res.announced_channel.title}</b> kanalida rasmiy e'lon qilindi!</div>`;
+            } else if (res.announced_channel && res.announced_channel.error) {
+              channelNotice = `<div style="margin-bottom: 12px; padding: 10px; background: rgba(255, 59, 48, 0.12); border: 1px solid var(--danger-color); border-radius: 8px; font-size: 0.8rem; color: var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> Kanalga yuborishda xatolik: ${res.announced_channel.error}</div>`;
+            }
+            resultDiv.innerHTML = channelNotice + '<b style="color: #fff;">🏆 Konkurs G\'oliblari:</b><br><br>';
             res.winners.forEach(w => {
-              resultDiv.innerHTML += `<div>${w.place}-O'rin: <b>${w.first_name}</b> (@${w.username || 'no_user'}) - <i>${w.prize}</i></div>`;
+              const ticketBadge = w.ticket_number ? ` <span class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-size: 0.72rem; padding: 2px 6px;">#${w.ticket_number}</span>` : '';
+              resultDiv.innerHTML += `<div style="margin-bottom: 6px;">${w.place}-O'rin: <b style="color: #fff;">${w.first_name}</b> (@${w.username || 'no_user'}) - <i style="color: var(--primary-color);">${w.prize}</i>${ticketBadge}</div>`;
             });
           }
           await loadPublicWinners();
