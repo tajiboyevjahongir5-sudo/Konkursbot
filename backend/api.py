@@ -559,15 +559,28 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
 
     winners = await pick_random_winners(contest["id"], body.count, body.prizes)
 
-    # Auto-notify winners via Telegram bot
+    contest_title = contest.get("title", "PEEXELL GRAND KONKURS") if contest else "PEEXELL GRAND KONKURS"
+
+    # Auto-notify winners via Telegram bot with upgraded VIP celebration message
     if bot and winners:
         import asyncio
+        medals = ["🥇", "🥈", "🥉", "🎖", "🎖", "🎖"]
         for w in winners:
             try:
+                place = w.get("place", 1)
+                m_icon = medals[place - 1] if place <= len(medals) else "🎖"
+                t_str = f"\n🎟 <b>Yutuqli biletingiz:</b> <code>#{w['ticket_number']}</code>" if w.get("ticket_number") else ""
+                
                 msg = (
-                    f"🎉 <b>TABRIKLAYMIZ!</b>\n\n"
-                    f"Siz PEEXELL GRAND KONKURSida <b>{w['place']}-O'rin</b> (<i>{w['prize']}</i>) g'olibi bo'ldingiz!\n\n"
-                    f"📞 Sovrinni olish uchun tez orada admin siz bilan bog'lanadi."
+                    f"🎉 <b>TABRIKLAYMIZ, SIZ G'OLIBSISIZ!</b> {m_icon}\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"Siz <b>«{contest_title}»</b>da omadli ishtirok etib, g'oliblar safidan joy oldingiz!\n\n"
+                    f"{m_icon} <b>O'rningiz:</b> {place}-O'rin\n"
+                    f"🎁 <b>Yutib olingan sovrin:</b> <b>{w['prize']}</b>"
+                    f"{t_str}\n\n"
+                    f"📞 <i>Sovrinni qabul qilib olish tafsilotlari bo'yicha tez orada rasmiy adminimiz siz bilan shaxsiy xabar orqali bog'lanadi.</i>\n"
+                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"🚀 <b>Ishtirokingiz uchun tashakkur! PEEXELL bilan doim bir qadam oldinda bo'ling!</b>"
                 )
                 await bot.send_message(chat_id=w["user_id"], text=msg, parse_mode="HTML")
                 await asyncio.sleep(0.05)
@@ -582,39 +595,113 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
     if bot and winners and winner_channel:
         try:
             target_chat_id = winner_channel["channel_id"]
-            contest_title = contest.get("title", "PEEXELL GRAND KONKURS") if contest else "PEEXELL GRAND KONKURS"
             
-            medals = ["🥇", "🥈", "🥉", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖"]
+            # Fetch Bot Info dynamically for bot username
+            bot_username = "peexell_contest_bot"
+            try:
+                bot_user = await bot.get_me()
+                if bot_user and bot_user.username:
+                    bot_username = bot_user.username
+            except Exception:
+                pass
+
+            # Build aesthetically upgraded, VIP winner announcement post
             lines = [
-                f"🏆 <b>{contest_title.upper()} G'OLIBLARI E'LON QILINDI!</b> 🎉\n",
-                "Hurmatli ishtirokchilar! Uzoq kutilgan konkursimiz o'z nihoyasiga yetdi va tasodifiy biletlar algoritmi orqali haqqoniy tarzda g'oliblarimiz aniqlandi:\n"
+                "🏆 <b>PEEXELL GRAND KONKURS</b> 🏆",
+                "🎉 <b>RASMIY G'OLIBLAR E'LON QILINDI!</b> 🎉",
+                "━━━━━━━━━━━━━━━━━━━━",
+                "",
+                "Hurmatli kanalimiz a'zolari va ishtirokchilar!",
+                "",
+                f"Uzoq kutilgan <b>«{contest_title}»</b> o'z nihoyasiga yetdi. Barcha shartlarni bajargan va bilet to'plagan faol ishtirokchilar orasidan tasodifiy (random) algoritm orqali mutlaqo haqqoniy va shaffof tarzda g'oliblarimiz aniqlandi! ⚡️",
+                "",
+                "━━━━━━━━━━━━━━━━━━━━"
             ]
-            
+
+            medals = ["🥇", "🥈", "🥉", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖"]
+            ranks = [
+                "1-O'RIN (BOSH SOVRIN)", 
+                "2-O'RIN", 
+                "3-O'RIN", 
+                "4-O'RIN", 
+                "5-O'RIN", 
+                "6-O'RIN", 
+                "7-O'RIN", 
+                "8-O'RIN", 
+                "9-O'RIN", 
+                "10-O'RIN"
+            ]
+
             for idx, w in enumerate(winners):
-                medal = medals[idx] if idx < len(medals) else "🎖"
+                place = w.get("place", idx + 1)
+                m_icon = medals[idx] if idx < len(medals) else "🎖"
+                r_title = ranks[idx] if idx < len(ranks) else f"{place}-O'RIN"
+                
                 first_name = w.get("first_name") or "Ishtirokchi"
                 uname = f"@{w['username']}" if w.get("username") else f"<a href=\"tg://user?id={w['user_id']}\">{first_name}</a>"
-                prize = w.get("prize", f"{w['place']}-O'rin")
-                ticket_str = f" <i>(Bilet: #{w['ticket_number']})</i>" if w.get("ticket_number") else ""
-                lines.append(f"{medal} <b>{w['place']}-O'rin:</b> {uname} — <b>{prize}</b>{ticket_str}")
-            
-            lines.append("\n🥳 <i>Barcha g'oliblarni tabriklaymiz! Sovrinlarni topshirish bo'yicha adminlarimiz siz bilan tez orada bog'lanadi.</i>")
-            
+                prize = w.get("prize", f"{place}-O'rin Sovrini")
+                ticket_code = f"<code>#{w['ticket_number']}</code>" if w.get("ticket_number") else "<i>Mavjud emas</i>"
+
+                lines.append(f"{m_icon} <b>{r_title}:</b>")
+                lines.append(f"👤 <b>G'olib:</b> {uname}")
+                lines.append(f"🎁 <b>Sovrin:</b> <b>{prize}</b>")
+                lines.append(f"🎟 <b>Yutuqli bilet:</b> {ticket_code}")
+                lines.append("")
+
+            lines.append("━━━━━━━━━━━━━━━━━━━━")
+            lines.append("🥳 <b>Barcha g'oliblarni chin yurakdan tabriklaymiz!</b>")
+            lines.append("📞 <i>Sovrinlarni topshirish bo'yicha rasmiy administratorimiz g'oliblar bilan tez orada shaxsiy xabar orqali bog'lanadi.</i>")
+            lines.append("")
+            lines.append("🔥 <b>Omadi kelmaganlar aslo tushkunlikka tushmang!</b>")
+            lines.append("Tez orada yangi, yanada katta sovrinli yirik konkurslarimiz start oladi. Botimizdan uzoqlashmang va do'stlaringizni taklif qilishda davom eting!")
+            lines.append("")
+            lines.append(f"🤖 <b>Rasmiy bot:</b> @{bot_username}")
+            lines.append("━━━━━━━━━━━━━━━━━━━━")
+
             from backend.config import settings
-            from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-            
-            kb = None
+            from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
+            from pathlib import Path
+
+            kb_buttons = []
             if settings.clean_webapp_url:
-                kb = InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="🚀 PEEXELL Web App", url=settings.clean_webapp_url)]
-                ])
-            
+                kb_buttons.append([InlineKeyboardButton(text="🚀 PEEXELL Web App ni Ochish", url=settings.clean_webapp_url)])
+            kb_buttons.append([
+                InlineKeyboardButton(text="🤖 Konkurs Boti", url=f"https://t.me/{bot_username}"),
+                InlineKeyboardButton(text="👥 Do'stlarni Taklif Qilish", url=f"https://t.me/{bot_username}?start=share")
+            ])
+            reply_markup = InlineKeyboardMarkup(inline_keyboard=kb_buttons)
+
             channel_post_text = "\n".join(lines)
-            await bot.send_message(chat_id=target_chat_id, text=channel_post_text, parse_mode="HTML", reply_markup=kb)
+            logo_file = Path(__file__).resolve().parent.parent / "frontend" / "assets" / "logo.jpg"
+
+            # Check if photo can be sent with caption (Telegram photo caption limit: 1024 chars)
+            sent_with_photo = False
+            if logo_file.exists() and len(channel_post_text) <= 1024:
+                try:
+                    await bot.send_photo(
+                        chat_id=target_chat_id,
+                        photo=FSInputFile(str(logo_file)),
+                        caption=channel_post_text,
+                        parse_mode="HTML",
+                        reply_markup=reply_markup
+                    )
+                    sent_with_photo = True
+                except Exception:
+                    sent_with_photo = False
+
+            if not sent_with_photo:
+                await bot.send_message(
+                    chat_id=target_chat_id,
+                    text=channel_post_text,
+                    parse_mode="HTML",
+                    reply_markup=reply_markup
+                )
+
             announced_channel_info = {
                 "id": winner_channel["id"],
                 "title": winner_channel["title"],
-                "channel_id": winner_channel["channel_id"]
+                "channel_id": winner_channel["channel_id"],
+                "sent_with_photo": sent_with_photo
             }
         except Exception as e:
             logger.error(f"Failed to announce winners to channel: {e}")

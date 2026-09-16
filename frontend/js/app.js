@@ -1202,15 +1202,62 @@ document.addEventListener("DOMContentLoaded", () => {
           if (resultDiv) {
             let channelNotice = "";
             if (res.announced_channel && !res.announced_channel.error) {
-              channelNotice = `<div style="margin-bottom: 12px; padding: 10px; background: rgba(197, 255, 0, 0.12); border: 1px solid var(--primary-color); border-radius: 8px; font-size: 0.82rem; color: var(--primary-color); font-weight: 600;"><i class="fa-solid fa-bullhorn"></i> <b>${res.announced_channel.title}</b> kanalida rasmiy e'lon qilindi!</div>`;
+              const photoNote = res.announced_channel.sent_with_photo ? " (Rasm/Banner bilan)" : "";
+              channelNotice = `
+                <div style="margin-bottom: 14px; padding: 12px; background: rgba(197, 255, 0, 0.1); border: 1px solid var(--primary-color); border-radius: 10px; font-size: 0.82rem; color: var(--primary-color);">
+                  <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 4px;">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Kanalda muvaffaqiyatli e'lon qilindi!${photoNote}</span>
+                  </div>
+                  <div style="color: #fff; font-size: 0.78rem;">
+                    E'lon yuborilgan kanal: <b>${res.announced_channel.title}</b> (<code>${res.announced_channel.channel_id}</code>)
+                  </div>
+                </div>
+              `;
             } else if (res.announced_channel && res.announced_channel.error) {
-              channelNotice = `<div style="margin-bottom: 12px; padding: 10px; background: rgba(255, 59, 48, 0.12); border: 1px solid var(--danger-color); border-radius: 8px; font-size: 0.8rem; color: var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> Kanalga yuborishda xatolik: ${res.announced_channel.error}</div>`;
+              channelNotice = `
+                <div style="margin-bottom: 14px; padding: 12px; background: rgba(255, 59, 48, 0.1); border: 1px solid var(--danger-color); border-radius: 10px; font-size: 0.8rem; color: var(--danger-color);">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Kanalga yuborishda xatolik: ${res.announced_channel.error}
+                </div>
+              `;
             }
-            resultDiv.innerHTML = channelNotice + '<b style="color: #fff;">🏆 Konkurs G\'oliblari:</b><br><br>';
-            res.winners.forEach(w => {
-              const ticketBadge = w.ticket_number ? ` <span class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-size: 0.72rem; padding: 2px 6px;">#${w.ticket_number}</span>` : '';
-              resultDiv.innerHTML += `<div style="margin-bottom: 6px;">${w.place}-O'rin: <b style="color: #fff;">${w.first_name}</b> (@${w.username || 'no_user'}) - <i style="color: var(--primary-color);">${w.prize}</i>${ticketBadge}</div>`;
+
+            let winnersHtml = `
+              <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; margin-top: 10px;">
+                <div style="font-weight: 800; font-size: 0.95rem; color: var(--primary-color); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-trophy"></i>
+                  <span>Rasmiy G'oliblar Ro'yxati</span>
+                </div>
+            `;
+
+            const medals = ["🥇", "🥈", "🥉", "🎖"];
+            res.winners.forEach((w, idx) => {
+              const medal = medals[idx] || "🎖";
+              const userHandle = w.username ? `@${w.username}` : `ID: ${w.user_id}`;
+              const ticketBadge = w.ticket_number 
+                ? `<span class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(197, 255, 0, 0.3);">🎟 #${w.ticket_number}</span>`
+                : '';
+
+              winnersHtml += `
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <div style="font-weight: 700; font-size: 0.88rem; color: #fff;">
+                      ${medal} ${w.place}-O'RIN
+                    </div>
+                    ${ticketBadge}
+                  </div>
+                  <div style="font-size: 0.82rem; color: var(--primary-color); font-weight: 600;">
+                    👤 ${w.first_name} <span style="color: var(--text-secondary); font-size: 0.76rem;">(${userHandle})</span>
+                  </div>
+                  <div style="font-size: 0.8rem; color: #e0e0e0; margin-top: 2px;">
+                    🎁 <b>${w.prize}</b>
+                  </div>
+                </div>
+              `;
             });
+
+            winnersHtml += `</div>`;
+            resultDiv.innerHTML = channelNotice + winnersHtml;
           }
           await loadPublicWinners();
         }
