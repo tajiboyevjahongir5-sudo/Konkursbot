@@ -581,15 +581,21 @@ async def pick_random_winners(contest_id: int, count: int = 3, prizes: Optional[
                 VALUES (?, ?, ?, ?)
             """, (contest_id, uid, place, prize_name))
 
-            async with db.execute("SELECT first_name, username FROM users WHERE id = ?", (uid,)) as c_u:
+            async with db.execute("SELECT first_name, last_name, username, phone_number FROM users WHERE id = ?", (uid,)) as c_u:
                 u_info = await c_u.fetchone()
             async with db.execute("SELECT ticket_number FROM user_tickets WHERE user_id = ? AND contest_id = ? LIMIT 1", (uid, contest_id)) as c_t:
                 t_info = await c_t.fetchone()
                 ticket_num = t_info["ticket_number"] if t_info else None
+            
+            fname = u_info["first_name"] if u_info and u_info["first_name"] else ""
+            lname = u_info["last_name"] if u_info and u_info["last_name"] else ""
+            full_name = f"{fname} {lname}".strip() or f"Foydalanuvchi #{uid}"
+
             winners_list.append({
                 "user_id": uid,
-                "first_name": u_info["first_name"] if u_info else f"User {uid}",
+                "first_name": full_name,
                 "username": u_info["username"] if u_info else None,
+                "phone_number": u_info["phone_number"] if u_info else None,
                 "place": place,
                 "prize": prize_name,
                 "ticket_number": ticket_num

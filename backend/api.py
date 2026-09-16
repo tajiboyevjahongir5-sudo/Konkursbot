@@ -3,6 +3,7 @@ import hashlib
 import json
 import logging
 import urllib.parse
+import html
 from typing import Optional, List
 from fastapi import APIRouter, Header, HTTPException, Depends, Query, Response, Request
 from pydantic import BaseModel
@@ -637,8 +638,15 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
                 m_icon = medals[idx] if idx < len(medals) else "🎖"
                 r_title = ranks[idx] if idx < len(ranks) else f"{place}-O'RIN"
                 
-                first_name = w.get("first_name") or "Ishtirokchi"
-                uname = f"@{w['username']}" if w.get("username") else f"<a href=\"tg://user?id={w['user_id']}\">{first_name}</a>"
+                raw_name = w.get("first_name") or f"Ishtirokchi #{w['user_id']}"
+                safe_name = html.escape(str(raw_name))
+                user_id = w['user_id']
+                
+                if w.get("username"):
+                    uname = f"@{w['username']} ({safe_name})"
+                else:
+                    uname = f"<a href=\"tg://user?id={user_id}\">{safe_name}</a> (ID: <code>{user_id}</code>)"
+                
                 prize = w.get("prize", f"{place}-O'rin Sovrini")
                 ticket_code = f"<code>#{w['ticket_number']}</code>" if w.get("ticket_number") else "<i>Mavjud emas</i>"
 
