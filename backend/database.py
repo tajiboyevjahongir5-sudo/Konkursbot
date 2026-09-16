@@ -29,7 +29,7 @@ async def init_db():
                 ref_code TEXT UNIQUE,
                 referred_by INTEGER,
                 points INTEGER DEFAULT 0,
-                tickets INTEGER DEFAULT 1,
+                tickets INTEGER DEFAULT 0,
                 phone_number TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (referred_by) REFERENCES users (id)
@@ -39,6 +39,19 @@ async def init_db():
         # Add phone_number column if missing in existing DB
         try:
             await db.execute("ALTER TABLE users ADD COLUMN phone_number TEXT;")
+            await db.commit()
+        except Exception:
+            pass
+
+        # Ensure users with 0 tasks and 0 referrals do not hold an accidental starting ticket
+        try:
+            await db.execute("""
+                UPDATE users
+                SET tickets = 0
+                WHERE tickets = 1
+                  AND (SELECT COUNT(*) FROM user_tickets WHERE user_tickets.user_id = users.id) = 0
+                  AND (SELECT COUNT(*) FROM referrals WHERE referrals.referrer_id = users.id) = 0;
+            """)
             await db.commit()
         except Exception:
             pass
@@ -221,8 +234,8 @@ async def get_or_create_user(
                 if ref_user:
                     valid_referrer = referrer_id
 
-        # Initial tickets: 1 base ticket + 1 bonus ticket if referred by someone
-        initial_tickets = 2 if valid_referrer else 1
+        # Initial tickets: new users start with 0 tickets (they earn tickets by completing sponsor tasks or inviting friends)
+        initial_tickets = 0
         initial_points = 10 if valid_referrer else 0
 
         await db.execute("""
