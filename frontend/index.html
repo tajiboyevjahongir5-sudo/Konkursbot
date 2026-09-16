@@ -439,10 +439,10 @@
             Foydalanuvchini Telegram ID, Username yoki Ismi orqali qidiring va biletlarini to'g'ridan-to'g'ri tahrirlang.
           </p>
 
-          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-            <input type="text" id="admin-user-search-input" class="form-input" placeholder="ID (masalan: 12345678) yoki @username..." style="flex: 1;">
-            <button id="btn-search-user" class="btn btn-primary" style="padding: 0 16px;">
-              <i class="fa-solid fa-magnifying-glass"></i>
+          <div style="display: flex; gap: 8px; margin-bottom: 14px; align-items: center; width: 100%;">
+            <input type="text" id="admin-user-search-input" class="form-input" placeholder="ID (masalan: 12345678) yoki @username..." style="flex: 1; min-width: 0; width: auto; margin-bottom: 0; height: 46px; padding: 10px 14px; box-sizing: border-box;">
+            <button id="btn-search-user" class="btn btn-primary" style="width: 52px; min-width: 52px; height: 46px; padding: 0; margin: 0; flex-shrink: 0; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;">
+              <i class="fa-solid fa-magnifying-glass" style="font-size: 1.05rem;"></i>
             </button>
           </div>
 
@@ -471,7 +471,7 @@
           </div>
 
           <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button id="btn-pick-winners" class="btn btn-cyan" style="flex: 2;">
+            <button id="btn-pick-winners" class="btn btn-cyan" style="flex: 2; width: auto;">
               <i class="fa-solid fa-dice-five"></i> G'oliblarni Aniqlash (Random)
             </button>
             <button id="btn-clear-winners" class="btn btn-secondary btn-sm" style="flex: 1; border-color: rgba(255,255,255,0.2);">

@@ -532,6 +532,7 @@ body::before {
   color: var(--text-main);
   font-size: 0.9rem;
   outline: none;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
