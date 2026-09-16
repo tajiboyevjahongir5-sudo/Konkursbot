@@ -869,26 +869,72 @@ async def search_users(query: str = "", limit: int = 50) -> List[Dict[str, Any]]
             """
             params = (limit,)
         elif query_str.isdigit():
+            starts_with = f"{query_str}%"
+            contains = f"%{query_str}%"
             sql = """
                 SELECT u.id, u.first_name, u.last_name, u.username, u.tickets, u.phone_number, u.created_at,
                        (SELECT COUNT(*) FROM referrals WHERE referrer_id = u.id) as referrals_count,
                        (SELECT COUNT(*) FROM user_tasks WHERE user_id = u.id AND completed = 1) as tasks_count
                 FROM users u
-                WHERE u.id = ? OR CAST(u.id AS TEXT) LIKE ?
-                ORDER BY u.tickets DESC LIMIT ?
+                WHERE CAST(u.id AS TEXT) LIKE ? 
+                   OR u.phone_number LIKE ?
+                   OR LOWER(u.username) LIKE LOWER(?)
+                   OR LOWER(u.first_name) LIKE LOWER(?)
+                ORDER BY 
+                    CASE 
+                        WHEN CAST(u.id AS TEXT) = ? THEN 1
+                        WHEN CAST(u.id AS TEXT) LIKE ? THEN 2
+                        WHEN CAST(u.id AS TEXT) LIKE ? THEN 3
+                        ELSE 4
+                    END,
+                    u.tickets DESC, u.id DESC
+                LIMIT ?
             """
-            params = (int(query_str), f"%{query_str}%", limit)
+            params = (
+                contains, 
+                contains, 
+                contains, 
+                contains, 
+                query_str, 
+                starts_with, 
+                contains, 
+                limit
+            )
         else:
             clean_q = query_str.lstrip("@")
+            starts_with = f"{clean_q}%"
+            contains = f"%{clean_q}%"
             sql = """
                 SELECT u.id, u.first_name, u.last_name, u.username, u.tickets, u.phone_number, u.created_at,
                        (SELECT COUNT(*) FROM referrals WHERE referrer_id = u.id) as referrals_count,
                        (SELECT COUNT(*) FROM user_tasks WHERE user_id = u.id AND completed = 1) as tasks_count
                 FROM users u
-                WHERE LOWER(u.username) LIKE LOWER(?) OR LOWER(u.first_name) LIKE LOWER(?) OR LOWER(u.last_name) LIKE LOWER(?)
-                ORDER BY u.tickets DESC LIMIT ?
+                WHERE LOWER(u.username) LIKE LOWER(?) 
+                   OR LOWER(u.first_name) LIKE LOWER(?) 
+                   OR LOWER(u.last_name) LIKE LOWER(?)
+                   OR CAST(u.id AS TEXT) LIKE ?
+                   OR u.phone_number LIKE ?
+                ORDER BY 
+                    CASE 
+                        WHEN LOWER(u.username) = LOWER(?) THEN 1
+                        WHEN LOWER(u.username) LIKE LOWER(?) THEN 2
+                        WHEN LOWER(u.first_name) LIKE LOWER(?) THEN 3
+                        ELSE 4
+                    END,
+                    u.tickets DESC, u.id DESC
+                LIMIT ?
             """
-            params = (f"%{clean_q}%", f"%{clean_q}%", f"%{clean_q}%", limit)
+            params = (
+                contains, 
+                contains, 
+                contains, 
+                contains, 
+                contains, 
+                clean_q, 
+                starts_with, 
+                starts_with, 
+                limit
+            )
             
         async with db.execute(sql, params) as cursor:
             rows = await cursor.fetchall()

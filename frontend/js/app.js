@@ -1160,15 +1160,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  if (searchUserBtn) searchUserBtn.addEventListener("click", () => performUserSearch());
+  let userSearchDebounceTimer = null;
+  if (searchUserBtn) {
+    searchUserBtn.addEventListener("click", () => {
+      clearTimeout(userSearchDebounceTimer);
+      performUserSearch();
+    });
+  }
   if (searchUserInput) {
     searchUserInput.addEventListener("input", () => {
-      if (!searchUserInput.value.trim()) {
-        performUserSearch("");
-      }
+      clearTimeout(userSearchDebounceTimer);
+      const val = searchUserInput.value.trim();
+      userSearchDebounceTimer = setTimeout(() => {
+        performUserSearch(val);
+      }, 120); // 120ms ultra-responsive instant search
     });
     searchUserInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") performUserSearch();
+      if (e.key === "Enter") {
+        clearTimeout(userSearchDebounceTimer);
+        performUserSearch();
+      }
     });
   }
 
