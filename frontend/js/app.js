@@ -744,6 +744,8 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
       }
+      // Auto-load users list
+      performUserSearch("");
     } catch (err) {
       console.log("Admin load error");
     }
@@ -876,6 +878,11 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.classList.add("active");
       const contentEl = document.getElementById(targetId);
       if (contentEl) contentEl.classList.add("active");
+
+      // Auto-load users list when user clicks Foydalanuvchilar tab!
+      if (targetId === "subtab-users") {
+        performUserSearch("");
+      }
     });
   });
 
@@ -897,22 +904,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchUserInput = document.getElementById("admin-user-search-input");
   const searchResultsDiv = document.getElementById("admin-user-search-results");
 
-  async function performUserSearch() {
-    const q = searchUserInput?.value.trim();
-    if (!q) {
-      showToast("Qidiruv so'zini kiriting!", "warning");
-      return;
-    }
+  async function performUserSearch(queryOverride) {
+    const q = (queryOverride !== undefined) ? queryOverride : (searchUserInput?.value.trim() || "");
 
     if (searchResultsDiv) {
-      searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px;"><i class="fa-solid fa-spinner fa-spin"></i> Qidirilmoqda...</div>';
+      searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px;"><i class="fa-solid fa-spinner fa-spin"></i> Foydalanuvchilar yuklanmoqda...</div>';
     }
 
     try {
       const res = await apiFetch(`/api/admin/users/search?q=${encodeURIComponent(q)}`);
       if (res.status === "success" && res.users) {
         if (res.users.length === 0) {
-          searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--danger-color); padding: 15px;">Foydalanuvchi topilmadi.</div>';
+          if (q) {
+            searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--danger-color); padding: 15px;">Foydalanuvchi topilmadi.</div>';
+          } else {
+            searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px;">Hozircha botda foydalanuvchilar mavjud emas.<br><small style="color: var(--primary-color);">Foydalanuvchilar botga /start bosishi bilan bu yerda avtomatik paydo bo\'ladi.</small></div>';
+          }
           return;
         }
 
@@ -1009,8 +1016,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  if (searchUserBtn) searchUserBtn.addEventListener("click", performUserSearch);
+  if (searchUserBtn) searchUserBtn.addEventListener("click", () => performUserSearch());
   if (searchUserInput) {
+    searchUserInput.addEventListener("input", () => {
+      if (!searchUserInput.value.trim()) {
+        performUserSearch("");
+      }
+    });
     searchUserInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") performUserSearch();
     });

@@ -816,13 +816,20 @@ async def get_detailed_admin_stats() -> Dict[str, Any]:
         }
 
 
-async def search_users(query: str, limit: int = 20) -> List[Dict[str, Any]]:
-    query_str = query.strip()
-    if not query_str:
-        return []
+async def search_users(query: str = "", limit: int = 50) -> List[Dict[str, Any]]:
+    query_str = query.strip() if query else ""
     
     async with get_db() as db:
-        if query_str.isdigit():
+        if not query_str:
+            sql = """
+                SELECT u.id, u.first_name, u.last_name, u.username, u.tickets, u.phone_number, u.created_at,
+                       (SELECT COUNT(*) FROM referrals WHERE referrer_id = u.id) as referrals_count,
+                       (SELECT COUNT(*) FROM user_tasks WHERE user_id = u.id AND completed = 1) as tasks_count
+                FROM users u
+                ORDER BY u.tickets DESC, u.id DESC LIMIT ?
+            """
+            params = (limit,)
+        elif query_str.isdigit():
             sql = """
                 SELECT u.id, u.first_name, u.last_name, u.username, u.tickets, u.phone_number, u.created_at,
                        (SELECT COUNT(*) FROM referrals WHERE referrer_id = u.id) as referrals_count,
