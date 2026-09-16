@@ -1074,11 +1074,26 @@ document.addEventListener("DOMContentLoaded", () => {
           const userName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Foydalanuvchi';
           const userHandle = u.username ? `@${u.username}` : `ID: ${u.id}`;
 
+          let profileLink = "";
+          if (u.username) {
+            profileLink = `https://t.me/${u.username.replace(/^@/, '')}`;
+          } else if (u.phone_number) {
+            let p = u.phone_number.trim().replace(/[^\d+]/g, '');
+            if (!p.startsWith("+")) p = "+" + p;
+            profileLink = `https://t.me/${p}`;
+          } else {
+            profileLink = `tg://user?id=${u.id}`;
+          }
+
           card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
               <div>
                 <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">${userName}</div>
-                <div style="font-size: 0.78rem; color: var(--primary-color);">${userHandle} (ID: ${u.id})</div>
+                <div style="font-size: 0.78rem; margin-top: 2px;">
+                  <a href="${profileLink}" class="user-direct-profile-link" data-username="${u.username || ''}" data-id="${u.id}" data-phone="${u.phone_number || ''}" style="color: var(--primary-color); text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                    ${userHandle} (ID: ${u.id}) <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.65rem;"></i>
+                  </a>
+                </div>
               </div>
               <div style="text-align: right;">
                 <span class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-weight: 700; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px;">
@@ -1090,10 +1105,10 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="display: flex; gap: 12px; font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 10px;">
               <div>👥 Referallar: <b>${u.referrals_count || 0}</b></div>
               <div>✅ Vazifalar: <b>${u.tasks_count || 0}</b></div>
-              ${u.phone_number ? `<div>📞 ${u.phone_number}</div>` : ''}
+              ${u.phone_number ? `<div>📞 <a href="tel:${u.phone_number}" style="color: inherit; text-decoration: underline;">${u.phone_number}</a></div>` : ''}
             </div>
 
-            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
               <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="1" style="background: rgba(197, 255, 0, 0.2); color: #fff; border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;">
                 +1 Bilet
               </button>
@@ -1106,9 +1121,44 @@ document.addEventListener("DOMContentLoaded", () => {
               <button class="btn btn-sm btn-ticket-custom" data-id="${u.id}" style="background: rgba(255, 255, 255, 0.1); color: #fff; padding: 4px 8px; font-size: 0.74rem;">
                 ✏️ Miqdor kiritish
               </button>
+              <button class="btn btn-sm btn-user-profile" data-username="${u.username || ''}" data-id="${u.id}" data-phone="${u.phone_number || ''}" style="background: rgba(0, 195, 255, 0.18); color: #00c3ff; border: 1px solid #00c3ff; padding: 4px 10px; font-size: 0.74rem; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Profilga o'tish
+              </button>
             </div>
           `;
           searchResultsDiv.appendChild(card);
+        });
+
+        function openTelegramProfile(username, userId, phoneNumber) {
+          let url = "";
+          if (username) {
+            const cleanUser = username.replace(/^@/, '');
+            url = `https://t.me/${cleanUser}`;
+          } else if (phoneNumber) {
+            let p = phoneNumber.trim().replace(/[^\d+]/g, '');
+            if (!p.startsWith("+")) p = "+" + p;
+            url = `https://t.me/${p}`;
+          } else {
+            url = `tg://user?id=${userId}`;
+          }
+
+          if (window.Telegram?.WebApp?.openTelegramLink) {
+            try {
+              window.Telegram.WebApp.openTelegramLink(url);
+              return;
+            } catch (err) {}
+          }
+          window.open(url, "_blank");
+        }
+
+        document.querySelectorAll(".btn-user-profile, .user-direct-profile-link").forEach(el => {
+          el.addEventListener("click", (e) => {
+            e.preventDefault();
+            const uname = el.getAttribute("data-username");
+            const uid = el.getAttribute("data-id");
+            const phone = el.getAttribute("data-phone");
+            openTelegramProfile(uname, uid, phone);
+          });
         });
 
         document.querySelectorAll(".btn-ticket-mod").forEach(btn => {

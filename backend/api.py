@@ -643,7 +643,13 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
                 user_id = w['user_id']
                 
                 if w.get("username"):
-                    uname = f"@{w['username']} ({safe_name})"
+                    clean_u = str(w['username']).replace("@", "")
+                    uname = f"<a href=\"https://t.me/{clean_u}\">@{clean_u}</a> ({safe_name})"
+                elif w.get("phone_number"):
+                    p = str(w['phone_number']).strip().replace(" ", "")
+                    if not p.startswith("+"):
+                        p = "+" + p
+                    uname = f"<a href=\"https://t.me/{p}\">{safe_name}</a> (ID: <code>{user_id}</code>)"
                 else:
                     uname = f"<a href=\"tg://user?id={user_id}\">{safe_name}</a> (ID: <code>{user_id}</code>)"
                 
