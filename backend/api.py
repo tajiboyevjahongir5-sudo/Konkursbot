@@ -654,8 +654,6 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
             lines.append("")
             lines.append("🔥 <b>Omadi kelmaganlar aslo tushkunlikka tushmang!</b>")
             lines.append("Tez orada yangi, yanada katta sovrinli yirik konkurslarimiz start oladi. Botimizdan uzoqlashmang va do'stlaringizni taklif qilishda davom eting!")
-            lines.append("")
-            lines.append(f"🤖 <b>Rasmiy bot:</b> @{bot_username}")
             lines.append("━━━━━━━━━━━━━━━━━━━━")
 
             from backend.config import settings
