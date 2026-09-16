@@ -405,20 +405,26 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Sponsor Nomi:</label>
+            <label id="lbl-sponsor-title">✈️ Telegram Kanal Nomi:</label>
             <input type="text" id="admin-sponsor-title" class="form-input" placeholder="Masalan: PEEXELL Official">
           </div>
           <div class="form-group">
-            <label>Telegram Username (@channel) / YouTube ID:</label>
-            <input type="text" id="admin-sponsor-channel-id" class="form-input" placeholder="@peexell_official">
+            <label id="lbl-sponsor-channel-id">✈️ Telegram Username yoki ID:</label>
+            <input type="text" id="admin-sponsor-channel-id" class="form-input" placeholder="@peexell_official yoki -100...">
+            <small id="hint-sponsor-channel-id" style="display: block; font-size: 0.74rem; color: var(--text-secondary); margin-top: 3px;">
+              <i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> Bot ushbu kanalda administrator bo'lishi shart!
+            </small>
           </div>
           <div class="form-group">
-            <label>Taklif Havolasi (Invite Link / YouTube URL):</label>
-            <input type="text" id="admin-sponsor-link" class="form-input" placeholder="https://t.me/peexell_official yoki https://youtube.com/@peexell">
+            <label id="lbl-sponsor-link">✈️ Taklif Havolasi (Invite Link):</label>
+            <input type="text" id="admin-sponsor-link" class="form-input" placeholder="https://t.me/peexell_official">
           </div>
           <div class="form-group" id="yt-channel-id-group" style="display: none;">
-            <label>YouTube Channel ID (Google API UC...):</label>
+            <label id="lbl-sponsor-yt-id">🔴 YouTube Channel ID (Google API UC...):</label>
             <input type="text" id="admin-sponsor-yt-id" class="form-input" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx">
+            <small style="display: block; font-size: 0.74rem; color: var(--primary-color); margin-top: 3px;">
+              <i class="fa-brands fa-youtube" style="color: #ff3b30;"></i> Google OAuth (youtube.readonly) orqali 100% real obuna tekshiriladi.
+            </small>
           </div>
           <button id="btn-add-sponsor" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
             <i class="fa-solid fa-circle-plus"></i> Sponsor Qo'shish

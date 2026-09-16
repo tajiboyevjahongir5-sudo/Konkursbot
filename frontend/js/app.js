@@ -779,13 +779,60 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const platformSelect = document.getElementById("admin-sponsor-platform");
+  function updateSponsorFormUI() {
+    if (!platformSelect) return;
+    const platform = platformSelect.value;
+    const lblTitle = document.getElementById("lbl-sponsor-title");
+    const titleInput = document.getElementById("admin-sponsor-title");
+    const lblChannelId = document.getElementById("lbl-sponsor-channel-id");
+    const channelIdInput = document.getElementById("admin-sponsor-channel-id");
+    const hintChannelId = document.getElementById("hint-sponsor-channel-id");
+    const lblLink = document.getElementById("lbl-sponsor-link");
+    const linkInput = document.getElementById("admin-sponsor-link");
+    const ytGroup = document.getElementById("yt-channel-id-group");
+
+    if (platform === "telegram") {
+      if (lblTitle) lblTitle.textContent = "✈️ Telegram Kanal Nomi:";
+      if (titleInput) titleInput.placeholder = "Masalan: PEEXELL News";
+
+      if (lblChannelId) lblChannelId.textContent = "✈️ Telegram Username yoki ID:";
+      if (channelIdInput) channelIdInput.placeholder = "@peexell_news yoki -1001234567890";
+      if (hintChannelId) hintChannelId.innerHTML = '<i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> Bot ushbu kanalda administrator bo\'lishi shart!';
+
+      if (lblLink) lblLink.textContent = "✈️ Taklif Havolasi (Invite Link):";
+      if (linkInput) linkInput.placeholder = "https://t.me/peexell_news";
+
+      if (ytGroup) ytGroup.style.display = "none";
+    } else if (platform === "youtube") {
+      if (lblTitle) lblTitle.textContent = "🔴 YouTube Kanal Nomi:";
+      if (titleInput) titleInput.placeholder = "Masalan: Jahongir Projects";
+
+      if (lblChannelId) lblChannelId.textContent = "🔴 YouTube Handle yoki ID:";
+      if (channelIdInput) channelIdInput.placeholder = "@JahongirProjects";
+      if (hintChannelId) hintChannelId.innerHTML = '<i class="fa-brands fa-youtube" style="color: #ff3b30;"></i> YouTube kanali @handle yoki qidiruv nomi';
+
+      if (lblLink) lblLink.textContent = "🔴 YouTube Kanal Havolasi (URL):";
+      if (linkInput) linkInput.placeholder = "https://youtube.com/@JahongirProjects";
+
+      if (ytGroup) ytGroup.style.display = "block";
+    } else if (platform === "instagram") {
+      if (lblTitle) lblTitle.textContent = "📸 Instagram Profil Nomi:";
+      if (titleInput) titleInput.placeholder = "Masalan: PEEXELL Official";
+
+      if (lblChannelId) lblChannelId.textContent = "📸 Instagram Username (@username):";
+      if (channelIdInput) channelIdInput.placeholder = "@peexell.uz";
+      if (hintChannelId) hintChannelId.innerHTML = '<i class="fa-brands fa-instagram" style="color: #E1306C;"></i> Instagram foydalanuvchi nomi';
+
+      if (lblLink) lblLink.textContent = "📸 Instagram Profil Havolasi (URL):";
+      if (linkInput) linkInput.placeholder = "https://instagram.com/peexell.uz";
+
+      if (ytGroup) ytGroup.style.display = "none";
+    }
+  }
+
   if (platformSelect) {
-    platformSelect.addEventListener("change", () => {
-      const ytGroup = document.getElementById("yt-channel-id-group");
-      if (ytGroup) {
-        ytGroup.style.display = platformSelect.value === "youtube" ? "block" : "none";
-      }
-    });
+    platformSelect.addEventListener("change", updateSponsorFormUI);
+    updateSponsorFormUI();
   }
 
   // Add Sponsor Form Handler
