@@ -993,15 +993,54 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
         if bot and admin_id:
             try:
                 doc = BufferedInputFile(csv_data, filename=filename)
+
+                # Build a beautiful summary table for Telegram caption
+                total_tickets = sum(u.get("ticket_count", 0) for u in users_data)
+                total_refs = sum(u.get("referrals_count", 0) for u in users_data)
+                active_users = sum(1 for u in users_data if u.get("ticket_count", 0) > 0)
+
                 caption = (
-                    f"📊 <b>PEEXELL KONKURS RASMIY HISOBOTI (CSV)</b>\n"
-                    f"━━━━━━━━━━━━━━━━━━━━\n"
+                    f"📊 <b>PEEXELL KONKURS RASMIY HISOBOTI</b>\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
                     f"🏆 <b>Konkurs:</b> {contest_name}\n"
-                    f"👥 <b>Qatnashchilar:</b> {len(users_data)} nafar\n"
                     f"📅 <b>Sana:</b> {export_time}\n"
-                    f"━━━━━━━━━━━━━━━━━━━━\n"
-                    f"📁 <i>Faylni Microsoft Excel yoki Google Sheets dasturlarida bemalol ochishingiz mumkin.</i>"
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n\n"
+                    f"📈 <b>UMUMIY STATISTIKA:</b>\n"
+                    f"┌─────────────────────────\n"
+                    f"│ 👥 Jami qatnashchilar: <b>{len(users_data)}</b>\n"
+                    f"│ 🎫 Jami biletlar: <b>{total_tickets}</b>\n"
+                    f"│ 🤝 Jami referallar: <b>{total_refs}</b>\n"
+                    f"│ ✅ Faol qatnashchilar: <b>{active_users}</b>\n"
+                    f"└─────────────────────────\n\n"
                 )
+
+                # Add TOP participants table (max 15 in caption)
+                if users_data:
+                    caption += "👑 <b>QATNASHCHILAR RO'YXATI:</b>\n"
+                    caption += "<code>┌───┬──────────────┬────┬────┐\n"
+                    caption += "│ # │ Ism          │ 🎫 │ 👥 │\n"
+                    caption += "├───┼──────────────┼────┼────┤\n"
+
+                    show_count = min(len(users_data), 15)
+                    for idx, u in enumerate(users_data[:show_count], start=1):
+                        name = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "—"
+                        # Truncate name to 12 chars for table alignment
+                        if len(name) > 12:
+                            name = name[:11] + "…"
+                        name = name.ljust(12)
+                        tc = str(u.get("ticket_count", 0)).center(2)
+                        rc = str(u.get("referrals_count", 0)).center(2)
+                        caption += f"│{str(idx).rjust(2)} │ {name} │ {tc} │ {rc} │\n"
+
+                    caption += "└───┴──────────────┴────┴────┘</code>\n"
+
+                    if len(users_data) > 15:
+                        caption += f"\n<i>... va yana {len(users_data) - 15} nafar. To'liq ro'yxat CSV faylda.</i>\n"
+
+                caption += (
+                    f"\n📁 <i>Faylni Excel yoki Google Sheets'da oching.</i>"
+                )
+
                 await bot.send_document(chat_id=admin_id, document=doc, caption=caption, parse_mode="HTML")
                 return {
                     "status": "success",
@@ -1054,13 +1093,25 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
             json_bytes = json.dumps(json_result, ensure_ascii=False, indent=2).encode('utf-8')
             filename = f"peexell_konkurs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             doc = BufferedInputFile(json_bytes, filename=filename)
+
+            total_tickets = sum(u.get("ticket_count", 0) for u in users_data)
+            total_refs = sum(u.get("referrals_count", 0) for u in users_data)
+
             caption = (
                 f"💻 <b>PEEXELL KONKURS BAZA HISOBOTI (JSON)</b>\n"
-                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━\n"
                 f"🏆 <b>Konkurs:</b> {contest_name}\n"
-                f"👥 <b>Qatnashchilar:</b> {len(users_data)} nafar\n"
-                f"📅 <b>Sana:</b> {export_time}"
+                f"📅 <b>Sana:</b> {export_time}\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━\n\n"
+                f"📈 <b>UMUMIY STATISTIKA:</b>\n"
+                f"┌─────────────────────────\n"
+                f"│ 👥 Qatnashchilar: <b>{len(users_data)}</b>\n"
+                f"│ 🎫 Biletlar: <b>{total_tickets}</b>\n"
+                f"│ 🤝 Referallar: <b>{total_refs}</b>\n"
+                f"└─────────────────────────\n\n"
+                f"📁 <i>JSON formatdagi to'liq baza nusxasi.</i>"
             )
+
             await bot.send_document(chat_id=admin_id, document=doc, caption=caption, parse_mode="HTML")
             return {
                 "status": "success",
