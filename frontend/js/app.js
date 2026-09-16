@@ -45,10 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Helper API fetch function with initData header
   async function apiFetch(endpoint, options = {}) {
     const headers = {
-      'Content-Type': 'application/json',
       'X-Telegram-Init-Data': initData,
       ...(options.headers || {})
     };
+    if (options.body && !(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     try {
       const response = await fetch(endpoint, { ...options, headers });
@@ -1106,7 +1108,67 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Admin Broadcast Handler (with Photo & Button support)
+  // --- ADMIN BROADCAST GALLERY MEDIA UPLOAD ---
+  let selectedBroadcastMedia = null;
+  const mediaFileInput = document.getElementById("admin-broadcast-file");
+  const mediaUploadArea = document.getElementById("admin-media-upload-area");
+  const mediaPreviewBox = document.getElementById("admin-media-preview-box");
+  const mediaThumb = document.getElementById("admin-media-thumb");
+  const mediaNameEl = document.getElementById("admin-media-name");
+  const mediaInfoEl = document.getElementById("admin-media-info");
+  const removeMediaBtn = document.getElementById("btn-remove-broadcast-media");
+
+  if (mediaUploadArea && mediaFileInput) {
+    mediaUploadArea.addEventListener("click", () => {
+      mediaFileInput.click();
+    });
+
+    mediaFileInput.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      // Max 50MB check
+      if (file.size > 50 * 1024 * 1024) {
+        showToast("Fayl hajmi 50MB dan oshmasligi kerak!", "warning");
+        mediaFileInput.value = "";
+        return;
+      }
+
+      selectedBroadcastMedia = file;
+      const isVideo = file.type.startsWith("video/") || /\.(mp4|mov|avi|mkv|webm)$/i.test(file.name);
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+      if (mediaNameEl) mediaNameEl.textContent = file.name;
+      if (mediaInfoEl) mediaInfoEl.textContent = `${isVideo ? "🎥 Video" : "🖼️ Rasm"} • ${sizeMB} MB`;
+
+      if (mediaThumb) {
+        mediaThumb.innerHTML = "";
+        if (isVideo) {
+          mediaThumb.innerHTML = '<i class="fa-solid fa-file-video" style="font-size: 1.8rem; color: var(--primary-color);"></i>';
+        } else {
+          const img = document.createElement("img");
+          img.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
+          img.src = URL.createObjectURL(file);
+          mediaThumb.appendChild(img);
+        }
+      }
+
+      if (mediaPreviewBox) mediaPreviewBox.style.display = "block";
+      if (mediaUploadArea) mediaUploadArea.style.borderColor = "var(--primary-color)";
+    });
+  }
+
+  if (removeMediaBtn) {
+    removeMediaBtn.addEventListener("click", () => {
+      selectedBroadcastMedia = null;
+      if (mediaFileInput) mediaFileInput.value = "";
+      if (mediaPreviewBox) mediaPreviewBox.style.display = "none";
+      if (mediaThumb) mediaThumb.innerHTML = "";
+      if (mediaUploadArea) mediaUploadArea.style.borderColor = "rgba(197, 255, 0, 0.4)";
+    });
+  }
+
+  // Admin Broadcast Handler (with Gallery Photo/Video & High-Speed Batching)
   const sendBroadcastBtn = document.getElementById("btn-send-broadcast");
   if (sendBroadcastBtn) {
     sendBroadcastBtn.addEventListener("click", async () => {
@@ -1120,31 +1182,48 @@ document.addEventListener("DOMContentLoaded", () => {
       const button_text = btnTextInput ? btnTextInput.value.trim() : "";
       const button_url = btnUrlInput ? btnUrlInput.value.trim() : "";
 
-      if (!message) {
-        showToast("Xabar matnini kiriting!", "warning");
+      if (!message && !selectedBroadcastMedia && !photo_url) {
+        showToast("Xabar matnini kiriting yoki rasm/video tanlang!", "warning");
         return;
       }
 
       if (!confirm("Barcha bot foydalanuvchilariga ushbu xabarni yuborishni tasdiqlaysizmi?")) return;
 
       sendBroadcastBtn.disabled = true;
-      sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
+      sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-bolt fa-spin"></i> Tezkor yuborilmoqda...';
 
       try {
-        const res = await apiFetch("/api/admin/broadcast", {
-          method: "POST",
-          body: JSON.stringify({
-            message,
-            photo_url: photo_url || null,
-            button_text: button_text || null,
-            button_url: button_url || null
-          })
-        });
+        let res;
+        if (selectedBroadcastMedia) {
+          const formData = new FormData();
+          formData.append("message", message);
+          if (photo_url) formData.append("photo_url", photo_url);
+          if (button_text) formData.append("button_text", button_text);
+          if (button_url) formData.append("button_url", button_url);
+          formData.append("media_file", selectedBroadcastMedia);
+
+          res = await apiFetch("/api/admin/broadcast", {
+            method: "POST",
+            body: formData
+          });
+        } else {
+          res = await apiFetch("/api/admin/broadcast", {
+            method: "POST",
+            body: JSON.stringify({
+              message,
+              photo_url: photo_url || null,
+              button_text: button_text || null,
+              button_url: button_url || null
+            })
+          });
+        }
+
         showToast(res.message, "success");
         if (msgInput) msgInput.value = "";
         if (photoInput) photoInput.value = "";
         if (btnTextInput) btnTextInput.value = "";
         if (btnUrlInput) btnUrlInput.value = "";
+        if (removeMediaBtn) removeMediaBtn.click();
       } catch (err) {
         showToast("Xabar yuborishda xatolik!", "danger");
       } finally {

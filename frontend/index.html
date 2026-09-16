@@ -492,9 +492,35 @@
             <label>Xabar Matni (HTML teglari qo'llab-quvvatlanadi: &lt;b&gt;, &lt;i&gt;, &lt;a&gt;):</label>
             <textarea id="admin-broadcast-msg" class="form-input" rows="4" placeholder="📢 Diqqat! Konkursimizning yangi shartlari va e'lonlari..."></textarea>
           </div>
+          <!-- Gallery Media Upload (Photo or Video) -->
           <div class="form-group">
-            <label>Rasm Havolasi (Photo URL - ixtiyoriy):</label>
-            <input type="text" id="admin-broadcast-photo" class="form-input" placeholder="https://example.com/banner.jpg (bo'sh qoldirish mumkin)">
+            <label><i class="fa-solid fa-photo-film" style="color: var(--primary-color);"></i> Rasm yoki Video (Galereyadan tanlash):</label>
+            <input type="file" id="admin-broadcast-file" accept="image/*,video/*" style="display: none;">
+
+            <div id="admin-media-upload-area" style="border: 2px dashed rgba(197, 255, 0, 0.4); border-radius: 12px; padding: 16px 12px; text-align: center; background: rgba(197, 255, 0, 0.03); cursor: pointer; transition: all 0.25s ease;">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--primary-color); margin-bottom: 6px;"></i>
+              <div style="font-weight: 700; font-size: 0.88rem; color: #fff;">Galereyadan Rasm yoki Video Tanlash</div>
+              <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 4px;">JPG, PNG, MP4, MOV (Galereya yoki fayllardan tanlang)</div>
+            </div>
+
+            <!-- Media Preview Container -->
+            <div id="admin-media-preview-box" style="display: none; margin-top: 10px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--card-border); border-radius: 10px; padding: 10px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div id="admin-media-thumb" style="width: 55px; height: 55px; border-radius: 8px; overflow: hidden; background: #1a1c23; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"></div>
+                <div style="flex: 1; min-width: 0;">
+                  <div id="admin-media-name" style="font-size: 0.82rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                  <div id="admin-media-info" style="font-size: 0.74rem; color: var(--primary-color); font-weight: 600; margin-top: 2px;"></div>
+                </div>
+                <button type="button" id="btn-remove-broadcast-media" class="btn btn-sm" style="background: rgba(255, 59, 48, 0.2); color: var(--danger-color); border: 1px solid var(--danger-color); padding: 5px 10px; font-size: 0.74rem;">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Fallback URL (Optional) -->
+            <div style="margin-top: 8px;">
+              <input type="text" id="admin-broadcast-photo" class="form-input" placeholder="Yoki internetdagi rasm/video URL havolasi (ixtiyoriy)..." style="font-size: 0.78rem; padding: 8px 10px;">
+            </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px;">
             <div class="form-group">

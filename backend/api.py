@@ -3,7 +3,7 @@ import hashlib
 import json
 import urllib.parse
 from typing import Optional, List
-from fastapi import APIRouter, Header, HTTPException, Depends, Query, Response
+from fastapi import APIRouter, Header, HTTPException, Depends, Query, Response, Request
 from pydantic import BaseModel
 
 from backend.config import settings
@@ -544,10 +544,84 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
     return {"status": "success", "winners": winners}
 
 
+async def _send_single_broadcast(bot, user_id, message, photo_id, video_id, photo_url, is_video, reply_markup, semaphore, results):
+    import asyncio
+    async with semaphore:
+        try:
+            if photo_id:
+                await bot.send_photo(chat_id=user_id, photo=photo_id, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+            elif video_id:
+                await bot.send_video(chat_id=user_id, video=video_id, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+            elif photo_url:
+                if is_video:
+                    await bot.send_video(chat_id=user_id, video=photo_url, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+                else:
+                    await bot.send_photo(chat_id=user_id, photo=photo_url, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+            else:
+                await bot.send_message(chat_id=user_id, text=message, parse_mode="HTML", reply_markup=reply_markup)
+            results["success"] += 1
+        except Exception as e:
+            from aiogram.exceptions import TelegramRetryAfter
+            if isinstance(e, TelegramRetryAfter):
+                await asyncio.sleep(e.retry_after + 0.1)
+                try:
+                    if photo_id:
+                        await bot.send_photo(chat_id=user_id, photo=photo_id, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+                    elif video_id:
+                        await bot.send_video(chat_id=user_id, video=video_id, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+                    elif photo_url:
+                        if is_video:
+                            await bot.send_video(chat_id=user_id, video=photo_url, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+                        else:
+                            await bot.send_photo(chat_id=user_id, photo=photo_url, caption=message, parse_mode="HTML", reply_markup=reply_markup)
+                    else:
+                        await bot.send_message(chat_id=user_id, text=message, parse_mode="HTML", reply_markup=reply_markup)
+                    results["success"] += 1
+                    return
+                except Exception:
+                    pass
+            results["fail"] += 1
+        finally:
+            await asyncio.sleep(0.035)
+
+
 @router.post("/admin/broadcast")
-async def admin_broadcast(body: BroadcastRequest, admin: dict = Depends(get_current_admin)):
-    if not body.message.strip():
-        raise HTTPException(status_code=400, detail="Xabar matni bo'sh bo'lishi mumkin emas")
+async def admin_broadcast(request: Request, admin: dict = Depends(get_current_admin)):
+    import asyncio
+    from aiogram.types import BufferedInputFile
+
+    content_type = request.headers.get("content-type", "")
+    message = ""
+    photo_url = None
+    button_text = None
+    button_url = None
+    file_bytes = None
+    filename = None
+    media_content_type = None
+
+    if "multipart/form-data" in content_type:
+        form = await request.form()
+        message = form.get("message", "") or ""
+        photo_url = form.get("photo_url")
+        button_text = form.get("button_text")
+        button_url = form.get("button_url")
+        upload = form.get("media_file")
+        if upload and hasattr(upload, "read"):
+            file_bytes = await upload.read()
+            filename = getattr(upload, "filename", "media")
+            media_content_type = getattr(upload, "content_type", "")
+    else:
+        try:
+            body = await request.json()
+        except Exception:
+            body = {}
+        message = body.get("message", "") or ""
+        photo_url = body.get("photo_url")
+        button_text = body.get("button_text")
+        button_url = body.get("button_url")
+
+    if not str(message).strip() and not file_bytes and not photo_url:
+        raise HTTPException(status_code=400, detail="Xabar matni yoki media fayl bo'sh bo'lishi mumkin emas")
 
     from backend.main import get_bot_instance
     bot = get_bot_instance()
@@ -555,51 +629,95 @@ async def admin_broadcast(body: BroadcastRequest, admin: dict = Depends(get_curr
     if not bot:
         raise HTTPException(status_code=500, detail="Bot instansiyasi faol emas")
 
-    async with get_db() as db:
-        async with db.execute("SELECT id FROM users") as cursor:
-            users = await cursor.fetchall()
-
     reply_markup = None
-    if body.button_text and body.button_url and body.button_text.strip() and body.button_url.strip():
+    if button_text and button_url and str(button_text).strip() and str(button_url).strip():
         try:
             from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
             reply_markup = InlineKeyboardMarkup(inline_keyboard=[[
-                InlineKeyboardButton(text=body.button_text.strip(), url=body.button_url.strip())
+                InlineKeyboardButton(text=str(button_text).strip(), url=str(button_url).strip())
             ]])
         except Exception:
             pass
 
-    success_count = 0
-    fail_count = 0
-    import asyncio
+    # Determine if media is video
+    is_video = False
+    if filename:
+        ext = filename.lower().split('.')[-1] if '.' in filename else ''
+        if ext in ['mp4', 'mov', 'avi', 'mkv', 'webm', '3gp', 'm4v'] or (media_content_type and 'video' in media_content_type):
+            is_video = True
+    elif photo_url:
+        clean_u = photo_url.lower().split('?')[0]
+        ext = clean_u.split('.')[-1] if '.' in clean_u else ''
+        if ext in ['mp4', 'mov', 'avi', 'mkv', 'webm', '3gp', 'm4v']:
+            is_video = True
 
-    has_photo = bool(body.photo_url and body.photo_url.strip().startswith("http"))
+    # Cache file_id by sending to admin first (warm up CDN)
+    photo_id = None
+    video_id = None
+    admin_id = admin.get("id")
 
-    for u in users:
+    if file_bytes and admin_id:
+        safe_name = filename or ("broadcast.mp4" if is_video else "broadcast.jpg")
+        input_file = BufferedInputFile(file_bytes, filename=safe_name)
         try:
-            if has_photo:
-                await bot.send_photo(
-                    chat_id=u["id"],
-                    photo=body.photo_url.strip(),
-                    caption=body.message,
+            if is_video:
+                admin_msg = await bot.send_video(
+                    chat_id=admin_id,
+                    video=input_file,
+                    caption=message,
                     parse_mode="HTML",
                     reply_markup=reply_markup
                 )
+                if admin_msg.video:
+                    video_id = admin_msg.video.file_id
             else:
-                await bot.send_message(
-                    chat_id=u["id"],
-                    text=body.message,
+                admin_msg = await bot.send_photo(
+                    chat_id=admin_id,
+                    photo=input_file,
+                    caption=message,
                     parse_mode="HTML",
                     reply_markup=reply_markup
                 )
-            success_count += 1
-            await asyncio.sleep(0.04)
+                if admin_msg.photo:
+                    photo_id = admin_msg.photo[-1].file_id
         except Exception:
-            fail_count += 1
+            pass
+
+    async with get_db() as db:
+        async with db.execute("SELECT id FROM users") as cursor:
+            rows = await cursor.fetchall()
+            user_ids = [r["id"] for r in rows]
+
+    results = {"success": 0, "fail": 0}
+
+    # If admin already received it during upload warm-up, count as success and skip in batch
+    if (photo_id or video_id) and admin_id in user_ids:
+        results["success"] += 1
+        user_ids = [uid for uid in user_ids if uid != admin_id]
+
+    semaphore = asyncio.Semaphore(25)
+
+    tasks = [
+        _send_single_broadcast(
+            bot=bot,
+            user_id=uid,
+            message=message,
+            photo_id=photo_id,
+            video_id=video_id,
+            photo_url=photo_url if photo_url and photo_url.startswith("http") else None,
+            is_video=is_video,
+            reply_markup=reply_markup,
+            semaphore=semaphore,
+            results=results
+        )
+        for uid in user_ids
+    ]
+
+    await asyncio.gather(*tasks)
 
     return {
         "status": "success",
-        "message": f"📢 Ommaviy xabar yuborildi!\n✅ Muvaffaqiyatli: {success_count} ta\n❌ Yetib bormadi: {fail_count} ta"
+        "message": f"⚡ Ommaviy xabar rekord tezlikda tarqatildi!\n✅ Yetkazildi: {results['success']} ta\n❌ Yetib bormadi (bloklagan): {results['fail']} ta"
     }
 
 
