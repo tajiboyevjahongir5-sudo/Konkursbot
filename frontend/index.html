@@ -76,87 +76,138 @@
 
     <!-- TAB 1: KONKURS -->
     <section id="tab-contest" class="tab-content active">
-      <div class="card">
-        
-        <!-- 1. Countdown Timer at the VERY TOP -->
-        <div style="font-size: 0.8rem; text-align: center; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-          <i class="fa-solid fa-clock" style="color: var(--primary-color);"></i> Konkurs yakunlanishiga qoldi:
+      
+      <!-- 1. Hero Card (Compact 16:9 banner with cyber grid and live badge) -->
+      <div class="pxl-hero-card">
+        <div class="pxl-hero-overlay"></div>
+        <div class="pxl-hero-content">
+          <div class="pxl-live-badge">
+            <span class="live-dot"></span> LIVE KONKURS
+          </div>
+          <h2 id="contest-title" class="pxl-hero-title">PEEXELL GRAND 2026</h2>
+          <p id="contest-description" class="pxl-hero-subtitle">
+            Do'stlaringizni taklif qiling, homiy kanallarga a'zo bo'ling va yirik sovrinlarni yutib oling!
+          </p>
         </div>
-        <div class="timer-container" style="margin-bottom: 16px;">
-          <div class="timer-box">
+      </div>
+
+      <!-- 2. Futuristic Glass Countdown Timer -->
+      <div class="pxl-timer-card">
+        <div class="pxl-timer-header">
+          <i class="fa-regular fa-clock" style="color: var(--primary-color);"></i>
+          <span>Konkurs yakunlanishiga qoldi:</span>
+        </div>
+        <div class="pxl-glass-timer">
+          <div class="glass-time-cell">
             <div id="timer-days" class="timer-val">00</div>
             <div class="timer-lbl">Kun</div>
           </div>
-          <div class="timer-box">
+          <div class="timer-dots">:</div>
+          <div class="glass-time-cell">
             <div id="timer-hours" class="timer-val">00</div>
             <div class="timer-lbl">Soat</div>
           </div>
-          <div class="timer-box">
+          <div class="timer-dots">:</div>
+          <div class="glass-time-cell">
             <div id="timer-mins" class="timer-val">00</div>
-            <div class="timer-lbl">Daqiqa</div>
+            <div class="timer-lbl">Daq</div>
           </div>
-          <div class="timer-box">
+          <div class="timer-dots">:</div>
+          <div class="glass-time-cell">
             <div id="timer-secs" class="timer-val">00</div>
-            <div class="timer-lbl">Soniya</div>
+            <div class="timer-lbl">Son</div>
           </div>
         </div>
+      </div>
 
-        <!-- 2. Konkurs Banner Image -->
-        <div style="width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 14px; border: 1px solid var(--border-color);">
-          <img src="assets/logo.jpg" alt="PEEXELL Contest Banner" style="width: 100%; height: auto; display: block;">
+      <!-- 3. VIP Prize Showcase (3D Cards) -->
+      <div class="pxl-section-block">
+        <div class="pxl-section-title">
+          <i class="fa-solid fa-trophy" style="color: #FFD700;"></i>
+          <span>Konkurs Sovrinlari</span>
         </div>
+        
+        <div class="pxl-prizes-grid">
+          <!-- 1-O'rin Gold VIP -->
+          <div class="prize-card gold">
+            <div class="prize-card-badge">GOLD VIP</div>
+            <div class="prize-card-icon">📱</div>
+            <div class="prize-card-name">iPhone 15 Pro</div>
+            <div class="prize-card-sub">1-O'rin</div>
+          </div>
 
-        <!-- 3. Title & Description -->
-        <div class="card-header-title">
-          <i class="fa-solid fa-bolt" style="color: var(--primary-color);"></i>
-          <span id="contest-title">PEEXELL GRAND KONKURS</span>
+          <!-- 2-O'rin Neon Lime -->
+          <div class="prize-card lime">
+            <div class="prize-card-badge">NEON LIME</div>
+            <div class="prize-card-icon">💵</div>
+            <div class="prize-card-name">10,000,000 UZS</div>
+            <div class="prize-card-sub">2-O'rin</div>
+          </div>
+
+          <!-- 3-O'rin Cyber Cyan -->
+          <div class="prize-card cyan">
+            <div class="prize-card-badge">CYAN VIP</div>
+            <div class="prize-card-icon">⭐️</div>
+            <div class="prize-card-name">5x TG Premium</div>
+            <div class="prize-card-sub">3-O'rin</div>
+          </div>
         </div>
-        <p id="contest-description" style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
-          Yangi konkursimizda ishtirok eting! Do'stlaringizni taklif qiling, sponsor kanallarga obuna bo'ling va qimmatbaho sovrinlarni yutib oling!
-        </p>
+        <!-- Hidden container for JS backwards compatibility -->
+        <div id="contest-prizes-list" style="display: none;"></div>
+      </div>
 
-        <!-- 4. Prize Pool Section -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-bottom: 16px;">
-          <div class="card-header-title">
-            <i class="fa-solid fa-trophy" style="color: var(--secondary-color);"></i>
-            <span>Konkurs Sovrinlari</span>
+      <!-- 4. Gamifikatsiya ("Mening Imkoniyatim" Widget) -->
+      <div class="pxl-chance-card">
+        <div class="chance-card-top">
+          <div class="chance-info">
+            <div class="chance-title">Mening Imkoniyatim</div>
+            <div id="chance-subtitle" class="chance-sub">Biletlar: <b id="chance-tickets-num" style="color: var(--primary-color);">0 ta</b></div>
           </div>
-          <div id="contest-prizes-list" style="color: var(--primary-color); font-weight: 700; font-size: 0.95rem; line-height: 1.8;">
-            🎁 10,000,000 UZS + iPhone 15 Pro + 5x Telegram Premium
-          </div>
-        </div>
-
-        <!-- 5. Sponsor Channels (Majburiy Obuna) Section -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px;">
-          <div class="card-header-title">
-            <i class="fa-solid fa-shield" style="color: var(--primary-color);"></i>
-            <span>Sponsor Kanallar (Majburiy Obuna)</span>
-          </div>
-          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 14px;">
-            Konkursda qatnashish uchun barcha kanallarga obuna bo'ling va pastdagi <b>🚀 Qatnashish</b> tugmasini bosing:
-          </p>
-          <div id="tasks-container">
-            <!-- Dynamic Task List items injected by JS -->
-          </div>
-
-          <!-- Big Participate Button -->
-          <button id="btn-participate-contest" class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 14px; font-size: 1.05rem; font-weight: 700; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            🚀 Qatnashish
+          <button id="btn-quick-invite" class="btn-invite-mini">
+            <i class="fa-solid fa-user-plus"></i> Taklif qilish
           </button>
         </div>
+        <div class="chance-progress-wrapper">
+          <div id="chance-progress-bar" class="chance-progress-fill" style="width: 15%;"></div>
+        </div>
+        <div class="chance-progress-labels">
+          <span>Boshlang'ich</span>
+          <span id="chance-percent-label">Imkoniyat: 15%</span>
+          <span>Maksimal 🔥</span>
+        </div>
+      </div>
 
-        <!-- Past Winners Showcase Card -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 16px;">
-          <div class="card-header-title">
-            <i class="fa-solid fa-award" style="color: var(--secondary-color);"></i>
-            <span>🏆 Konkurs G'oliblari</span>
-          </div>
-          <div id="public-winners-list" style="margin-top: 10px;">
-            <div style="font-size: 0.82rem; color: var(--text-secondary); text-align: center; padding: 10px;">Hozircha g'oliblar aniqlanmagan.</div>
-          </div>
+      <!-- 5. Sponsor Vazifalar (Majburiy Obuna) -->
+      <div class="pxl-section-block">
+        <div class="pxl-section-title">
+          <i class="fa-solid fa-shield-halved" style="color: var(--primary-color);"></i>
+          <span>Homiy Kanallar & Vazifalar</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+          Barcha homiylarga a'zo bo'ling va pastdagi <b>🚀 Qatnashish</b> tugmasini bosib bilet oling:
+        </p>
+
+        <div id="tasks-container">
+          <!-- Dynamic Task List items injected by JS -->
         </div>
 
+        <!-- Big Glow Participate Button -->
+        <button id="btn-participate-contest" class="btn btn-participate-glow">
+          <i class="fa-solid fa-bolt"></i> 🚀 Qatnashish
+        </button>
       </div>
+
+      <!-- 6. Konkurs G'oliblari -->
+      <div class="pxl-section-block" style="margin-bottom: 24px;">
+        <div class="pxl-section-title">
+          <i class="fa-solid fa-award" style="color: var(--secondary-color);"></i>
+          <span>🏆 Konkurs G'oliblari</span>
+        </div>
+        <div id="public-winners-list" style="margin-top: 10px;">
+          <div style="font-size: 0.82rem; color: var(--text-secondary); text-align: center; padding: 12px;">Hozircha g'oliblar aniqlanmagan.</div>
+        </div>
+      </div>
+
     </section>
 
     <!-- TAB 2: PROFIL (PROFILE & TICKETS) -->

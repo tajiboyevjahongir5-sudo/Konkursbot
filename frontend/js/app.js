@@ -248,6 +248,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (rCount) rCount.textContent = currentUser.referrals_count;
         if (rTickets) rTickets.textContent = currentUser.tickets;
 
+        // Update "Mening Imkoniyatim" Widget
+        const cTickets = document.getElementById("chance-tickets-num");
+        const cProgress = document.getElementById("chance-progress-bar");
+        const cPercent = document.getElementById("chance-percent-label");
+        const ticketCount = currentUser.tickets || 0;
+        if (cTickets) cTickets.textContent = `${ticketCount} ta`;
+        
+        let chancePercent = 10;
+        if (ticketCount > 0) {
+          chancePercent = Math.min(100, 20 + (ticketCount * 15));
+        }
+        if (cProgress) cProgress.style.width = `${chancePercent}%`;
+        if (cPercent) cPercent.textContent = `Imkoniyat: ${chancePercent}%`;
+
         // Show Admin Nav Button if user is an Admin
         if (currentUser.is_admin) {
           const adminNavBtn = document.getElementById("nav-item-admin");
@@ -257,6 +271,15 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.log("Could not load user data");
     }
+  }
+
+  // Quick invite button switch to Friends tab
+  const quickInviteBtn = document.getElementById("btn-quick-invite");
+  if (quickInviteBtn) {
+    quickInviteBtn.addEventListener("click", () => {
+      const friendsNav = document.querySelector('.nav-item[data-tab="tab-friends"]');
+      if (friendsNav) friendsNav.click();
+    });
   }
 
   async function loadContestData() {
