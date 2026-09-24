@@ -482,14 +482,84 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (platform === "youtube") {
               try {
+                // First check if already verified in database
+                const preCheck = await apiFetch("/api/tasks/check", {
+                  method: "POST",
+                  body: JSON.stringify({ sponsor_id: sponsorId })
+                });
+
+                if (preCheck && preCheck.completed) {
+                  showToast(preCheck.message || "✅ YouTube obunasi allaqachon tasdiqlangan!", "success");
+                  await loadUserData();
+                  await loadTasks();
+                  return;
+                }
+
+                // If not verified, request OAuth auth URL
                 const gRes = await apiFetch(`/api/auth/google/url?sponsor_id=${sponsorId}`);
                 if (gRes && gRes.status === "success" && gRes.url) {
-                  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-                    window.Telegram.WebApp.openLink(gRes.url);
+                  const modal = document.getElementById("yt-oauth-modal");
+                  const proceedBtn = document.getElementById("btn-yt-modal-proceed");
+                  const closeBtn = document.getElementById("btn-yt-modal-close");
+                  const checkDoneBtn = document.getElementById("btn-yt-modal-check-done");
+                  const botStatus = document.getElementById("yt-modal-bot-status");
+
+                  if (modal && proceedBtn) {
+                    proceedBtn.href = gRes.url;
+                    if (botStatus) {
+                      botStatus.style.display = gRes.sent_to_bot ? "block" : "none";
+                    }
+
+                    // Direct click on proceed button: trigger openLink immediately on user click
+                    proceedBtn.onclick = (ev) => {
+                      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                        ev.preventDefault();
+                        window.Telegram.WebApp.openLink(gRes.url, { try_instant_view: false });
+                      }
+                    };
+
+                    if (closeBtn) {
+                      closeBtn.onclick = () => {
+                        modal.style.display = "none";
+                      };
+                    }
+
+                    if (checkDoneBtn) {
+                      checkDoneBtn.onclick = async () => {
+                        try {
+                          checkDoneBtn.disabled = true;
+                          checkDoneBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Tekshirilmoqda...';
+                          const resDone = await apiFetch("/api/tasks/check", {
+                            method: "POST",
+                            body: JSON.stringify({ sponsor_id: sponsorId })
+                          });
+                          if (resDone && resDone.completed) {
+                            modal.style.display = "none";
+                            showToast(resDone.message || "🎉 YouTube obunangiz tasdiqlandi!", "success");
+                            await loadUserData();
+                            await loadTasks();
+                          } else {
+                            showToast(resDone.message || "❌ Hali tasdiqlanmadi. Iltimos brauzerda Google akkauntingizni tanlab ruxsat bering.", "warning");
+                          }
+                        } catch (e) {
+                          showToast("Tekshirishda xatolik yuz berdi", "danger");
+                        } finally {
+                          checkDoneBtn.disabled = false;
+                          checkDoneBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Brauzerda tasdiqladim, tekshirish';
+                        }
+                      };
+                    }
+
+                    modal.style.display = "flex";
                   } else {
-                    window.open(gRes.url, '_blank', 'width=500,height=600');
+                    // Fallback
+                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                      window.Telegram.WebApp.openLink(gRes.url, { try_instant_view: false });
+                    } else {
+                      window.open(gRes.url, '_blank');
+                    }
+                    showToast("🔐 Google orqali tasdiqlash havolasi ochilmoqda...", "warning");
                   }
-                  showToast("🔐 Google akkauntingiz orqali tasdiqlash sahifasi ochilmoqda...", "warning");
                 } else {
                   showToast((gRes && gRes.message) || "Google API sozlanmagan!", "danger");
                 }
@@ -1569,6 +1639,16 @@ document.addEventListener("DOMContentLoaded", () => {
       await loadAdminData();
     }
   }
+
+  // Auto-refresh tasks and user tickets when returning to WebApp from external browser
+  document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState === "visible") {
+      try {
+        await loadUserData();
+        await loadTasks();
+      } catch (e) {}
+    }
+  });
 
   init();
 });

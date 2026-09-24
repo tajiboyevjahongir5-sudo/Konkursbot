@@ -1148,7 +1148,32 @@ async def get_google_auth_url(sponsor_id: int, user: dict = Depends(get_current_
         f"prompt=select_account&"
         f"state={state_str}"
     )
-    return {"status": "success", "url": auth_url}
+    from backend.main import get_bot_instance
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+    bot = get_bot_instance()
+    sent_to_bot = False
+    if bot and user.get("id"):
+        try:
+            sponsors = await get_sponsors(active_only=False)
+            sp = next((s for s in sponsors if s["id"] == sponsor_id), None)
+            sp_title = sp.get("title", "YouTube Kanal") if sp else "YouTube Kanal"
+
+            kb = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🌐 Google orqali tasdiqlash (Chrome/Safari)", url=auth_url)]
+            ])
+            msg_text = (
+                f"🔐 <b>YouTube Obunasini Tasdiqlash</b>\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"📺 Kanal: <b>{sp_title}</b>\n\n"
+                f"Google xavfsizlik talablariga ko'ra, obunani tasdiqlash tashqi brauzerda (Chrome/Safari) amalga oshiriladi.\n\n"
+                f"Quyidagi tugmani bosing va brauzerda Google akkauntingiz orqali tasdiqlang 👇"
+            )
+            await bot.send_message(chat_id=user["id"], text=msg_text, reply_markup=kb, parse_mode="HTML")
+            sent_to_bot = True
+        except Exception as e:
+            logger.error(f"Failed to send Google OAuth message to user {user.get('id')}: {e}")
+
+    return {"status": "success", "url": auth_url, "sent_to_bot": sent_to_bot}
 
 
 def render_cyberpunk_result_page(
@@ -1158,12 +1183,14 @@ def render_cyberpunk_result_page(
     user_email: str = "",
     auto_close: bool = False,
     action_button_text: str = "",
-    action_button_url: str = ""
+    action_button_url: str = "",
+    bot_username: str = "peexell_contest_bot"
 ) -> str:
     color = "#ff3b30" if status_type == "error" else ("#C5FF00" if status_type == "success" else "#ffcc00")
     border_color = f"{color}50"
     glow_color = f"{color}40"
     icon = "❌" if status_type == "error" else ("🎉" if status_type == "success" else "⚠️")
+    clean_bot = bot_username.replace("@", "")
     
     script_return = f"""
     <script>
@@ -1173,10 +1200,9 @@ def render_cyberpunk_result_page(
                     window.opener.postMessage('yt_success', '*');
                 }}
             }} catch (e) {{}}
-            
-            window.close();
+            window.location.href = "https://t.me/{clean_bot}";
         }}
-        { "setTimeout(returnToBot, 2500);" if auto_close else "" }
+        { f"setTimeout(returnToBot, 3000);" if auto_close else "" }
     </script>
     """
 
@@ -1186,7 +1212,8 @@ def render_cyberpunk_result_page(
     if action_button_text and action_button_url:
         action_btn_html = f"<a href='{action_button_url}' target='_blank' class='btn btn-action'>{action_button_text}</a>"
     
-    close_btn_html = "<button onclick='returnToBot()' class='btn btn-close'>Oynani Yopish</button>"
+    bot_return_btn = f"<a href='https://t.me/{clean_bot}' class='btn btn-action' style='background:#C5FF00; color:#121316; font-weight:800; text-decoration:none;'>🤖 Telegram Botga Qaytish</a>"
+    close_btn_html = f"<button onclick='returnToBot()' class='btn btn-close'>Telegramga Qaytish</button>"
 
     progress_bar_html = "<div class='progress-bar-container'><div class='progress-bar-fill'></div></div>" if auto_close else ""
 

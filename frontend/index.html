@@ -694,22 +694,31 @@
 
   <!-- YouTube Google OAuth Modal Guide -->
   <div id="yt-oauth-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: #1a1d24; border: 1px solid var(--primary-color); border-radius: 16px; padding: 24px; max-width: 400px; width: 100%; box-shadow: 0 0 25px rgba(197, 255, 0, 0.25); color: #fff;">
-      <div style="text-align: center; margin-bottom: 16px;">
+    <div style="background: #1a1d24; border: 1px solid var(--primary-color); border-radius: 16px; padding: 24px; max-width: 420px; width: 100%; box-shadow: 0 0 25px rgba(197, 255, 0, 0.25); color: #fff;">
+      <div style="text-align: center; margin-bottom: 14px;">
         <i class="fa-brands fa-youtube" style="font-size: 2.8rem; color: #ff0000;"></i>
         <h3 style="color: #fff; font-size: 1.15rem; margin-top: 10px; font-weight: 800;">Google OAuth YouTube Tekshiruvi</h3>
       </div>
-      <div style="font-size: 0.85rem; color: #ccc; line-height: 1.6; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 14px; border-radius: 10px; border-left: 3px solid var(--primary-color);">
-        <p style="margin-bottom: 8px;"><b>📌 Obunani 100% rasmiy API orqali tekshirish yo'riqnomasi:</b></p>
-        <ol style="padding-left: 18px; margin: 0;">
-          <li style="margin-bottom: 6px;">Pastdagi <b>"🚀 Google Bilan Kirish"</b> tugmasini bosing va Google akkauntingizni tanlang.</li>
-          <li style="margin-bottom: 6px;">Agar Google ekranida <i>"Google hasn't verified this app"</i> chiqsangiz: pastdagi <b>"Advanced" (Kengaytirilgan)</b> ➔ <b>"Go to Konkursbot"</b> havolasini bosing.</li>
-          <li>Google Data API YouTube obunangizni avtomatik va rasmiy tasdiqlaydi!</li>
-        </ol>
+      <div style="font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 16px; background: rgba(255,255,255,0.05); padding: 14px; border-radius: 10px; border-left: 3px solid var(--primary-color);">
+        <p style="margin-bottom: 6px;"><b>📌 Qanday tasdiqlanadi:</b></p>
+        <p style="margin-bottom: 6px; color: #cbd5e1;">
+          Google xavfsizlik qoidalariga ko'ra, tasdiqlash sahifasi <b>Chrome yoki Safari</b> brauzerida ochilishi kerak.
+        </p>
+        <div id="yt-modal-bot-status" style="display: none; background: rgba(197, 255, 0, 0.12); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 10px; border-radius: 8px; font-size: 0.8rem; margin-top: 8px;">
+          <i class="fa-solid fa-paper-plane"></i> Havola shuningdek bot chatiga ham yuborildi!
+        </div>
       </div>
-      <div style="display: flex; gap: 10px;">
-        <button id="btn-yt-modal-close" class="btn btn-secondary" style="flex: 1; padding: 12px; font-weight: 700; border-radius: 10px;">Bekor qilish</button>
-        <button id="btn-yt-modal-proceed" class="btn btn-primary" style="flex: 1.5; padding: 12px; font-weight: 800; border-radius: 10px;">🚀 Google Bilan Kirish</button>
+      
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a id="btn-yt-modal-proceed" href="#" target="_blank" class="btn btn-primary" style="display: block; width: 100%; padding: 13px; font-weight: 800; border-radius: 10px; text-align: center; text-decoration: none; font-size: 0.95rem;">
+          <i class="fa-brands fa-chrome"></i> Brauzerda Ochish (Chrome/Safari)
+        </a>
+        <button id="btn-yt-modal-check-done" class="btn btn-secondary" style="width: 100%; padding: 11px; font-weight: 700; border-radius: 10px;">
+          <i class="fa-solid fa-arrows-rotate"></i> Brauzerda tasdiqladim, tekshirish
+        </button>
+        <button id="btn-yt-modal-close" class="btn btn-sm" style="background: transparent; color: #888; border: none; padding: 6px; font-size: 0.85rem; margin-top: 2px;">
+          Yopish
+        </button>
       </div>
     </div>
   </div>
