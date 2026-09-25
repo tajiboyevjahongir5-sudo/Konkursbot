@@ -341,67 +341,128 @@ body::before {
 .pxl-hero-card {
   position: relative !important;
   overflow: hidden !important;
-  background: linear-gradient(145deg, #161a26 0%, #0e121c 60%, #090b12 100%) !important;
-  border: 1px solid rgba(197, 255, 0, 0.4) !important;
+  min-height: 238px !important;
+  background: 
+    radial-gradient(ellipse 260px 190px at 85% 42%, rgba(0, 229, 255, 0.38) 0%, rgba(197, 255, 0, 0.28) 42%, transparent 75%),
+    radial-gradient(circle 220px at 15% 15%, rgba(0, 229, 255, 0.2) 0%, transparent 60%),
+    radial-gradient(circle 200px at 20% 85%, rgba(197, 255, 0, 0.18) 0%, transparent 60%),
+    linear-gradient(135deg, #151a2e 0%, #0e1322 35%, #091722 75%, #061518 100%) !important;
+  border: 1.5px solid rgba(197, 255, 0, 0.65) !important;
   border-radius: 24px !important;
   padding: 18px 16px !important;
   margin-bottom: 14px !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(197, 255, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 
+    0 18px 45px rgba(0, 0, 0, 0.82),
+    0 0 35px rgba(197, 255, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 0 30px rgba(0, 229, 255, 0.14) !important;
 }
 
-/* Pulsing Cyber Aurora */
-.pxl-hero-aurora {
+/* Ambient Pulsing Aura */
+.pxl-hero-ambient-glow {
   position: absolute;
-  top: -40px;
-  right: -30px;
-  width: 190px;
-  height: 190px;
-  background: radial-gradient(circle, rgba(197, 255, 0, 0.28) 0%, rgba(0, 229, 255, 0.16) 45%, transparent 75%);
-  filter: blur(32px);
+  top: -25px;
+  right: -25px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(197, 255, 0, 0.38) 0%, rgba(0, 229, 255, 0.25) 42%, transparent 72%);
+  filter: blur(28px);
   pointer-events: none;
   z-index: 1;
-  animation: auroraPulse 4s infinite ease-in-out alternate;
+  animation: auroraPulse 3.5s infinite ease-in-out alternate;
 }
 
 @keyframes auroraPulse {
-  0% { transform: scale(0.9) translate(0, 0); opacity: 0.65; }
-  100% { transform: scale(1.15) translate(-10px, 12px); opacity: 1; }
+  0% { transform: scale(0.88) translate(0, 0); opacity: 0.65; }
+  100% { transform: scale(1.15) translate(-8px, 10px); opacity: 1; }
 }
 
-/* Futuristic Cyber Grid Overlay */
+/* Cyber Tech Grid Mesh with glowing intersections */
 .pxl-hero-grid-mesh {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background-image: 
-    linear-gradient(rgba(197, 255, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(197, 255, 0, 0.05) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: radial-gradient(ellipse at 85% 35%, black 25%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse at 85% 35%, black 25%, transparent 80%);
+    linear-gradient(rgba(197, 255, 0, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  mask-image: radial-gradient(ellipse at 75% 50%, black 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at 75% 50%, black 40%, transparent 85%);
   pointer-events: none;
   z-index: 1;
+  opacity: 0.8;
 }
 
-/* Hero Content Grid (Left Text + Right 3D Portal) */
+/* Sweeping Laser Beam */
+.pxl-hero-laser {
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(197, 255, 0, 0.06) 46%,
+    rgba(0, 229, 255, 0.24) 50%,
+    rgba(197, 255, 0, 0.08) 54%,
+    transparent 62%
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: laserSweep 5.5s infinite ease-in-out alternate;
+}
+
+@keyframes laserSweep {
+  0% { transform: translateY(-25px) rotate(0deg); opacity: 0.4; }
+  100% { transform: translateY(25px) rotate(2deg); opacity: 0.95; }
+}
+
+/* Tech HUD Indicators */
+.hero-hud-tag {
+  position: absolute;
+  font-family: monospace;
+  font-size: 0.58rem;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: rgba(0, 229, 255, 0.65);
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-hud-tag.top-left {
+  top: 8px;
+  left: 16px;
+}
+.hero-hud-cross {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: rgba(197, 255, 0, 0.5);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Hero Content Grid (Left Text + Right Character) */
 .pxl-hero-inner {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  min-height: 200px;
 }
 
 .pxl-hero-left {
-  flex: 1;
-  min-width: 0;
+  max-width: 58%;
+  z-index: 4;
 }
 
 .pxl-hero-top-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 7px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
@@ -409,16 +470,16 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(197, 255, 0, 0.16);
+  background: rgba(197, 255, 0, 0.18);
   border: 1px solid #C5FF00;
   color: #C5FF00;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 9999px;
-  box-shadow: 0 0 12px rgba(197, 255, 0, 0.35);
+  box-shadow: 0 0 14px rgba(197, 255, 0, 0.45);
 }
 
 .live-dot {
@@ -437,37 +498,37 @@ body::before {
 }
 
 .pxl-prize-tag {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 800;
   color: #FFD700;
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.12) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.55);
-  padding: 4px 10px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.22) 0%, rgba(255, 140, 0, 0.14) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.65);
+  padding: 3px 9px;
   border-radius: 9999px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  box-shadow: 0 0 14px rgba(255, 215, 0, 0.25);
+  gap: 4px;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.3);
 }
 
 .pxl-hero-title {
-  font-size: 1.38rem !important;
+  font-size: 1.35rem !important;
   font-weight: 900 !important;
-  letter-spacing: 0.3px;
-  background: linear-gradient(135deg, #FFFFFF 30%, #C5FF00 100%) !important;
+  letter-spacing: 0.2px;
+  background: linear-gradient(135deg, #FFFFFF 20%, #E7FF70 65%, #C5FF00 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  line-height: 1.18 !important;
+  line-height: 1.16 !important;
   margin-bottom: 6px !important;
   text-transform: uppercase;
-  filter: drop-shadow(0 2px 8px rgba(197, 255, 0, 0.25));
+  filter: drop-shadow(0 2px 10px rgba(197, 255, 0, 0.3));
 }
 
 .pxl-hero-subtitle {
-  font-size: 0.78rem;
-  color: #a4acba;
-  line-height: 1.4;
-  margin-bottom: 12px;
+  font-size: 0.76rem;
+  color: #abb3c4;
+  line-height: 1.38;
+  margin-bottom: 10px;
 }
 
 .pxl-hero-stats {
@@ -477,26 +538,78 @@ body::before {
 }
 
 .hero-stat-chip {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  padding: 4px 8px;
-  font-size: 0.7rem;
+  padding: 3px 8px;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #f1f5f9;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  backdrop-filter: blur(8px);
 }
 
-/* RIGHT HERO PERSON / HOST VISUAL */
+/* RIGHT HERO HOST VISUAL (MUCH BIGGER, FLOATING & ANCHORED) */
 .pxl-hero-right {
-  flex-shrink: 0;
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  width: 165px;
+  height: 100%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  width: 116px;
-  position: relative;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Holographic Rotating Radar Rings behind Host */
+.hero-hud-rings {
+  position: absolute;
+  top: 48%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  width: 185px;
+  height: 185px;
+  pointer-events: none;
+  z-index: 1;
+}
+.hud-ring-outer {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%;
+  border: 2px dashed rgba(0, 229, 255, 0.85);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.45), inset 0 0 20px rgba(0, 229, 255, 0.3);
+  animation: rotateHud 18s linear infinite;
+  opacity: 0.9;
+}
+.hud-ring-inner {
+  position: absolute;
+  top: 20px; left: 20px; width: 145px; height: 145px;
+  border-radius: 50%;
+  border: 2px solid rgba(197, 255, 0, 0.8);
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  box-shadow: 0 0 18px rgba(197, 255, 0, 0.45);
+  animation: rotateHudRev 10s linear infinite;
+  opacity: 0.9;
+}
+.hud-ring-center {
+  position: absolute;
+  top: 42px; left: 42px; width: 100px; height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 255, 0, 0.65) 0%, rgba(0, 229, 255, 0.45) 55%, transparent 75%);
+  filter: blur(14px);
+}
+@keyframes rotateHud {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes rotateHudRev {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
 }
 
 .hero-person-wrap {
@@ -505,24 +618,26 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  height: 100%;
   animation: heroPersonFloat 3.2s infinite ease-in-out;
 }
 
 @keyframes heroPersonFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-7px); }
 }
 
+/* Ambient stage lighting */
 .hero-person-glow {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 155px;
+  height: 155px;
   border-radius: 50%;
-  top: 8%;
+  top: 18%;
   left: 50%;
   transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(197, 255, 0, 0.35) 0%, rgba(0, 229, 255, 0.22) 50%, transparent 75%);
-  filter: blur(14px);
+  background: radial-gradient(circle, rgba(197, 255, 0, 0.6) 0%, rgba(0, 229, 255, 0.45) 45%, transparent 72%);
+  filter: blur(20px);
   pointer-events: none;
   z-index: 1;
   animation: personGlowPulse 2.8s infinite ease-in-out alternate;
@@ -533,48 +648,129 @@ body::before {
   100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
 }
 
+.hero-person-stage {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(197, 255, 0, 0.85) 0%, rgba(0, 229, 255, 0.6) 50%, transparent 75%);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* The Host Person Cutout - BIG & CRISP */
 .hero-person-img {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: auto;
-  max-width: 116px;
-  height: 132px;
+  max-width: 165px;
+  height: 202px;
   object-fit: contain;
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 12px rgba(197, 255, 0, 0.4));
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.92)) drop-shadow(0 0 18px rgba(197, 255, 0, 0.5));
   display: block;
   user-select: none;
   -webkit-user-drag: none;
 }
 
+/* VIP Host Badge - positioned comfortably under chest without clipping */
 .hero-person-badge {
   position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 8px;
+  left: 24px;
   background: linear-gradient(135deg, #C5FF00 0%, #00E5FF 100%);
-  color: #08090c;
-  font-size: 0.58rem;
+  color: #06080c;
+  font-size: 0.65rem;
   font-weight: 900;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  padding: 2px 8px;
+  padding: 3px 11px;
   border-radius: 9999px;
   white-space: nowrap;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7), 0 0 10px rgba(197, 255, 0, 0.4);
-  z-index: 3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85), 0 0 16px rgba(197, 255, 0, 0.6);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.badge-dot {
+  width: 5px;
+  height: 5px;
+  background: #06080c;
+  border-radius: 50%;
+}
+
+/* Floating Cyber Sparkles */
+.hero-sparkle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+}
+.sp-1 {
+  top: 14px;
+  left: 51%;
+  font-size: 0.9rem;
+  color: #C5FF00;
+  filter: drop-shadow(0 0 6px #C5FF00);
+  animation: sparkleFloat 2.6s infinite ease-in-out;
+}
+.sp-2 {
+  bottom: 22px;
+  left: 50%;
+  font-size: 0.85rem;
+  color: #00E5FF;
+  filter: drop-shadow(0 0 6px #00E5FF);
+  animation: sparkleFloat 3.2s infinite ease-in-out reverse;
+}
+.sp-3 {
+  top: 40px;
+  right: 14px;
+  font-size: 0.8rem;
+  color: #FFD700;
+  filter: drop-shadow(0 0 6px #FFD700);
+  animation: sparkleFloat 2.2s infinite ease-in-out 0.5s;
+}
+@keyframes sparkleFloat {
+  0%, 100% { transform: translateY(0) scale(0.9); opacity: 0.4; }
+  50% { transform: translateY(-5px) scale(1.2); opacity: 1; }
+}
+
+.hero-cyber-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(197, 255, 0, 0.6) 0%, rgba(0, 229, 255, 0.4) 60%, transparent 100%);
+  margin: 8px 0 10px 0;
+  max-width: 90%;
 }
 
 @media (max-width: 360px) {
+  .pxl-hero-card {
+    min-height: 215px !important;
+    padding: 14px 12px !important;
+  }
+  .pxl-hero-left {
+    max-width: 55% !important;
+  }
   .pxl-hero-right {
-    width: 96px;
+    width: 145px !important;
+    right: 0px !important;
+  }
+  .hero-person-badge {
+    right: 10px !important;
   }
   .hero-person-img {
-    max-width: 96px;
-    height: 112px;
+    max-width: 145px !important;
+    height: 180px !important;
   }
-  .hero-person-glow {
-    width: 85px;
-    height: 85px;
+  .hero-hud-rings {
+    width: 160px !important;
+    height: 160px !important;
+  }
+  .pxl-hero-title {
+    font-size: 1.18rem !important;
   }
 }
 
