@@ -47,8 +47,166 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- Custom Cyberpunk CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Custom Cyberpunk CSS with Cache Buster -->
+  <link rel="stylesheet" href="css/style.css?v=20260925_05">
+
+  <style>
+    /* CRITICAL CYBER-PREMIUM INLINE STYLES TO BYPASS AGGRESSIVE TELEGRAM IOS CACHING */
+    .pxl-hero-card {
+      background: linear-gradient(135deg, #181b24 0%, #0d0f15 100%) !important;
+      border: 1px solid rgba(197, 255, 0, 0.25) !important;
+      border-radius: 20px !important;
+      padding: 24px 20px !important;
+      margin-bottom: 14px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    }
+    .pxl-hero-card::before {
+      content: "";
+      position: absolute;
+      top: 0; right: 0; width: 100%; height: 100%;
+      background-image: 
+        radial-gradient(circle at 90% 15%, rgba(197, 255, 0, 0.16) 0%, transparent 55%),
+        radial-gradient(circle at 10% 85%, rgba(0, 229, 255, 0.12) 0%, transparent 50%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+      pointer-events: none;
+    }
+    .pxl-hero-content { position: relative; z-index: 2; }
+    .pxl-live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(197, 255, 0, 0.15);
+      border: 1px solid #C5FF00; color: #C5FF00;
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 9999px;
+      box-shadow: 0 0 12px rgba(197, 255, 0, 0.45);
+      margin-bottom: 8px;
+    }
+    .live-dot {
+      width: 7px; height: 7px; background: #C5FF00; border-radius: 50%;
+      box-shadow: 0 0 8px #C5FF00; animation: livePulse 1.4s infinite ease-in-out;
+    }
+    @keyframes livePulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+    .pxl-hero-title {
+      font-size: 1.55rem !important; font-weight: 900 !important; letter-spacing: 0.5px;
+      color: #fff !important; line-height: 1.2 !important; margin-bottom: 6px !important;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important; text-transform: uppercase;
+    }
+    .pxl-hero-subtitle { font-size: 0.82rem; color: #949ab0; line-height: 1.45; }
+
+    /* Glass Timer */
+    .pxl-timer-card {
+      background: #14161e !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 20px !important; padding: 16px 14px !important; margin-bottom: 14px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+    }
+    .pxl-timer-header {
+      font-size: 0.76rem; color: #949ab0; text-transform: uppercase; letter-spacing: 0.5px;
+      text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600;
+    }
+    .pxl-glass-timer { display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; }
+    .glass-time-cell {
+      background: rgba(26, 29, 39, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 14px !important; padding: 10px 8px !important; flex: 1 !important; max-width: 74px !important; text-align: center !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    }
+    .timer-dots {
+      color: #C5FF00 !important; font-weight: 900 !important; font-size: 1.3rem !important; line-height: 1 !important;
+      animation: dotBlink 1.5s infinite; text-shadow: 0 0 10px rgba(197, 255, 0, 0.45) !important;
+    }
+    @keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .timer-val {
+      font-size: 1.5rem !important; font-weight: 900 !important; color: #C5FF00 !important;
+      text-shadow: 0 0 12px rgba(197, 255, 0, 0.45) !important; font-family: monospace !important;
+    }
+    .timer-lbl { font-size: 0.65rem !important; color: #949ab0 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; margin-top: 3px !important; }
+
+    /* Section Block */
+    .pxl-section-block {
+      background: #14161e !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 20px !important; padding: 18px 16px !important; margin-bottom: 14px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+    }
+    .pxl-section-title {
+      font-size: 1.05rem !important; font-weight: 800 !important; color: #fff !important;
+      display: flex !important; align-items: center !important; gap: 8px !important; margin-bottom: 12px !important;
+    }
+
+    /* 3D Prizes Grid */
+    .pxl-prizes-grid {
+      display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; margin-bottom: 6px !important;
+    }
+    .prize-card {
+      border-radius: 14px !important; padding: 12px 6px !important; text-align: center !important;
+      display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: space-between !important;
+      min-height: 142px !important; position: relative !important; overflow: hidden !important;
+    }
+    .prize-card.gold {
+      background: linear-gradient(155deg, rgba(55, 42, 14, 0.9) 0%, rgba(20, 16, 8, 0.95) 100%) !important;
+      border: 1px solid rgba(255, 215, 0, 0.45) !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 215, 0, 0.25) !important;
+    }
+    .prize-card.lime {
+      background: linear-gradient(155deg, rgba(34, 48, 10, 0.9) 0%, rgba(14, 20, 6, 0.95) 100%) !important;
+      border: 1px solid rgba(197, 255, 0, 0.45) !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(197, 255, 0, 0.25) !important;
+    }
+    .prize-card.cyan {
+      background: linear-gradient(155deg, rgba(10, 44, 54, 0.9) 0%, rgba(5, 18, 24, 0.95) 100%) !important;
+      border: 1px solid rgba(0, 229, 255, 0.45) !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(0, 229, 255, 0.25) !important;
+    }
+    .prize-card-badge {
+      font-size: 0.62rem !important; font-weight: 800 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important;
+      padding: 3px 6px !important; border-radius: 6px !important;
+    }
+    .prize-card.gold .prize-card-badge { background: rgba(255, 215, 0, 0.2) !important; color: #FFD700 !important; border: 1px solid rgba(255, 215, 0, 0.4) !important; }
+    .prize-card.lime .prize-card-badge { background: rgba(197, 255, 0, 0.2) !important; color: #C5FF00 !important; border: 1px solid rgba(197, 255, 0, 0.4) !important; }
+    .prize-card.cyan .prize-card-badge { background: rgba(0, 229, 255, 0.2) !important; color: #00E5FF !important; border: 1px solid rgba(0, 229, 255, 0.4) !important; }
+    .prize-card-icon { font-size: 2.2rem !important; line-height: 1 !important; margin: 6px 0 !important; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6)) !important; }
+    .prize-card-name { font-size: 0.76rem !important; font-weight: 800 !important; color: #fff !important; line-height: 1.25 !important; }
+    .prize-card-sub { font-size: 0.68rem !important; color: #949ab0 !important; font-weight: 600 !important; margin-top: 2px !important; }
+
+    /* Gamification Chance Card */
+    .pxl-chance-card {
+      background: #14161e !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 20px !important; padding: 16px !important; margin-bottom: 14px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+    }
+    .chance-card-top { display: flex !important; align-items: center !important; justify-content: space-between !important; margin-bottom: 12px !important; }
+    .chance-title { font-size: 0.95rem !important; font-weight: 800 !important; color: #fff !important; }
+    .chance-sub { font-size: 0.78rem !important; color: #949ab0 !important; margin-top: 2px !important; }
+    .btn-invite-mini {
+      background: #C5FF00 !important; color: #0b0c0e !important; border: none !important; border-radius: 9999px !important;
+      padding: 7px 14px !important; font-size: 0.78rem !important; font-weight: 800 !important; cursor: pointer !important;
+      display: flex !important; align-items: center !important; gap: 5px !important; box-shadow: 0 0 12px rgba(197, 255, 0, 0.45) !important;
+    }
+    .chance-progress-wrapper {
+      background: rgba(255, 255, 255, 0.08) !important; border-radius: 9999px !important; height: 9px !important;
+      overflow: hidden !important; position: relative !important; margin-bottom: 6px !important;
+    }
+    .chance-progress-fill {
+      background: linear-gradient(90deg, #9ecb00 0%, #C5FF00 100%) !important; height: 100% !important; border-radius: 9999px !important;
+      box-shadow: 0 0 10px rgba(197, 255, 0, 0.45) !important; transition: width 0.6s ease !important;
+    }
+    .chance-progress-labels { display: flex !important; justify-content: space-between !important; font-size: 0.68rem !important; color: #949ab0 !important; font-weight: 600 !important; }
+
+    /* Participate Glow Button */
+    .btn-participate-glow {
+      background: linear-gradient(90deg, #C5FF00 0%, #a2de00 100%) !important; color: #0a0b0d !important;
+      font-size: 1.05rem !important; font-weight: 900 !important; letter-spacing: 0.5px !important;
+      border-radius: 9999px !important; padding: 16px !important; width: 100% !important; border: none !important;
+      cursor: pointer !important; box-shadow: 0 6px 25px rgba(197, 255, 0, 0.45) !important; margin-top: 14px !important;
+      display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important;
+      text-transform: uppercase !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -774,7 +932,7 @@
     </div>
   </div>
 
-  <!-- Custom JavaScript -->
-  <script src="js/app.js"></script>
+  <!-- Custom JavaScript with Cache Buster -->
+  <script src="js/app.js?v=20260925_05"></script>
 </body>
 </html>

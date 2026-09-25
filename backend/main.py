@@ -96,6 +96,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Aggressive cache prevention middleware for Telegram Mini App
+@app.middleware("http")
+async def add_no_cache_headers(request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path.endswith((".html", ".css", ".js")) or path == "/":
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 # Explicit Root FileResponse endpoints for Privacy Policy and Terms of Service (Google OAuth Verification requirement)
 frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
 
