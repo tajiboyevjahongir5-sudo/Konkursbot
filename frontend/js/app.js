@@ -118,7 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Hide header card on all tabs except Konkurs (main page)
     const headerCard = document.querySelector(".header-card");
     if (headerCard) {
-      headerCard.style.display = (targetTab === "tab-contest") ? "flex" : "none";
+      if (targetTab === "tab-contest") {
+        headerCard.style.setProperty("display", "flex", "important");
+      } else {
+        headerCard.style.setProperty("display", "none", "important");
+      }
     }
   }
 
