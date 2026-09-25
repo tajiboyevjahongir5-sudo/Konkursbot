@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_18">
+  <link rel="stylesheet" href="css/style.css?v=20260925_19">
 
   <style>
     /* ==========================================================================
@@ -1058,6 +1058,40 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-4px) scale(1.12); }
     }
+    /* Hero Participate Action Box */
+    .pxl-hero-action-box {
+      margin-top: 14px !important;
+      margin-bottom: 16px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      width: 100% !important;
+    }
+    .pxl-hero-action-box .btn-participate-glow {
+      margin-top: 0 !important;
+      width: 100% !important;
+      font-size: 1.05rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.8px !important;
+    }
+    .hero-action-hint {
+      font-size: 0.78rem !important;
+      color: #94a3b8 !important;
+      margin-top: 8px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      font-weight: 600 !important;
+    }
+    .hero-action-hint i {
+      color: #C5FF00 !important;
+      animation: bounceDown 1.5s infinite ease-in-out !important;
+    }
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
     .prize-3d-emoji {
       font-size: 2.25rem !important;
       line-height: 1 !important;
@@ -1346,7 +1380,7 @@
       
       <!-- 1. Hero Card (Ultra Cyber-Premium VIP 3D Banner) -->
       <div class="pxl-hero-card banner-art-mode" onclick="window.scrollToTasks && window.scrollToTasks()">
-        <img src="assets/grand_banner.jpg?v=20260925_17" alt="PEEXELL GRAND KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
+        <img src="assets/grand_banner.jpg?v=20260925_19" alt="PEEXELL GRAND KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
         <div class="pxl-hero-banner-glare"></div>
         <span id="contest-title" style="display:none;">PEEXELL GRAND KONKURS 2026</span>
         <span id="contest-description" style="display:none;">Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'ling!</span>
@@ -1386,8 +1420,46 @@
         </div>
       </div>
 
-      <!-- 3. VIP Prize Showcase (3D Luxury Cards) -->
-      <div class="pxl-section-block">
+      <!-- 3. Bosh Qatnashish Tugmasi (Homiylarga yo'naltiruvchi) -->
+      <div class="pxl-hero-action-box">
+        <button id="btn-hero-participate" class="btn btn-participate-glow" onclick="window.scrollToTasks && window.scrollToTasks()">
+          <span class="btn-colored-rocket">🚀</span> QATNASHISH
+        </button>
+        <div class="hero-action-hint">
+          <i class="fa-solid fa-arrow-down"></i> Homiylarga obuna bo'lish uchun bosing
+        </div>
+      </div>
+
+      <!-- 4. Sponsor Vazifalar (Majburiy Obuna) -->
+      <div class="pxl-section-block pxl-tasks-card" id="tasks-section">
+        <div class="pxl-section-header-modern">
+          <div class="pxl-section-title">
+            <span class="title-icon-badge"><i class="fa-solid fa-bullseye"></i></span>
+            <span>Homiy Kanallar & Vazifalar</span>
+          </div>
+          <div class="tasks-progress-pill">
+            <i class="fa-solid fa-ticket" style="color: #C5FF00;"></i> +1 Bilet har biriga
+          </div>
+        </div>
+        <p class="tasks-subtitle-hint">
+          Barcha homiylarga a'zo bo'ling va biletlarni qo'lga kiriting:
+        </p>
+
+        <div id="tasks-container">
+          <!-- Dynamic Task List items injected by JS -->
+        </div>
+
+        <!-- Big Glow Participate Button -->
+        <button id="btn-participate-contest" class="btn btn-participate-glow">
+          <span class="btn-colored-rocket">🚀</span> QATNASHISH
+        </button>
+        <div class="participate-secure-notice">
+          <i class="fa-solid fa-shield-halved" style="color: #C5FF00;"></i> Barcha homiylar tekshirilib, biletlar balansingizga qo'shiladi
+        </div>
+      </div>
+
+      <!-- 5. VIP Prize Showcase (3D Luxury Cards - Pastki Qism) -->
+      <div class="pxl-section-block" style="margin-bottom: 24px;">
         <div class="pxl-section-title">
           <span class="title-emoji">🏆</span>
           <span>Bosh Sovrinlar Jamg'armasi</span>
@@ -1427,47 +1499,9 @@
             <div class="prize-card-tag">Yillik Obuna</div>
           </div>
         </div>
-        <!-- Hidden container for JS backwards compatibility -->
+        <!-- Hidden containers for JS backwards compatibility -->
         <div id="contest-prizes-list" style="display: none;"></div>
-      </div>
-
-      <!-- 4. Sponsor Vazifalar (Majburiy Obuna) -->
-      <div class="pxl-section-block pxl-tasks-card" id="tasks-section">
-        <div class="pxl-section-header-modern">
-          <div class="pxl-section-title">
-            <span class="title-icon-badge"><i class="fa-solid fa-bullseye"></i></span>
-            <span>Homiy Kanallar & Vazifalar</span>
-          </div>
-          <div class="tasks-progress-pill">
-            <i class="fa-solid fa-ticket" style="color: #C5FF00;"></i> +1 Bilet har biriga
-          </div>
-        </div>
-        <p class="tasks-subtitle-hint">
-          Barcha homiylarga a'zo bo'ling va biletlarni qo'lga kiriting:
-        </p>
-
-        <div id="tasks-container">
-          <!-- Dynamic Task List items injected by JS -->
-        </div>
-
-        <!-- Big Glow Participate Button -->
-        <button id="btn-participate-contest" class="btn btn-participate-glow">
-          <span class="btn-colored-rocket">🚀</span> QATNASHISH
-        </button>
-        <div class="participate-secure-notice">
-          <i class="fa-solid fa-shield-halved" style="color: #C5FF00;"></i> Barcha homiylar tekshirilib, biletlar balansingizga qo'shiladi
-        </div>
-      </div>
-
-      <!-- 6. Konkurs G'oliblari -->
-      <div class="pxl-section-block" style="margin-bottom: 24px;">
-        <div class="pxl-section-title">
-          <span class="title-emoji">🎖️</span>
-          <span>Konkurs G'oliblari</span>
-        </div>
-        <div id="public-winners-list" style="margin-top: 10px;">
-          <div style="font-size: 0.82rem; color: var(--text-secondary); text-align: center; padding: 12px;">Hozircha g'oliblar aniqlanmagan.</div>
-        </div>
+        <div id="public-winners-list" style="display: none;"></div>
       </div>
 
     </section>
@@ -2037,16 +2071,21 @@
   </div>
 
   <script>
-    // Smooth scroll from hero banner to tasks & participate section
+    // Smooth scroll from hero banner / top participate button to tasks section
     window.scrollToTasks = function() {
       const el = document.getElementById("tasks-section") || document.getElementById("tasks-container");
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        try {
+          const y = el.getBoundingClientRect().top + window.pageYOffset - 12;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        } catch (e) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
     };
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_18"></script>
+  <script src="js/app.js?v=20260925_19"></script>
 </body>
 </html>

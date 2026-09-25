@@ -1171,6 +1171,45 @@ body::before {
   50% { transform: translateY(-4px) scale(1.12); }
 }
 
+/* Hero Participate Action Box */
+.pxl-hero-action-box {
+  margin-top: 14px !important;
+  margin-bottom: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.pxl-hero-action-box .btn-participate-glow {
+  margin-top: 0 !important;
+  width: 100% !important;
+  font-size: 1.05rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.8px !important;
+}
+
+.hero-action-hint {
+  font-size: 0.78rem !important;
+  color: #94a3b8 !important;
+  margin-top: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  font-weight: 600 !important;
+}
+
+.hero-action-hint i {
+  color: #C5FF00 !important;
+  animation: bounceDown 1.5s infinite ease-in-out !important;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
 .prize-3d-emoji {
   font-size: 2.25rem !important;
   line-height: 1 !important;
