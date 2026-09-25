@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_16">
+  <link rel="stylesheet" href="css/style.css?v=20260925_17">
 
   <style>
     /* ==========================================================================
@@ -253,6 +253,11 @@
       border: 1.5px solid rgba(197, 255, 0, 0.65) !important;
       padding: 0 !important;
       margin-bottom: 14px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-height: 0 !important;
+      height: auto !important;
+      box-sizing: border-box !important;
       box-shadow: 
         0 18px 45px rgba(0, 0, 0, 0.85),
         0 0 35px rgba(197, 255, 0, 0.3),
@@ -269,6 +274,7 @@
     .pxl-hero-banner-img {
       width: 100% !important;
       height: 100% !important;
+      max-width: 100% !important;
       object-fit: cover !important;
       display: block !important;
     }
@@ -294,7 +300,7 @@
       100% { transform: translateY(25px) rotate(2deg); opacity: 0.85; }
     }
 
-    .pxl-hero-card {
+    .pxl-hero-card:not(.banner-art-mode) {
       position: relative !important;
       overflow: hidden !important;
       min-height: 238px !important;
@@ -1191,7 +1197,7 @@
       
       <!-- 1. Hero Card (Ultra Cyber-Premium VIP 3D Banner) -->
       <div class="pxl-hero-card banner-art-mode" onclick="window.scrollToTasks && window.scrollToTasks()">
-        <img src="assets/grand_banner.jpg?v=20260925_16" alt="PEEXELL GRAND KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
+        <img src="assets/grand_banner.jpg?v=20260925_17" alt="PEEXELL GRAND KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
         <div class="pxl-hero-banner-glare"></div>
         <span id="contest-title" style="display:none;">PEEXELL GRAND KONKURS 2026</span>
         <span id="contest-description" style="display:none;">Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'ling!</span>
@@ -1911,6 +1917,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_16"></script>
+  <script src="js/app.js?v=20260925_17"></script>
 </body>
 </html>

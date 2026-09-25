@@ -354,7 +354,7 @@ body::before {
 
 /* 1. HERO BANNER CARD */
 /* 1. HERO BANNER CARD (ULTRA-LUXURY 3D VIP BANNER) */
-.pxl-hero-card {
+.pxl-hero-card:not(.banner-art-mode) {
   position: relative !important;
   overflow: hidden !important;
   min-height: 238px !important;
@@ -1810,6 +1810,11 @@ body::before {
   border: 1.5px solid rgba(197, 255, 0, 0.65) !important;
   padding: 0 !important;
   margin-bottom: 14px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 0 !important;
+  height: auto !important;
+  box-sizing: border-box !important;
   box-shadow: 
     0 18px 45px rgba(0, 0, 0, 0.85),
     0 0 35px rgba(197, 255, 0, 0.3),
@@ -1826,6 +1831,7 @@ body::before {
 .pxl-hero-banner-img {
   width: 100% !important;
   height: 100% !important;
+  max-width: 100% !important;
   object-fit: cover !important;
   display: block !important;
 }
