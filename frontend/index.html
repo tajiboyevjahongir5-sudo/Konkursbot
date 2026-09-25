@@ -48,163 +48,619 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_05">
+  <link rel="stylesheet" href="css/style.css?v=20260925_06">
 
   <style>
-    /* CRITICAL CYBER-PREMIUM INLINE STYLES TO BYPASS AGGRESSIVE TELEGRAM IOS CACHING */
-    .pxl-hero-card {
-      background: linear-gradient(135deg, #181b24 0%, #0d0f15 100%) !important;
-      border: 1px solid rgba(197, 255, 0, 0.25) !important;
+    /* ==========================================================================
+       ULTRA CYBER-PREMIUM VIP 3D STYLES (INLINE TO PREVENT ANY IOS CACHING)
+       ========================================================================== */
+
+    /* HEADER */
+    .header-card {
+      background: linear-gradient(135deg, rgba(20, 23, 32, 0.95) 0%, rgba(13, 15, 22, 0.98) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      backdrop-filter: blur(16px) !important;
       border-radius: 20px !important;
-      padding: 24px 20px !important;
+      padding: 14px 18px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      margin-bottom: 14px !important;
+    }
+    .logo-box-glow {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      padding: 2px;
+      background: linear-gradient(135deg, #C5FF00 0%, #00E5FF 100%);
+      box-shadow: 0 0 14px rgba(197, 255, 0, 0.4);
+      flex-shrink: 0;
+    }
+    .logo-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+    }
+    .brand-title {
+      font-size: 1.12rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.4px;
+      color: #fff !important;
+      line-height: 1.2 !important;
+    }
+    .brand-highlight {
+      color: #C5FF00 !important;
+      text-shadow: 0 0 12px rgba(197, 255, 0, 0.5) !important;
+    }
+    .brand-subtitle {
+      font-size: 0.72rem !important;
+      color: #949ab0 !important;
+      margin-top: 1px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+    }
+    .brand-dot {
+      width: 5px;
+      height: 5px;
+      background: #00E5FF;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #00E5FF;
+    }
+    .tickets-pill-vip {
+      background: linear-gradient(135deg, rgba(197, 255, 0, 0.16) 0%, rgba(197, 255, 0, 0.05) 100%) !important;
+      border: 1px solid #C5FF00 !important;
+      color: #C5FF00 !important;
+      padding: 6px 14px !important;
+      border-radius: 9999px !important;
+      font-weight: 800 !important;
+      font-size: 0.85rem !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 7px !important;
+      box-shadow: 0 0 16px rgba(197, 255, 0, 0.35) !important;
+    }
+    .ticket-shine-icon {
+      font-size: 0.95rem;
+      animation: ticketWiggle 2.5s infinite ease-in-out;
+    }
+    @keyframes ticketWiggle {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-12deg); }
+      40% { transform: rotate(10deg); }
+      60% { transform: rotate(-5deg); }
+      80% { transform: rotate(0deg); }
+    }
+
+    /* 1. HERO BANNER CARD */
+    .pxl-hero-card {
+      background: linear-gradient(145deg, #181c26 0%, #0e1118 100%) !important;
+      border: 1px solid rgba(197, 255, 0, 0.3) !important;
+      border-radius: 22px !important;
+      padding: 20px 18px !important;
       margin-bottom: 14px !important;
       position: relative !important;
       overflow: hidden !important;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     }
     .pxl-hero-card::before {
       content: "";
       position: absolute;
       top: 0; right: 0; width: 100%; height: 100%;
       background-image: 
-        radial-gradient(circle at 90% 15%, rgba(197, 255, 0, 0.16) 0%, transparent 55%),
-        radial-gradient(circle at 10% 85%, rgba(0, 229, 255, 0.12) 0%, transparent 50%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+        radial-gradient(circle at 85% 15%, rgba(197, 255, 0, 0.22) 0%, transparent 50%),
+        radial-gradient(circle at 15% 85%, rgba(0, 229, 255, 0.16) 0%, transparent 45%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
       pointer-events: none;
     }
     .pxl-hero-content { position: relative; z-index: 2; }
+    .pxl-hero-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
     .pxl-live-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(197, 255, 0, 0.15);
-      border: 1px solid #C5FF00; color: #C5FF00;
-      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
-      padding: 4px 10px; border-radius: 9999px;
-      box-shadow: 0 0 12px rgba(197, 255, 0, 0.45);
-      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(197, 255, 0, 0.14);
+      border: 1px solid #C5FF00;
+      color: #C5FF00;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      box-shadow: 0 0 14px rgba(197, 255, 0, 0.4);
     }
     .live-dot {
-      width: 7px; height: 7px; background: #C5FF00; border-radius: 50%;
-      box-shadow: 0 0 8px #C5FF00; animation: livePulse 1.4s infinite ease-in-out;
+      width: 7px;
+      height: 7px;
+      background: #C5FF00;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #C5FF00;
+      animation: livePulse 1.4s infinite ease-in-out;
     }
     @keyframes livePulse {
       0% { transform: scale(0.9); opacity: 0.6; }
       50% { transform: scale(1.3); opacity: 1; }
       100% { transform: scale(0.9); opacity: 0.6; }
     }
-    .pxl-hero-title {
-      font-size: 1.55rem !important; font-weight: 900 !important; letter-spacing: 0.5px;
-      color: #fff !important; line-height: 1.2 !important; margin-bottom: 6px !important;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important; text-transform: uppercase;
+    .pxl-prize-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #FFD700;
+      background: rgba(255, 215, 0, 0.12);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
     }
-    .pxl-hero-subtitle { font-size: 0.82rem; color: #949ab0; line-height: 1.45; }
+    .pxl-hero-title {
+      font-size: 1.58rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.4px;
+      background: linear-gradient(135deg, #FFFFFF 30%, #C5FF00 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      line-height: 1.2 !important;
+      margin-bottom: 6px !important;
+      text-transform: uppercase;
+    }
+    .pxl-hero-subtitle {
+      font-size: 0.83rem;
+      color: #949ab0;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+    .pxl-hero-stats {
+      display: flex;
+      gap: 8px;
+    }
+    .hero-stat-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
-    /* Glass Timer */
+    /* 2. GLASS TIMER */
     .pxl-timer-card {
-      background: #14161e !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      border-radius: 20px !important; padding: 16px 14px !important; margin-bottom: 14px !important;
+      background: #14161e !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 20px !important;
+      padding: 16px 14px !important;
+      margin-bottom: 14px !important;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
     }
-    .pxl-timer-header {
-      font-size: 0.76rem; color: #949ab0; text-transform: uppercase; letter-spacing: 0.5px;
-      text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600;
+    .timer-title-box {
+      font-size: 0.78rem;
+      color: #949ab0;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-bottom: 12px;
     }
-    .pxl-glass-timer { display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; }
+    .timer-clock-pulse {
+      color: #C5FF00;
+      animation: clockPulse 2s infinite ease-in-out;
+    }
+    @keyframes clockPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; text-shadow: 0 0 10px #C5FF00; }
+    }
+    .pxl-glass-timer {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+    }
     .glass-time-cell {
-      background: rgba(26, 29, 39, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      border-radius: 14px !important; padding: 10px 8px !important; flex: 1 !important; max-width: 74px !important; text-align: center !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      background: linear-gradient(180deg, #1c202d 0%, #11131a 100%) !important;
+      border: 1px solid rgba(197, 255, 0, 0.22) !important;
+      border-radius: 16px !important;
+      padding: 12px 6px 10px 6px !important;
+      flex: 1 !important;
+      max-width: 76px !important;
+      text-align: center !important;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .cell-gloss {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 45%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .timer-val {
+      font-size: 1.6rem !important;
+      font-weight: 900 !important;
+      color: #C5FF00 !important;
+      text-shadow: 0 0 16px rgba(197, 255, 0, 0.65) !important;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", monospace !important;
+      line-height: 1.1 !important;
+    }
+    .timer-lbl {
+      font-size: 0.65rem !important;
+      color: #949ab0 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.6px !important;
+      font-weight: 700 !important;
+      margin-top: 4px !important;
     }
     .timer-dots {
-      color: #C5FF00 !important; font-weight: 900 !important; font-size: 1.3rem !important; line-height: 1 !important;
-      animation: dotBlink 1.5s infinite; text-shadow: 0 0 10px rgba(197, 255, 0, 0.45) !important;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+      justify-content: center;
     }
-    @keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .timer-val {
-      font-size: 1.5rem !important; font-weight: 900 !important; color: #C5FF00 !important;
-      text-shadow: 0 0 12px rgba(197, 255, 0, 0.45) !important; font-family: monospace !important;
+    .timer-dots .dot {
+      width: 4px;
+      height: 4px;
+      background: #C5FF00;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #C5FF00;
+      animation: dotPulse 1.2s infinite ease-in-out;
     }
-    .timer-lbl { font-size: 0.65rem !important; color: #949ab0 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; margin-top: 3px !important; }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
 
-    /* Section Block */
+    /* 3. SECTION BLOCK & TITLES */
     .pxl-section-block {
-      background: #14161e !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      border-radius: 20px !important; padding: 18px 16px !important; margin-bottom: 14px !important;
+      background: #14161e !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 20px !important;
+      padding: 18px 16px !important;
+      margin-bottom: 14px !important;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
     }
     .pxl-section-title {
-      font-size: 1.05rem !important; font-weight: 800 !important; color: #fff !important;
-      display: flex !important; align-items: center !important; gap: 8px !important; margin-bottom: 12px !important;
+      font-size: 1.05rem !important;
+      font-weight: 800 !important;
+      color: #fff !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      margin-bottom: 14px !important;
     }
+    .title-icon-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+    .gold-circle { background: rgba(255, 215, 0, 0.18); color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.4); }
+    .lime-circle { background: rgba(197, 255, 0, 0.18); color: #C5FF00; border: 1px solid rgba(197, 255, 0, 0.4); }
 
-    /* 3D Prizes Grid */
+    /* 4. 3D LUXURY PRIZES GRID */
     .pxl-prizes-grid {
-      display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; margin-bottom: 6px !important;
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 10px !important;
+      margin-bottom: 6px !important;
     }
     .prize-card {
-      border-radius: 14px !important; padding: 12px 6px !important; text-align: center !important;
-      display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: space-between !important;
-      min-height: 142px !important; position: relative !important; overflow: hidden !important;
+      border-radius: 18px !important;
+      padding: 14px 6px 12px 6px !important;
+      text-align: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      min-height: 165px !important;
+      position: relative !important;
+      overflow: hidden !important;
+      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
     }
+    .prize-card:active {
+      transform: scale(0.96) !important;
+    }
+    .prize-shine {
+      position: absolute;
+      top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+      transform: skewX(-20deg);
+      animation: shineSweep 4s infinite ease-in-out;
+      pointer-events: none;
+    }
+    @keyframes shineSweep {
+      0% { left: -100%; }
+      30%, 100% { left: 160%; }
+    }
+
     .prize-card.gold {
-      background: linear-gradient(155deg, rgba(55, 42, 14, 0.9) 0%, rgba(20, 16, 8, 0.95) 100%) !important;
-      border: 1px solid rgba(255, 215, 0, 0.45) !important;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 215, 0, 0.25) !important;
+      background: linear-gradient(155deg, rgba(62, 48, 16, 0.95) 0%, rgba(22, 17, 7, 0.98) 100%) !important;
+      border: 1.5px solid rgba(255, 215, 0, 0.55) !important;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.18), inset 0 1px 0 rgba(255, 215, 0, 0.35) !important;
     }
     .prize-card.lime {
-      background: linear-gradient(155deg, rgba(34, 48, 10, 0.9) 0%, rgba(14, 20, 6, 0.95) 100%) !important;
-      border: 1px solid rgba(197, 255, 0, 0.45) !important;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(197, 255, 0, 0.25) !important;
+      background: linear-gradient(155deg, rgba(38, 54, 12, 0.95) 0%, rgba(14, 20, 6, 0.98) 100%) !important;
+      border: 1.5px solid rgba(197, 255, 0, 0.55) !important;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(197, 255, 0, 0.18), inset 0 1px 0 rgba(197, 255, 0, 0.35) !important;
     }
     .prize-card.cyan {
-      background: linear-gradient(155deg, rgba(10, 44, 54, 0.9) 0%, rgba(5, 18, 24, 0.95) 100%) !important;
-      border: 1px solid rgba(0, 229, 255, 0.45) !important;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(0, 229, 255, 0.25) !important;
+      background: linear-gradient(155deg, rgba(12, 50, 62, 0.95) 0%, rgba(5, 18, 24, 0.98) 100%) !important;
+      border: 1.5px solid rgba(0, 229, 255, 0.55) !important;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 229, 255, 0.18), inset 0 1px 0 rgba(0, 229, 255, 0.35) !important;
     }
-    .prize-card-badge {
-      font-size: 0.62rem !important; font-weight: 800 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important;
-      padding: 3px 6px !important; border-radius: 6px !important;
-    }
-    .prize-card.gold .prize-card-badge { background: rgba(255, 215, 0, 0.2) !important; color: #FFD700 !important; border: 1px solid rgba(255, 215, 0, 0.4) !important; }
-    .prize-card.lime .prize-card-badge { background: rgba(197, 255, 0, 0.2) !important; color: #C5FF00 !important; border: 1px solid rgba(197, 255, 0, 0.4) !important; }
-    .prize-card.cyan .prize-card-badge { background: rgba(0, 229, 255, 0.2) !important; color: #00E5FF !important; border: 1px solid rgba(0, 229, 255, 0.4) !important; }
-    .prize-card-icon { font-size: 2.2rem !important; line-height: 1 !important; margin: 6px 0 !important; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6)) !important; }
-    .prize-card-name { font-size: 0.76rem !important; font-weight: 800 !important; color: #fff !important; line-height: 1.25 !important; }
-    .prize-card-sub { font-size: 0.68rem !important; color: #949ab0 !important; font-weight: 600 !important; margin-top: 2px !important; }
 
-    /* Gamification Chance Card */
-    .pxl-chance-card {
-      background: #14161e !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      border-radius: 20px !important; padding: 16px !important; margin-bottom: 14px !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+    .prize-card-badge {
+      font-size: 0.65rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.5px !important;
+      text-transform: uppercase !important;
+      padding: 3px 8px !important;
+      border-radius: 9999px !important;
+      line-height: 1.2 !important;
     }
-    .chance-card-top { display: flex !important; align-items: center !important; justify-content: space-between !important; margin-bottom: 12px !important; }
-    .chance-title { font-size: 0.95rem !important; font-weight: 800 !important; color: #fff !important; }
-    .chance-sub { font-size: 0.78rem !important; color: #949ab0 !important; margin-top: 2px !important; }
-    .btn-invite-mini {
-      background: #C5FF00 !important; color: #0b0c0e !important; border: none !important; border-radius: 9999px !important;
-      padding: 7px 14px !important; font-size: 0.78rem !important; font-weight: 800 !important; cursor: pointer !important;
-      display: flex !important; align-items: center !important; gap: 5px !important; box-shadow: 0 0 12px rgba(197, 255, 0, 0.45) !important;
+    .prize-card.gold .prize-card-badge {
+      background: rgba(255, 215, 0, 0.25) !important;
+      color: #FFD700 !important;
+      border: 1px solid rgba(255, 215, 0, 0.6) !important;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+    .prize-card.lime .prize-card-badge {
+      background: rgba(197, 255, 0, 0.25) !important;
+      color: #C5FF00 !important;
+      border: 1px solid rgba(197, 255, 0, 0.6) !important;
+      box-shadow: 0 0 10px rgba(197, 255, 0, 0.3);
+    }
+    .prize-card.cyan .prize-card-badge {
+      background: rgba(0, 229, 255, 0.25) !important;
+      color: #00E5FF !important;
+      border: 1px solid rgba(0, 229, 255, 0.6) !important;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    .prize-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.55rem;
+      margin: 8px 0;
+      animation: iconFloat 3s infinite ease-in-out;
+    }
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .gold-aura {
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.05) 70%);
+      color: #FFD700;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.35);
+    }
+    .lime-aura {
+      background: radial-gradient(circle, rgba(197, 255, 0, 0.3) 0%, rgba(197, 255, 0, 0.05) 70%);
+      color: #C5FF00;
+      border: 1px solid rgba(197, 255, 0, 0.4);
+      box-shadow: 0 0 16px rgba(197, 255, 0, 0.35);
+    }
+    .cyan-aura {
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.3) 0%, rgba(0, 229, 255, 0.05) 70%);
+      color: #00E5FF;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+    }
+
+    .prize-card-name {
+      font-size: 0.82rem !important;
+      font-weight: 900 !important;
+      color: #fff !important;
+      line-height: 1.25 !important;
+    }
+    .prize-card-tag {
+      font-size: 0.66rem !important;
+      color: #949ab0 !important;
+      font-weight: 700 !important;
+      margin-top: 3px !important;
+      text-transform: uppercase;
+    }
+
+    /* 5. GAMIFICATION CARD */
+    .pxl-chance-card {
+      background: linear-gradient(135deg, #171b26 0%, #10121a 100%) !important;
+      border: 1px solid rgba(197, 255, 0, 0.22) !important;
+      border-radius: 20px !important;
+      padding: 18px 16px !important;
+      margin-bottom: 14px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    }
+    .chance-card-top {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-bottom: 14px !important;
+      gap: 10px !important;
+    }
+    .chance-title-group {
+      flex: 1;
+      min-width: 0;
+    }
+    .chance-main-title {
+      font-size: 0.98rem !important;
+      font-weight: 800 !important;
+      color: #fff !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chance-ticket-status {
+      font-size: 0.78rem !important;
+      color: #949ab0 !important;
+      margin-top: 3px !important;
+    }
+    .ticket-status-pill {
+      color: #C5FF00;
+      font-weight: 800;
+      background: rgba(197, 255, 0, 0.12);
+      padding: 2px 7px;
+      border-radius: 6px;
+      border: 1px solid rgba(197, 255, 0, 0.3);
+    }
+    .btn-invite-glow {
+      background: linear-gradient(90deg, #C5FF00 0%, #a2de00 100%) !important;
+      color: #0b0c0e !important;
+      border: none !important;
+      border-radius: 9999px !important;
+      padding: 9px 16px !important;
+      font-size: 0.8rem !important;
+      font-weight: 800 !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      box-shadow: 0 0 16px rgba(197, 255, 0, 0.45) !important;
+      transition: transform var(--transition-fast) !important;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .btn-invite-glow:active {
+      transform: scale(0.95) !important;
     }
     .chance-progress-wrapper {
-      background: rgba(255, 255, 255, 0.08) !important; border-radius: 9999px !important; height: 9px !important;
-      overflow: hidden !important; position: relative !important; margin-bottom: 6px !important;
+      background: rgba(255, 255, 255, 0.07) !important;
+      border-radius: 9999px !important;
+      height: 10px !important;
+      overflow: hidden !important;
+      position: relative !important;
+      margin-bottom: 8px !important;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
     .chance-progress-fill {
-      background: linear-gradient(90deg, #9ecb00 0%, #C5FF00 100%) !important; height: 100% !important; border-radius: 9999px !important;
-      box-shadow: 0 0 10px rgba(197, 255, 0, 0.45) !important; transition: width 0.6s ease !important;
+      background: linear-gradient(90deg, #00E5FF 0%, #C5FF00 100%) !important;
+      height: 100% !important;
+      border-radius: 9999px !important;
+      box-shadow: 0 0 12px rgba(197, 255, 0, 0.6) !important;
+      transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+      position: relative;
     }
-    .chance-progress-labels { display: flex !important; justify-content: space-between !important; font-size: 0.68rem !important; color: #949ab0 !important; font-weight: 600 !important; }
+    .progress-glow-head {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 14px;
+      background: #fff;
+      border-radius: 50%;
+      filter: blur(2px);
+      opacity: 0.7;
+    }
+    .chance-progress-labels {
+      display: flex !important;
+      justify-content: space-between !important;
+      font-size: 0.72rem !important;
+      color: #949ab0 !important;
+      font-weight: 700 !important;
+    }
+    .chance-highlight {
+      color: #C5FF00 !important;
+      font-weight: 800 !important;
+    }
 
-    /* Participate Glow Button */
+    /* 6. GLOW PARTICIPATE BUTTON */
     .btn-participate-glow {
-      background: linear-gradient(90deg, #C5FF00 0%, #a2de00 100%) !important; color: #0a0b0d !important;
-      font-size: 1.05rem !important; font-weight: 900 !important; letter-spacing: 0.5px !important;
-      border-radius: 9999px !important; padding: 16px !important; width: 100% !important; border: none !important;
-      cursor: pointer !important; box-shadow: 0 6px 25px rgba(197, 255, 0, 0.45) !important; margin-top: 14px !important;
-      display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important;
+      background: linear-gradient(90deg, #C5FF00 0%, #a2de00 100%) !important;
+      color: #0a0b0d !important;
+      font-size: 1.05rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.6px !important;
+      border-radius: 9999px !important;
+      padding: 16px !important;
+      width: 100% !important;
+      border: none !important;
+      cursor: pointer !important;
+      box-shadow: 0 8px 30px rgba(197, 255, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+      margin-top: 14px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
       text-transform: uppercase !important;
+      animation: btnPulse 3s infinite ease-in-out !important;
+    }
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 8px 25px rgba(197, 255, 0, 0.45); }
+      50% { box-shadow: 0 10px 35px rgba(197, 255, 0, 0.7), 0 0 20px rgba(197, 255, 0, 0.4); }
+    }
+    .btn-participate-glow:active {
+      transform: scale(0.97) !important;
+      box-shadow: 0 3px 14px rgba(197, 255, 0, 0.4) !important;
+    }
+    .participate-rocket {
+      animation: rocketHover 1.5s infinite ease-in-out;
+    }
+    @keyframes rocketHover {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px) scale(1.1); }
+    }
+
+    /* Task Item Card */
+    .task-item-card {
+      background: linear-gradient(135deg, rgba(26, 29, 40, 0.8) 0%, rgba(17, 19, 26, 0.9) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 14px !important;
+      padding: 14px !important;
+      margin-bottom: 10px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35) !important;
+    }
+    .task-platform-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid;
+      flex-shrink: 0;
+      background: #0d0f15;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .task-reward-badge {
+      background: rgba(197, 255, 0, 0.14);
+      border: 1px solid rgba(197, 255, 0, 0.4);
+      color: #C5FF00;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 8px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
   </style>
 </head>
@@ -218,15 +674,17 @@
     <!-- HEADER SECTION -->
     <header class="header-card">
       <div class="brand-wrapper">
-        <img src="assets/logo.jpg" alt="PEEXELL Logo" class="logo-img">
+        <div class="logo-box-glow">
+          <img src="assets/logo.jpg" alt="PEEXELL Logo" class="logo-img">
+        </div>
         <div>
-          <div class="brand-title">PEEXELL <span>KONKURS</span></div>
-          <div class="brand-subtitle">Omadingizni sinab ko'ring!</div>
+          <div class="brand-title">PEEXELL <span class="brand-highlight">KONKURS</span></div>
+          <div class="brand-subtitle"><span class="brand-dot"></span> Rasmiy Telegram Konkurs</div>
         </div>
       </div>
       <div class="user-badge-header">
-        <div class="tickets-pill">
-          <i class="fa-solid fa-ticket" style="color: var(--primary-color);"></i>
+        <div class="tickets-pill-vip">
+          <i class="fa-solid fa-ticket ticket-shine-icon"></i>
           <span id="header-tickets-count">0</span> Bilet
         </div>
       </div>
@@ -239,75 +697,105 @@
       <div class="pxl-hero-card">
         <div class="pxl-hero-overlay"></div>
         <div class="pxl-hero-content">
-          <div class="pxl-live-badge">
-            <span class="live-dot"></span> LIVE KONKURS
+          <div class="pxl-hero-top-row">
+            <div class="pxl-live-badge">
+              <span class="live-dot"></span> LIVE KONKURS
+            </div>
+            <div class="pxl-prize-tag">
+              <i class="fa-solid fa-fire"></i> 10,000,000+ UZS
+            </div>
           </div>
-          <h2 id="contest-title" class="pxl-hero-title">PEEXELL GRAND 2026</h2>
+          <h2 id="contest-title" class="pxl-hero-title">PEEXELL GRAND KONKURS 2026</h2>
           <p id="contest-description" class="pxl-hero-subtitle">
             Do'stlaringizni taklif qiling, homiy kanallarga a'zo bo'ling va yirik sovrinlarni yutib oling!
           </p>
+          <div class="pxl-hero-stats">
+            <div class="hero-stat-chip">
+              <i class="fa-solid fa-gem" style="color: #FFD700;"></i> 3 ta VIP Sovrin
+            </div>
+            <div class="hero-stat-chip">
+              <i class="fa-solid fa-shield-halved" style="color: var(--primary-color);"></i> 100% Shaffof
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- 2. Futuristic Glass Countdown Timer -->
       <div class="pxl-timer-card">
         <div class="pxl-timer-header">
-          <i class="fa-regular fa-clock" style="color: var(--primary-color);"></i>
-          <span>Konkurs yakunlanishiga qoldi:</span>
+          <div class="timer-title-box">
+            <i class="fa-regular fa-clock timer-clock-pulse"></i>
+            <span>Konkurs yakunlanishiga qoldi:</span>
+          </div>
         </div>
         <div class="pxl-glass-timer">
           <div class="glass-time-cell">
+            <div class="cell-gloss"></div>
             <div id="timer-days" class="timer-val">00</div>
             <div class="timer-lbl">Kun</div>
           </div>
-          <div class="timer-dots">:</div>
+          <div class="timer-dots"><span class="dot"></span><span class="dot"></span></div>
           <div class="glass-time-cell">
+            <div class="cell-gloss"></div>
             <div id="timer-hours" class="timer-val">00</div>
             <div class="timer-lbl">Soat</div>
           </div>
-          <div class="timer-dots">:</div>
+          <div class="timer-dots"><span class="dot"></span><span class="dot"></span></div>
           <div class="glass-time-cell">
+            <div class="cell-gloss"></div>
             <div id="timer-mins" class="timer-val">00</div>
             <div class="timer-lbl">Daq</div>
           </div>
-          <div class="timer-dots">:</div>
+          <div class="timer-dots"><span class="dot"></span><span class="dot"></span></div>
           <div class="glass-time-cell">
+            <div class="cell-gloss"></div>
             <div id="timer-secs" class="timer-val">00</div>
             <div class="timer-lbl">Son</div>
           </div>
         </div>
       </div>
 
-      <!-- 3. VIP Prize Showcase (3D Cards) -->
+      <!-- 3. VIP Prize Showcase (3D Luxury Cards) -->
       <div class="pxl-section-block">
         <div class="pxl-section-title">
-          <i class="fa-solid fa-trophy" style="color: #FFD700;"></i>
-          <span>Konkurs Sovrinlari</span>
+          <div class="title-icon-circle gold-circle">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <span>Bosh Sovrinlar Jamg'armasi</span>
         </div>
         
         <div class="pxl-prizes-grid">
-          <!-- 1-O'rin Gold VIP -->
+          <!-- 1-O'rin Gold VIP (iPhone 15 Pro) -->
           <div class="prize-card gold">
-            <div class="prize-card-badge">GOLD VIP</div>
-            <div class="prize-card-icon">📱</div>
+            <div class="prize-shine"></div>
+            <div class="prize-card-badge">👑 1-O'RIN</div>
+            <div class="prize-icon-wrap gold-aura">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
             <div class="prize-card-name">iPhone 15 Pro</div>
-            <div class="prize-card-sub">1-O'rin</div>
+            <div class="prize-card-tag">Titanium Gold</div>
           </div>
 
-          <!-- 2-O'rin Neon Lime -->
+          <!-- 2-O'rin Neon Lime (10,000,000 UZS) -->
           <div class="prize-card lime">
-            <div class="prize-card-badge">NEON LIME</div>
-            <div class="prize-card-icon">💵</div>
-            <div class="prize-card-name">10,000,000 UZS</div>
-            <div class="prize-card-sub">2-O'rin</div>
+            <div class="prize-shine"></div>
+            <div class="prize-card-badge">⚡ 2-O'RIN</div>
+            <div class="prize-icon-wrap lime-aura">
+              <i class="fa-solid fa-money-bill-trend-up"></i>
+            </div>
+            <div class="prize-card-name">10,000,000</div>
+            <div class="prize-card-tag">UZS NAQD</div>
           </div>
 
-          <!-- 3-O'rin Cyber Cyan -->
+          <!-- 3-O'rin Cyber Cyan (5x Telegram Premium) -->
           <div class="prize-card cyan">
-            <div class="prize-card-badge">CYAN VIP</div>
-            <div class="prize-card-icon">⭐️</div>
+            <div class="prize-shine"></div>
+            <div class="prize-card-badge">⭐️ 3-O'RIN</div>
+            <div class="prize-icon-wrap cyan-aura">
+              <i class="fa-solid fa-star"></i>
+            </div>
             <div class="prize-card-name">5x TG Premium</div>
-            <div class="prize-card-sub">3-O'rin</div>
+            <div class="prize-card-tag">Yillik Obuna</div>
           </div>
         </div>
         <!-- Hidden container for JS backwards compatibility -->
@@ -317,31 +805,39 @@
       <!-- 4. Gamifikatsiya ("Mening Imkoniyatim" Widget) -->
       <div class="pxl-chance-card">
         <div class="chance-card-top">
-          <div class="chance-info">
-            <div class="chance-title">Mening Imkoniyatim</div>
-            <div id="chance-subtitle" class="chance-sub">Biletlar: <b id="chance-tickets-num" style="color: var(--primary-color);">0 ta</b></div>
+          <div class="chance-title-group">
+            <div class="chance-main-title">
+              <i class="fa-solid fa-bolt" style="color: var(--primary-color);"></i> Mening Imkoniyatim
+            </div>
+            <div class="chance-ticket-status">
+              Sizda: <span id="chance-tickets-num" class="ticket-status-pill">0 ta bilet</span>
+            </div>
           </div>
-          <button id="btn-quick-invite" class="btn-invite-mini">
+          <button id="btn-quick-invite" class="btn-invite-glow">
             <i class="fa-solid fa-user-plus"></i> Taklif qilish
           </button>
         </div>
         <div class="chance-progress-wrapper">
-          <div id="chance-progress-bar" class="chance-progress-fill" style="width: 15%;"></div>
+          <div id="chance-progress-bar" class="chance-progress-fill" style="width: 15%;">
+            <div class="progress-glow-head"></div>
+          </div>
         </div>
         <div class="chance-progress-labels">
-          <span>Boshlang'ich</span>
-          <span id="chance-percent-label">Imkoniyat: 15%</span>
-          <span>Maksimal 🔥</span>
+          <span><i class="fa-regular fa-circle-dot"></i> Boshlang'ich</span>
+          <span id="chance-percent-label" class="chance-highlight">Imkoniyat: 15%</span>
+          <span>Maksimal (100%) 🔥</span>
         </div>
       </div>
 
       <!-- 5. Sponsor Vazifalar (Majburiy Obuna) -->
       <div class="pxl-section-block">
         <div class="pxl-section-title">
-          <i class="fa-solid fa-shield-halved" style="color: var(--primary-color);"></i>
+          <div class="title-icon-circle lime-circle">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
           <span>Homiy Kanallar & Vazifalar</span>
         </div>
-        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.45;">
           Barcha homiylarga a'zo bo'ling va pastdagi <b>🚀 Qatnashish</b> tugmasini bosib bilet oling:
         </p>
 
@@ -351,7 +847,7 @@
 
         <!-- Big Glow Participate Button -->
         <button id="btn-participate-contest" class="btn btn-participate-glow">
-          <i class="fa-solid fa-bolt"></i> 🚀 Qatnashish
+          <i class="fa-solid fa-rocket participate-rocket"></i> 🚀 Qatnashish
         </button>
       </div>
 

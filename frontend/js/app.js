@@ -363,63 +363,31 @@ document.addEventListener("DOMContentLoaded", () => {
         container.innerHTML = "";
         res.tasks.forEach(task => {
           const item = document.createElement("div");
-          item.className = "task-item";
-          item.style.cssText = "background: rgba(26, 28, 35, 0.7); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;";
-          
-          const isDone = task.completed === 1;
-          const rawPlatform = (task.platform || "").toLowerCase();
-          const invLink = (task.invite_link || "").toLowerCase();
-
-          const isYT = rawPlatform === "youtube" || invLink.includes("youtube.com") || invLink.includes("youtu.be");
-          const isIG = rawPlatform === "instagram" || invLink.includes("instagram.com");
-          const platform = isYT ? "youtube" : (isIG ? "instagram" : "telegram");
-
-          let iconClass = "fa-telegram";
-          let iconColor = "#38bdf8";
-          let btnBg = "rgba(0, 136, 204, 0.22)";
-          let btnBorder = "#0088cc";
-          let btnText = "✈️ Telegram'da A'zo Bo'lish";
-          let subtitleText = task.channel_id;
-          let iconHtml = `<img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">`;
-          let linkAttr = `href="${task.invite_link}" target="_blank"`;
-
-          if (isYT) {
-            iconClass = "fa-youtube";
-            iconColor = "#ff3b30";
-            btnBg = "rgba(255, 59, 48, 0.18)";
-            btnBorder = "#ff3b30";
-            btnText = "🔴 YouTube'da Obuna Bo'lish";
-            subtitleText = "YouTube Kanal (Google Data API)";
-            iconHtml = '<i class="fa-brands fa-youtube" style="color: #ff3b30; font-size: 1.5rem;"></i>';
-          } else if (isIG) {
-            iconClass = "fa-instagram";
-            iconColor = "#e1306c";
-            btnBg = "rgba(225, 48, 108, 0.18)";
-            btnBorder = "#e1306c";
-            btnText = "📸 Instagram'da Kuzatish";
-            subtitleText = "Instagram Profil (Smart Tracker)";
-            iconHtml = '<i class="fa-brands fa-instagram" style="color: #e1306c; font-size: 1.5rem;"></i>';
-            linkAttr = `href="#" class="btn-ig-link" data-url="${task.invite_link}" data-id="${task.sponsor_id}"`;
-          }
+          item.className = "task-item-card";
 
           item.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 2px solid ${btnBorder}; flex-shrink: 0; background: var(--bg-dark); display: flex; align-items: center; justify-content: center;">
-                ${iconHtml}
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+                <div class="task-platform-avatar" style="border-color: ${btnBorder}; box-shadow: 0 0 10px ${btnBorder}33;">
+                  ${iconHtml}
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-weight: 800; font-size: 0.94rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
+                  <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 1px;">${subtitleText}</div>
+                </div>
               </div>
-              <div style="flex: 1; min-width: 0;">
-                <div style="font-weight: 700; font-size: 0.92rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">${subtitleText}</div>
+              <div class="task-reward-badge">
+                <i class="fa-solid fa-ticket"></i> +1 Bilet
               </div>
             </div>
-            <div style="display: flex; gap: 8px; width: 100%;">
-              <a ${linkAttr} class="btn btn-sm ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${iconColor};">
+            <div style="display: flex; gap: 8px; width: 100%; margin-top: 2px;">
+              <a ${linkAttr} class="btn btn-sm ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 10px; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${iconColor};">
                 <i class="fa-brands ${iconClass}" style="color: ${iconColor};"></i> ${btnText}
               </a>
               ${
                 isDone 
-                ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: #22c55e; color: #fff; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; border: none;" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" data-platform="${platform}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 8px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
+                ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: #22c55e; color: #fff; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 10px; border: none; box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
+                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" data-platform="${platform}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 10px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
               }
             </div>
           `;
