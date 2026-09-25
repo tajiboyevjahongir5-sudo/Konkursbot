@@ -363,9 +363,9 @@ document.addEventListener("DOMContentLoaded", () => {
         container.innerHTML = "";
         res.tasks.forEach(task => {
           const item = document.createElement("div");
-          item.className = "task-item-card";
-
           const isDone = task.completed === 1;
+          item.className = isDone ? "task-item-card task-item-completed" : "task-item-card";
+
           const rawPlatform = (task.platform || "").toLowerCase();
           const invLink = (task.invite_link || "").toLowerCase();
 
@@ -374,56 +374,68 @@ document.addEventListener("DOMContentLoaded", () => {
           const platform = isYT ? "youtube" : (isIG ? "instagram" : "telegram");
 
           let iconClass = "fa-telegram";
-          let iconColor = "#38bdf8";
-          let btnBg = "rgba(0, 136, 204, 0.22)";
-          let btnBorder = "#0088cc";
-          let btnText = "Telegram'da A'zo Bo'lish";
-          let subtitleText = task.channel_id;
-          let iconHtml = `<img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/logo.jpg';">`;
+          let platformBadgeClass = "badge-tg";
+          let platformBadgeIcon = '<i class="fa-brands fa-telegram"></i>';
+          let btnText = "A'zo bo'lish";
+          let channelHandle = (task.channel_id || "").trim();
+          let subtitleText = channelHandle ? (channelHandle.startsWith("@") ? channelHandle : `@${channelHandle}`) : "Telegram Kanal";
+          let avatarHtml = `<img src="/api/channel/photo?channel_id=${encodeURIComponent(task.channel_id)}" alt="${task.title}" class="task-avatar-img" onerror="this.onerror=null; this.src='assets/logo.jpg';">`;
           let linkAttr = `href="${task.invite_link}" target="_blank"`;
 
           if (isYT) {
             iconClass = "fa-youtube";
-            iconColor = "#ff3b30";
-            btnBg = "rgba(255, 59, 48, 0.18)";
-            btnBorder = "#ff3b30";
-            btnText = "YouTube'da Obuna";
+            platformBadgeClass = "badge-yt";
+            platformBadgeIcon = '<i class="fa-brands fa-youtube"></i>';
+            btnText = "Obuna bo'lish";
             subtitleText = "YouTube Kanal (Google API)";
-            iconHtml = '<i class="fa-brands fa-youtube" style="color: #ff3b30; font-size: 1.5rem;"></i>';
+            avatarHtml = '<div class="avatar-yt-icon"><i class="fa-brands fa-youtube"></i></div>';
           } else if (isIG) {
             iconClass = "fa-instagram";
-            iconColor = "#e1306c";
-            btnBg = "rgba(225, 48, 108, 0.18)";
-            btnBorder = "#e1306c";
-            btnText = "Instagram'da Kuzatish";
+            platformBadgeClass = "badge-ig";
+            platformBadgeIcon = '<i class="fa-brands fa-instagram"></i>';
+            btnText = "Obuna bo'lish";
             subtitleText = "Instagram Profil";
-            iconHtml = '<i class="fa-brands fa-instagram" style="color: #e1306c; font-size: 1.5rem;"></i>';
+            avatarHtml = '<div class="avatar-ig-icon"><i class="fa-brands fa-instagram"></i></div>';
             linkAttr = `href="#" class="btn-ig-link" data-url="${task.invite_link}" data-id="${task.sponsor_id}"`;
           }
 
           item.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-              <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
-                <div class="task-platform-avatar" style="border-color: ${btnBorder}; box-shadow: 0 0 10px ${btnBorder}44;">
-                  ${iconHtml}
+            <div class="task-card-header">
+              <div class="task-avatar-wrap">
+                <div class="task-platform-avatar ${platform}">
+                  ${avatarHtml}
                 </div>
-                <div style="flex: 1; min-width: 0;">
-                  <div style="font-weight: 800; font-size: 0.94rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${task.title}</div>
-                  <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 1px;">${subtitleText}</div>
+                <div class="task-platform-badge ${platformBadgeClass}">
+                  ${platformBadgeIcon}
                 </div>
               </div>
-              <div class="task-reward-badge">
-                <span style="font-size: 0.85rem;">🎟️</span> +1 Bilet
+              <div class="task-meta">
+                <div class="task-title" title="${task.title}">${task.title}</div>
+                <div class="task-subtitle ${platform}">${subtitleText}</div>
+              </div>
+              <div class="task-reward-pill ${isDone ? 'done' : ''}">
+                ${isDone ? '<i class="fa-solid fa-check"></i> Berildi' : '<i class="fa-solid fa-ticket"></i> +1 Bilet'}
               </div>
             </div>
-            <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
-              <a ${linkAttr} class="btn btn-sm ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 700; border-radius: 10px; background: ${btnBg}; border: 1px solid ${btnBorder}; color: ${iconColor};">
-                <i class="fa-brands ${iconClass}" style="color: ${iconColor};"></i> ${btnText}
-              </a>
+            <div class="task-card-actions">
               ${
                 isDone 
-                ? '<button class="btn btn-sm" style="flex: 1; justify-content: center; background: #22c55e; color: #fff; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 10px; border: none; box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);" disabled><i class="fa-solid fa-circle-check"></i> Bajarildi</button>'
-                : `<button class="btn btn-primary btn-sm btn-check-task" data-id="${task.sponsor_id}" data-platform="${platform}" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem; font-weight: 800; border-radius: 10px;"><i class="fa-solid fa-arrows-rotate"></i> Tekshirish</button>`
+                ? `
+                  <div class="task-done-strip">
+                    <span class="task-done-label"><i class="fa-solid fa-circle-check"></i> Obuna tasdiqlandi</span>
+                    <a ${linkAttr} class="task-revisit-btn" onclick="event.stopPropagation();" title="Kanalni ko'rish">
+                      <span>Kanal</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                  </div>
+                `
+                : `
+                  <a ${linkAttr} class="task-btn task-btn-join ${platform} ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();">
+                    <i class="fa-brands ${iconClass}"></i> ${btnText}
+                  </a>
+                  <button class="task-btn task-btn-verify btn-check-task" data-id="${task.sponsor_id}" data-platform="${platform}">
+                    <i class="fa-solid fa-arrows-rotate"></i> Tekshirish
+                  </button>
+                `
               }
             </div>
           `;
