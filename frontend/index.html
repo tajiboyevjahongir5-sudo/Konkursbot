@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_12">
+  <link rel="stylesheet" href="css/style.css?v=20260925_13">
 
   <style>
     /* ==========================================================================
@@ -212,6 +212,54 @@
     }
 
     /* 1. HERO BANNER CARD (ULTRA-LUXURY 3D VIP BANNER) */
+    .pxl-hero-card.banner-art-mode {
+      position: relative !important;
+      overflow: hidden !important;
+      border-radius: 24px !important;
+      border: 1.5px solid rgba(197, 255, 0, 0.65) !important;
+      padding: 0 !important;
+      margin-bottom: 14px !important;
+      box-shadow: 
+        0 18px 45px rgba(0, 0, 0, 0.85),
+        0 0 35px rgba(197, 255, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+      background: #0d121f !important;
+      aspect-ratio: 16 / 9 !important;
+      display: block !important;
+      cursor: pointer !important;
+      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .pxl-hero-card.banner-art-mode:active {
+      transform: scale(0.985) !important;
+    }
+    .pxl-hero-banner-img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block !important;
+    }
+    .pxl-hero-banner-glare {
+      position: absolute !important;
+      top: -60% !important;
+      left: -60% !important;
+      width: 220% !important;
+      height: 220% !important;
+      background: linear-gradient(
+        115deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.06) 47%,
+        rgba(197, 255, 0, 0.16) 50%,
+        rgba(0, 229, 255, 0.12) 53%,
+        transparent 60%
+      ) !important;
+      pointer-events: none !important;
+      animation: glareSweep 5.5s infinite ease-in-out alternate !important;
+    }
+    @keyframes glareSweep {
+      0% { transform: translateY(-25px) rotate(0deg); opacity: 0.35; }
+      100% { transform: translateY(25px) rotate(2deg); opacity: 0.85; }
+    }
+
     .pxl-hero-card {
       position: relative !important;
       overflow: hidden !important;
@@ -1106,62 +1154,11 @@
     <section id="tab-contest" class="tab-content active">
       
       <!-- 1. Hero Card (Ultra Cyber-Premium VIP 3D Banner) -->
-      <div class="pxl-hero-card">
-        <div class="pxl-hero-ambient-glow"></div>
-        <div class="pxl-hero-grid-mesh"></div>
-        <div class="pxl-hero-laser"></div>
-        
-        <!-- Tech HUD Elements -->
-        <div class="hero-hud-tag top-left">SYS // LIVE 2026</div>
-        <div class="hero-hud-cross top-right">+</div>
-        
-        <!-- Floating Cyber Sparkles -->
-        <span class="hero-sparkle sp-1">✦</span>
-        <span class="hero-sparkle sp-2">⚡</span>
-        <span class="hero-sparkle sp-3">★</span>
-        
-        <div class="pxl-hero-inner">
-          <div class="pxl-hero-left">
-            <div class="pxl-hero-top-row">
-              <div class="pxl-live-badge">
-                <span class="live-dot"></span> LIVE KONKURS
-              </div>
-              <div class="pxl-prize-tag">
-                🔥 10,000,000+ UZS
-              </div>
-            </div>
-            <h2 id="contest-title" class="pxl-hero-title">PEEXELL GRAND KONKURS 2026</h2>
-            <p id="contest-description" class="pxl-hero-subtitle">
-              Do'stlaringizni taklif qiling, homiylarga a'zo bo'ling va yirik sovrinlarni yutib oling!
-            </p>
-            <div class="hero-cyber-divider"></div>
-            <div class="pxl-hero-stats">
-              <div class="hero-stat-chip">
-                💎 3 ta VIP Sovrin
-              </div>
-              <div class="hero-stat-chip">
-                🛡️ 100% Shaffof
-              </div>
-            </div>
-          </div>
-          <div class="pxl-hero-right">
-            <!-- Holographic HUD Radar Rings Behind Host -->
-            <div class="hero-hud-rings">
-              <div class="hud-ring-outer"></div>
-              <div class="hud-ring-inner"></div>
-              <div class="hud-ring-center"></div>
-            </div>
-            
-            <div class="hero-person-wrap">
-              <div class="hero-person-glow"></div>
-              <div class="hero-person-stage"></div>
-              <img src="assets/alex_hero.png?v=20260925_12" alt="PEEXELL VIP Host" class="hero-person-img" loading="eager">
-              <div class="hero-person-badge">
-                <span class="badge-dot"></span> VIP HOST
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="pxl-hero-card banner-art-mode" onclick="window.switchTab && window.switchTab('tab-tasks')">
+        <img src="assets/grand_banner.jpg?v=20260925_13" alt="PEEXELL GRAND KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
+        <div class="pxl-hero-banner-glare"></div>
+        <span id="contest-title" style="display:none;">PEEXELL GRAND KONKURS 2026</span>
+        <span id="contest-description" style="display:none;">Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'ling!</span>
       </div>
 
       <!-- 2. Futuristic Glass Countdown Timer -->
@@ -1868,6 +1865,6 @@
   </div>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_12"></script>
+  <script src="js/app.js?v=20260925_13"></script>
 </body>
 </html>
