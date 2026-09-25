@@ -51,7 +51,7 @@ html, body {
 }
 
 body {
-  background-color: var(--bg-color);
+  background-color: #0c0e14;
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
@@ -59,20 +59,26 @@ body {
   overflow-x: hidden;
   position: relative;
   padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+  background-image: 
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(197, 255, 0, 0.12) 0%, transparent 70%),
+    radial-gradient(circle 320px at 92% 16%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(circle 280px at 8% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 60%);
+  background-attachment: fixed;
 }
 
-/* Background Glow FX */
+/* Background Cyber Grid & Particle Texture */
 body::before {
   content: "";
   position: fixed;
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, var(--primary-glow) 0%, rgba(18, 19, 22, 0) 70%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
   z-index: 0;
   pointer-events: none;
+  opacity: 0.55;
 }
 
 .app-container {
@@ -331,53 +337,88 @@ body::before {
    ========================================================================== */
 
 /* 1. HERO BANNER CARD */
+/* 1. HERO BANNER CARD (ULTRA-LUXURY 3D VIP BANNER) */
 .pxl-hero-card {
-  background: linear-gradient(145deg, #181c26 0%, #0e1118 100%) !important;
-  border: 1px solid rgba(197, 255, 0, 0.3) !important;
-  border-radius: 22px !important;
-  padding: 20px 18px !important;
-  margin-bottom: 14px !important;
   position: relative !important;
   overflow: hidden !important;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(145deg, #161a26 0%, #0e121c 60%, #090b12 100%) !important;
+  border: 1px solid rgba(197, 255, 0, 0.4) !important;
+  border-radius: 24px !important;
+  padding: 18px 16px !important;
+  margin-bottom: 14px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(197, 255, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
 }
 
-.pxl-hero-card::before {
-  content: "";
+/* Pulsing Cyber Aurora */
+.pxl-hero-aurora {
   position: absolute;
-  top: 0; right: 0; width: 100%; height: 100%;
-  background-image: 
-    radial-gradient(circle at 85% 15%, rgba(197, 255, 0, 0.22) 0%, transparent 50%),
-    radial-gradient(circle at 15% 85%, rgba(0, 229, 255, 0.16) 0%, transparent 45%),
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+  top: -40px;
+  right: -30px;
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgba(197, 255, 0, 0.28) 0%, rgba(0, 229, 255, 0.16) 45%, transparent 75%);
+  filter: blur(32px);
   pointer-events: none;
+  z-index: 1;
+  animation: auroraPulse 4s infinite ease-in-out alternate;
 }
 
-.pxl-hero-content { position: relative; z-index: 2; }
+@keyframes auroraPulse {
+  0% { transform: scale(0.9) translate(0, 0); opacity: 0.65; }
+  100% { transform: scale(1.15) translate(-10px, 12px); opacity: 1; }
+}
+
+/* Futuristic Cyber Grid Overlay */
+.pxl-hero-grid-mesh {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(197, 255, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(197, 255, 0, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse at 85% 35%, black 25%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 85% 35%, black 25%, transparent 80%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Hero Content Grid (Left Text + Right 3D Portal) */
+.pxl-hero-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pxl-hero-left {
+  flex: 1;
+  min-width: 0;
+}
 
 .pxl-hero-top-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .pxl-live-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(197, 255, 0, 0.14);
+  background: rgba(197, 255, 0, 0.16);
   border: 1px solid #C5FF00;
   color: #C5FF00;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 9999px;
-  box-shadow: 0 0 14px rgba(197, 255, 0, 0.4);
+  box-shadow: 0 0 12px rgba(197, 255, 0, 0.35);
 }
 
 .live-dot {
@@ -396,54 +437,152 @@ body::before {
 }
 
 .pxl-prize-tag {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: #FFD700;
-  background: rgba(255, 215, 0, 0.12);
-  border: 1px solid rgba(255, 215, 0, 0.4);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.12) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.55);
   padding: 4px 10px;
   border-radius: 9999px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.25);
 }
 
 .pxl-hero-title {
-  font-size: 1.58rem !important;
+  font-size: 1.38rem !important;
   font-weight: 900 !important;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   background: linear-gradient(135deg, #FFFFFF 30%, #C5FF00 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  line-height: 1.2 !important;
+  line-height: 1.18 !important;
   margin-bottom: 6px !important;
   text-transform: uppercase;
+  filter: drop-shadow(0 2px 8px rgba(197, 255, 0, 0.25));
 }
 
 .pxl-hero-subtitle {
-  font-size: 0.83rem;
-  color: #949ab0;
-  line-height: 1.45;
+  font-size: 0.78rem;
+  color: #a4acba;
+  line-height: 1.4;
   margin-bottom: 12px;
 }
 
 .pxl-hero-stats {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .hero-stat-chip {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  padding: 4px 10px;
-  font-size: 0.72rem;
+  padding: 4px 8px;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #f1f5f9;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* RIGHT 3D PORTAL VISUAL */
+.pxl-hero-right {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  width: 86px;
+  height: 86px;
+}
+
+.hero-3d-portal {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: heroPortalFloat 3s infinite ease-in-out;
+}
+
+@keyframes heroPortalFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.portal-ring {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(197, 255, 0, 0.65);
+  background: radial-gradient(circle, rgba(197, 255, 0, 0.22) 0%, rgba(0, 229, 255, 0.12) 50%, rgba(13, 16, 26, 0.8) 80%);
+  box-shadow: 0 0 20px rgba(197, 255, 0, 0.45), inset 0 0 14px rgba(0, 229, 255, 0.3);
+}
+
+.portal-core {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portal-main-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  display: inline-block;
+  filter: drop-shadow(0 4px 14px rgba(255, 215, 0, 0.65));
+  animation: trophyShine 2.5s infinite ease-in-out;
+}
+
+@keyframes trophyShine {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.08) rotate(3deg); }
+}
+
+.portal-sub-sparkle {
+  position: absolute;
+  line-height: 1;
+}
+
+.sparkle-1 {
+  top: -6px;
+  right: -6px;
+  font-size: 1.1rem;
+  animation: sparkleBlink 1.8s infinite ease-in-out;
+}
+
+.sparkle-2 {
+  bottom: -2px;
+  left: -8px;
+  font-size: 1.1rem;
+  animation: sparkleBlink 2.2s infinite ease-in-out reverse;
+}
+
+@keyframes sparkleBlink {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.portal-badge {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #C5FF00 0%, #00E5FF 100%);
+  color: #0a0b0d;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  z-index: 3;
 }
 
 /* 2. GLASS TIMER */

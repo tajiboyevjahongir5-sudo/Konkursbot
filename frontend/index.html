@@ -48,16 +48,35 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_09">
+  <link rel="stylesheet" href="css/style.css?v=20260925_10">
 
   <style>
     /* ==========================================================================
        ULTRA CYBER-PREMIUM VIP 3D STYLES (INLINE TO PREVENT ANY IOS CACHING)
        ========================================================================== */
 
-    /* GLOBAL SCROLL & COMPACT FOOTER FIX */
+    /* GLOBAL SCROLL & ATMOSPHERIC CYBER BACKGROUND */
     body {
       padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+      background-color: #0c0e14 !important;
+      background-image: 
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(197, 255, 0, 0.12) 0%, transparent 70%),
+        radial-gradient(circle 320px at 92% 16%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle 280px at 8% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 60%) !important;
+      background-attachment: fixed !important;
+    }
+    body::before {
+      content: "" !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px) !important;
+      background-size: 26px 26px !important;
+      z-index: 0 !important;
+      pointer-events: none !important;
+      opacity: 0.55 !important;
     }
     .app-container {
       padding: 12px 16px 0 16px !important;
@@ -192,58 +211,86 @@
       80% { transform: rotate(0deg); }
     }
 
-    /* 1. HERO BANNER CARD */
+    /* 1. HERO BANNER CARD (ULTRA-LUXURY 3D VIP BANNER) */
     .pxl-hero-card {
-      background: linear-gradient(145deg, #181c26 0%, #0e1118 100%) !important;
-      border: 1px solid rgba(197, 255, 0, 0.3) !important;
-      border-radius: 22px !important;
-      padding: 20px 18px !important;
-      margin-bottom: 14px !important;
       position: relative !important;
       overflow: hidden !important;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      background: linear-gradient(145deg, #161a26 0%, #0e121c 60%, #090b12 100%) !important;
+      border: 1px solid rgba(197, 255, 0, 0.4) !important;
+      border-radius: 24px !important;
+      padding: 18px 16px !important;
+      margin-bottom: 14px !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(197, 255, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
     }
-    .pxl-hero-card::before {
-      content: "";
-      position: absolute;
-      top: 0; right: 0; width: 100%; height: 100%;
+    .pxl-hero-aurora {
+      position: absolute !important;
+      top: -40px !important;
+      right: -30px !important;
+      width: 190px !important;
+      height: 190px !important;
+      background: radial-gradient(circle, rgba(197, 255, 0, 0.28) 0%, rgba(0, 229, 255, 0.16) 45%, transparent 75%) !important;
+      filter: blur(32px) !important;
+      pointer-events: none !important;
+      z-index: 1 !important;
+      animation: auroraPulse 4s infinite ease-in-out alternate !important;
+    }
+    @keyframes auroraPulse {
+      0% { transform: scale(0.9) translate(0, 0); opacity: 0.65; }
+      100% { transform: scale(1.15) translate(-10px, 12px); opacity: 1; }
+    }
+    .pxl-hero-grid-mesh {
+      position: absolute !important;
+      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
       background-image: 
-        radial-gradient(circle at 85% 15%, rgba(197, 255, 0, 0.22) 0%, transparent 50%),
-        radial-gradient(circle at 15% 85%, rgba(0, 229, 255, 0.16) 0%, transparent 45%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
-      pointer-events: none;
+        linear-gradient(rgba(197, 255, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(197, 255, 0, 0.05) 1px, transparent 1px) !important;
+      background-size: 22px 22px !important;
+      mask-image: radial-gradient(ellipse at 85% 35%, black 25%, transparent 80%) !important;
+      -webkit-mask-image: radial-gradient(ellipse at 85% 35%, black 25%, transparent 80%) !important;
+      pointer-events: none !important;
+      z-index: 1 !important;
     }
-    .pxl-hero-content { position: relative; z-index: 2; }
+    .pxl-hero-inner {
+      position: relative !important;
+      z-index: 2 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 12px !important;
+    }
+    .pxl-hero-left {
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
     .pxl-hero-top-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      margin-bottom: 10px !important;
+      flex-wrap: wrap !important;
     }
     .pxl-live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(197, 255, 0, 0.14);
-      border: 1px solid #C5FF00;
-      color: #C5FF00;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      box-shadow: 0 0 14px rgba(197, 255, 0, 0.4);
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      background: rgba(197, 255, 0, 0.16) !important;
+      border: 1px solid #C5FF00 !important;
+      color: #C5FF00 !important;
+      font-size: 0.7rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      text-transform: uppercase !important;
+      padding: 4px 10px !important;
+      border-radius: 9999px !important;
+      box-shadow: 0 0 12px rgba(197, 255, 0, 0.35) !important;
     }
     .live-dot {
-      width: 7px;
-      height: 7px;
-      background: #C5FF00;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #C5FF00;
-      animation: livePulse 1.4s infinite ease-in-out;
+      width: 7px !important;
+      height: 7px !important;
+      background: #C5FF00 !important;
+      border-radius: 50% !important;
+      box-shadow: 0 0 8px #C5FF00 !important;
+      animation: livePulse 1.4s infinite ease-in-out !important;
     }
     @keyframes livePulse {
       0% { transform: scale(0.9); opacity: 0.6; }
@@ -251,50 +298,135 @@
       100% { transform: scale(0.9); opacity: 0.6; }
     }
     .pxl-prize-tag {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: #FFD700;
-      background: rgba(255, 215, 0, 0.12);
-      border: 1px solid rgba(255, 215, 0, 0.4);
-      padding: 4px 10px;
-      border-radius: 9999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+      font-size: 0.7rem !important;
+      font-weight: 800 !important;
+      color: #FFD700 !important;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.12) 100%) !important;
+      border: 1px solid rgba(255, 215, 0, 0.55) !important;
+      padding: 4px 10px !important;
+      border-radius: 9999px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      box-shadow: 0 0 14px rgba(255, 215, 0, 0.25) !important;
     }
     .pxl-hero-title {
-      font-size: 1.58rem !important;
+      font-size: 1.38rem !important;
       font-weight: 900 !important;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px !important;
       background: linear-gradient(135deg, #FFFFFF 30%, #C5FF00 100%) !important;
       -webkit-background-clip: text !important;
       -webkit-text-fill-color: transparent !important;
-      line-height: 1.2 !important;
+      line-height: 1.18 !important;
       margin-bottom: 6px !important;
-      text-transform: uppercase;
+      text-transform: uppercase !important;
+      filter: drop-shadow(0 2px 8px rgba(197, 255, 0, 0.25)) !important;
     }
     .pxl-hero-subtitle {
-      font-size: 0.83rem;
-      color: #949ab0;
-      line-height: 1.45;
-      margin-bottom: 12px;
+      font-size: 0.78rem !important;
+      color: #a4acba !important;
+      line-height: 1.4 !important;
+      margin-bottom: 12px !important;
     }
     .pxl-hero-stats {
-      display: flex;
-      gap: 8px;
+      display: flex !important;
+      gap: 6px !important;
+      flex-wrap: wrap !important;
     }
     .hero-stat-chip {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #e2e8f0;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      background: rgba(255, 255, 255, 0.06) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 8px !important;
+      padding: 4px 8px !important;
+      font-size: 0.7rem !important;
+      font-weight: 700 !important;
+      color: #f1f5f9 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+    .pxl-hero-right {
+      flex-shrink: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 86px !important;
+      height: 86px !important;
+    }
+    .hero-3d-portal {
+      position: relative !important;
+      width: 80px !important;
+      height: 80px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      animation: heroPortalFloat 3s infinite ease-in-out !important;
+    }
+    @keyframes heroPortalFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .portal-ring {
+      position: absolute !important;
+      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+      border-radius: 50% !important;
+      border: 2px solid rgba(197, 255, 0, 0.65) !important;
+      background: radial-gradient(circle, rgba(197, 255, 0, 0.22) 0%, rgba(0, 229, 255, 0.12) 50%, rgba(13, 16, 26, 0.8) 80%) !important;
+      box-shadow: 0 0 20px rgba(197, 255, 0, 0.45), inset 0 0 14px rgba(0, 229, 255, 0.3) !important;
+    }
+    .portal-core {
+      position: relative !important;
+      z-index: 2 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .portal-main-icon {
+      font-size: 2.5rem !important;
+      line-height: 1 !important;
+      display: inline-block !important;
+      filter: drop-shadow(0 4px 14px rgba(255, 215, 0, 0.65)) !important;
+      animation: trophyShine 2.5s infinite ease-in-out !important;
+    }
+    @keyframes trophyShine {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.08) rotate(3deg); }
+    }
+    .portal-sub-sparkle {
+      position: absolute !important;
+      line-height: 1 !important;
+    }
+    .sparkle-1 {
+      top: -6px !important;
+      right: -6px !important;
+      font-size: 1.1rem !important;
+      animation: sparkleBlink 1.8s infinite ease-in-out !important;
+    }
+    .sparkle-2 {
+      bottom: -2px !important;
+      left: -8px !important;
+      font-size: 1.1rem !important;
+      animation: sparkleBlink 2.2s infinite ease-in-out reverse !important;
+    }
+    @keyframes sparkleBlink {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .portal-badge {
+      position: absolute !important;
+      bottom: -6px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      background: linear-gradient(135deg, #C5FF00 0%, #00E5FF 100%) !important;
+      color: #0a0b0d !important;
+      font-size: 0.58rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.5px !important;
+      padding: 2px 7px !important;
+      border-radius: 9999px !important;
+      white-space: nowrap !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+      z-index: 3 !important;
     }
 
     /* 2. GLASS TIMER */
@@ -778,28 +910,42 @@
     <!-- TAB 1: KONKURS -->
     <section id="tab-contest" class="tab-content active">
       
-      <!-- 1. Hero Card (Compact 16:9 banner with cyber grid and live badge) -->
+      <!-- 1. Hero Card (Ultra Cyber-Premium VIP 3D Banner) -->
       <div class="pxl-hero-card">
-        <div class="pxl-hero-overlay"></div>
-        <div class="pxl-hero-content">
-          <div class="pxl-hero-top-row">
-            <div class="pxl-live-badge">
-              <span class="live-dot"></span> LIVE KONKURS
+        <div class="pxl-hero-aurora"></div>
+        <div class="pxl-hero-grid-mesh"></div>
+        <div class="pxl-hero-inner">
+          <div class="pxl-hero-left">
+            <div class="pxl-hero-top-row">
+              <div class="pxl-live-badge">
+                <span class="live-dot"></span> LIVE KONKURS
+              </div>
+              <div class="pxl-prize-tag">
+                🔥 10,000,000+ UZS
+              </div>
             </div>
-            <div class="pxl-prize-tag">
-              🔥 10,000,000+ UZS
+            <h2 id="contest-title" class="pxl-hero-title">PEEXELL GRAND KONKURS 2026</h2>
+            <p id="contest-description" class="pxl-hero-subtitle">
+              Do'stlaringizni taklif qiling, homiylarga a'zo bo'ling va yirik sovrinlarni yutib oling!
+            </p>
+            <div class="pxl-hero-stats">
+              <div class="hero-stat-chip">
+                💎 3 ta VIP Sovrin
+              </div>
+              <div class="hero-stat-chip">
+                🛡️ 100% Shaffof
+              </div>
             </div>
           </div>
-          <h2 id="contest-title" class="pxl-hero-title">PEEXELL GRAND KONKURS 2026</h2>
-          <p id="contest-description" class="pxl-hero-subtitle">
-            Do'stlaringizni taklif qiling, homiy kanallarga a'zo bo'ling va yirik sovrinlarni yutib oling!
-          </p>
-          <div class="pxl-hero-stats">
-            <div class="hero-stat-chip">
-              💎 3 ta VIP Sovrin
-            </div>
-            <div class="hero-stat-chip">
-              🛡️ 100% Shaffof
+          <div class="pxl-hero-right">
+            <div class="hero-3d-portal">
+              <div class="portal-ring"></div>
+              <div class="portal-core">
+                <span class="portal-main-icon">🏆</span>
+                <span class="portal-sub-sparkle sparkle-1">✨</span>
+                <span class="portal-sub-sparkle sparkle-2">🎁</span>
+              </div>
+              <div class="portal-badge">VIP 2026</div>
             </div>
           </div>
         </div>
@@ -1509,6 +1655,6 @@
   </div>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_09"></script>
+  <script src="js/app.js?v=20260925_10"></script>
 </body>
 </html>
