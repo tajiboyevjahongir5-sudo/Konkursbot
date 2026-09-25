@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
   <title>PEEXELL KONKURS WEB APP</title>
   
   <meta name="description" content="PEEXELL Konkurs Web App - Telegram Mini App va Google OAuth 2.0 orqali yutuqli konkurslarda shaffof qatnashing!">
@@ -48,14 +48,24 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_13">
+  <link rel="stylesheet" href="css/style.css?v=20260925_14">
 
   <style>
     /* ==========================================================================
        ULTRA CYBER-PREMIUM VIP 3D STYLES (INLINE TO PREVENT ANY IOS CACHING)
        ========================================================================== */
 
-    /* GLOBAL SCROLL & ATMOSPHERIC CYBER BACKGROUND */
+    /* GLOBAL SCROLL & ATMOSPHERIC CYBER BACKGROUND (STRICT HORIZONTAL LOCK) */
+    html, body {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+      position: relative !important;
+      touch-action: pan-y !important;
+      overscroll-behavior-x: none !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
     body {
       padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
       background-color: #0c0e14 !important;
@@ -64,6 +74,7 @@
         radial-gradient(circle 320px at 92% 16%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
         radial-gradient(circle 280px at 8% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 60%) !important;
       background-attachment: fixed !important;
+      overflow-x: hidden !important;
     }
     body::before {
       content: "" !important;
@@ -79,6 +90,11 @@
       opacity: 0.55 !important;
     }
     .app-container {
+      width: 100% !important;
+      max-width: 540px !important;
+      margin: 0 auto !important;
+      overflow-x: hidden !important;
+      box-sizing: border-box !important;
       padding: 12px 16px 0 16px !important;
       padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + 8px) !important;
       display: flex !important;
@@ -86,9 +102,22 @@
       min-height: calc(100vh - 58px - env(safe-area-inset-bottom, 0px)) !important;
       flex: 1 !important;
     }
+    .tab-content {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+      box-sizing: border-box !important;
+    }
     .tab-content.active {
       display: block !important;
       flex: 1 !important;
+    }
+    .admin-subnav {
+      overflow-x: auto !important;
+      touch-action: pan-x pan-y !important;
+      -webkit-overflow-scrolling: touch !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
     }
     .app-footer {
       margin-top: auto !important;
@@ -1865,6 +1894,6 @@
   </div>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_13"></script>
+  <script src="js/app.js?v=20260925_14"></script>
 </body>
 </html>
