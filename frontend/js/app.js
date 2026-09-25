@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const bottomNav = document.querySelector(".bottom-nav");
     if (!bottomNav) return;
     bottomNav.style.display = "flex";
-    document.body.style.paddingBottom = "85px";
+    document.body.style.paddingBottom = "";
   }
 
   navItems.forEach(item => {

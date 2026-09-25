@@ -48,12 +48,68 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_08">
+  <link rel="stylesheet" href="css/style.css?v=20260925_09">
 
   <style>
     /* ==========================================================================
        ULTRA CYBER-PREMIUM VIP 3D STYLES (INLINE TO PREVENT ANY IOS CACHING)
        ========================================================================== */
+
+    /* GLOBAL SCROLL & COMPACT FOOTER FIX */
+    body {
+      padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    .app-container {
+      padding: 12px 16px 0 16px !important;
+      padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + 8px) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      min-height: calc(100vh - 58px - env(safe-area-inset-bottom, 0px)) !important;
+      flex: 1 !important;
+    }
+    .tab-content.active {
+      display: block !important;
+      flex: 1 !important;
+    }
+    .app-footer {
+      margin-top: auto !important;
+      padding: 14px 10px 8px 10px !important;
+      text-align: center !important;
+      font-size: 0.78rem !important;
+      color: var(--text-secondary) !important;
+      border-top: 1px solid var(--card-border) !important;
+    }
+    .app-footer p {
+      margin-bottom: 6px !important;
+      font-size: 0.75rem !important;
+      opacity: 0.85 !important;
+    }
+    .app-footer-links {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 12px !important;
+      flex-wrap: wrap !important;
+      font-size: 0.76rem !important;
+    }
+    .app-footer-links a {
+      color: var(--primary-color) !important;
+      text-decoration: underline !important;
+      font-weight: 600 !important;
+    }
+    .bottom-nav {
+      padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    .nav-icon-3d {
+      font-size: 1.22rem !important;
+      line-height: 1 !important;
+      display: inline-block !important;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    }
+    .nav-item.active .nav-icon-3d {
+      transform: translateY(-2px) scale(1.18) !important;
+      filter: drop-shadow(0 0 8px rgba(197, 255, 0, 0.65)) !important;
+    }
 
     /* HEADER */
     .header-card {
@@ -916,7 +972,7 @@
       <!-- Tickets Grid Card -->
       <div class="card">
         <div class="card-header-title">
-          <i class="fa-solid fa-ticket" style="color: var(--primary-color);"></i>
+          <span class="ticket-3d-icon">🎟️</span>
           <span>Sizning Omadli Biletlaringiz</span>
         </div>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
@@ -933,7 +989,7 @@
     <section id="tab-friends" class="tab-content">
       <div class="card">
         <div class="card-header-title">
-          <i class="fa-solid fa-user-plus" style="color: var(--primary-color);"></i>
+          <span style="font-size: 1.2rem;">👥</span>
           <span>Do'stlarni taklif qilish</span>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
@@ -947,17 +1003,17 @@
 
         <div style="display: flex; gap: 10px; margin-top: 12px;">
           <button id="btn-copy-ref" class="btn btn-secondary btn-sm" style="flex: 1;">
-            <i class="fa-solid fa-copy"></i> Nusxalash
+            <span style="font-size: 0.95rem;">📋</span> Nusxalash
           </button>
           <button id="btn-share-ref" class="btn btn-primary btn-sm" style="flex: 1;">
-            <i class="fa-solid fa-share-nodes"></i> Telegram'da Ulashish
+            <span style="font-size: 0.95rem;">✈️</span> Telegram'da Ulashish
           </button>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header-title">
-          <i class="fa-solid fa-chart-line" style="color: var(--secondary-color);"></i>
+          <span style="font-size: 1.2rem;">📈</span>
           <span>Sizning Statistikangiz</span>
         </div>
         <div class="stats-grid">
@@ -977,8 +1033,8 @@
     <section id="tab-leaderboard" class="tab-content">
       <div class="card">
         <div class="card-header-title">
-          <i class="fa-solid fa-trophy" style="color: var(--secondary-color);"></i>
-          <span>🏆 Ishtirokchilar Reytingi</span>
+          <span style="font-size: 1.2rem;">🏆</span>
+          <span>Ishtirokchilar Reytingi</span>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
           Eng ko'p biletga ega ishtirokchilar ro'yxati. Har bir bilet g'olib bo'lish imkoniyatingizni oshiradi!
@@ -1020,32 +1076,32 @@
     <section id="tab-admin" class="tab-content">
       <div class="card">
         <div class="card-header-title">
-          <i class="fa-solid fa-sliders" style="color: var(--primary-color);"></i>
+          <span style="font-size: 1.2rem;">⚙️</span>
           <span>PEEXELL Admin Boshqaruvi</span>
         </div>
 
         <!-- Admin Sub-navigation (Mini Tabs) -->
         <div class="admin-subnav">
           <button type="button" class="admin-subtab-btn active" data-subtab="subtab-stats">
-            <i class="fa-solid fa-chart-pie"></i> Statistika
+            <span>📊</span> Statistika
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-contest">
-            <i class="fa-solid fa-trophy"></i> Konkurs
+            <span>🏆</span> Konkurs
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-sponsors">
-            <i class="fa-solid fa-bullhorn"></i> Sponsorlar
+            <span>📢</span> Sponsorlar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-users">
-            <i class="fa-solid fa-users"></i> Foydalanuvchilar
+            <span>👥</span> Foydalanuvchilar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-winners">
-            <i class="fa-solid fa-award"></i> G'oliblar
+            <span>🎖️</span> G'oliblar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-broadcast">
-            <i class="fa-solid fa-paper-plane"></i> Xabarnoma
+            <span>📨</span> Xabarnoma
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-system">
-            <i class="fa-solid fa-shield-halved"></i> Boshqaruv
+            <span>🛡️</span> Boshqaruv
           </button>
         </div>
 
@@ -1054,7 +1110,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <h4 style="font-size: 0.95rem; color: var(--primary-color); margin: 0;">📊 Kengaytirilgan Tahlil & Statistika</h4>
             <button id="btn-refresh-stats" class="btn btn-secondary btn-sm" style="padding: 5px 10px; font-size: 0.75rem;">
-              <i class="fa-solid fa-arrows-rotate"></i> Yangilash
+              <span>🔄</span> Yangilash
             </button>
           </div>
           
@@ -1102,7 +1158,7 @@
             <input type="text" id="admin-contest-prizes" class="form-input" placeholder="10,000,000 UZS + iPhone 15 Pro">
           </div>
           <div class="form-group">
-            <label><i class="fa-regular fa-clock" style="color: var(--primary-color);"></i> Konkurs Tugash Vaqti (24-soatlik tizim):</label>
+            <label><span>⏰</span> Konkurs Tugash Vaqti (24-soatlik tizim):</label>
             <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px;">
               <div>
                 <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 3px;">Sana:</span>
@@ -1157,11 +1213,11 @@
               </div>
             </div>
             <div style="font-size: 0.75rem; color: var(--primary-color); margin-top: 5px;">
-              <i class="fa-solid fa-circle-check"></i> O'zbekiston 24-soatlik tizimi (AM / PM siz)
+              <span>✅</span> O'zbekiston 24-soatlik tizimi (AM / PM siz)
             </div>
           </div>
           <button id="btn-save-contest" class="btn btn-primary" style="margin-top: 10px; width: 100%;">
-            <i class="fa-solid fa-circle-check"></i> Konkurs Ma'lumotlarini Saqlash
+            <span>💾</span> Konkurs Ma'lumotlarini Saqlash
           </button>
         </div>
 
@@ -1171,22 +1227,22 @@
           <div style="background: rgba(197, 255, 0, 0.05); border: 1px solid rgba(197, 255, 0, 0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-bullhorn" style="color: var(--primary-color); font-size: 1.15rem;"></i>
+                <span style="font-size: 1.15rem;">📢</span>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #fff; font-weight: 700;">📢 G'oliblar E'lon Qilinadigan Kanal</h4>
               </div>
               <span id="badge-winner-channel-active" class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-size: 0.75rem; border: 1px solid var(--primary-color); display: none;">
-                <i class="fa-solid fa-circle-check"></i> Faol
+                <span>✅</span> Faol
               </span>
             </div>
             <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
-              Konkurs g'oliblari aniqlanganda (<i class="fa-solid fa-dice-five"></i> Random), natijalar avtomatik ravishda ushbu tanlangan Telegram kanaliga rasmiy post ko'rinishida yuboriladi.
+              Konkurs g'oliblari aniqlanganda (🎲 Random), natijalar avtomatik ravishda ushbu tanlangan Telegram kanaliga rasmiy post ko'rinishida yuboriladi.
             </p>
             <div style="display: flex; gap: 8px; align-items: center;">
               <select id="admin-winner-channel-select" class="form-input" style="flex: 1; margin-bottom: 0; background: var(--card-bg); color: #fff; font-size: 0.85rem;">
                 <option value="">-- Tanlanmagan (Kanalga e'lon yuborilmaydi) --</option>
               </select>
               <button id="btn-save-winner-channel" class="btn btn-primary btn-sm" style="width: auto; padding: 10px 16px; white-space: nowrap; font-size: 0.82rem;">
-                <i class="fa-solid fa-check"></i> Saqlash
+                <span>💾</span> Saqlash
               </button>
             </div>
             <div id="admin-winner-channel-info" style="font-size: 0.75rem; color: var(--primary-color); margin-top: 8px; display: none;"></div>
@@ -1209,7 +1265,7 @@
             <label id="lbl-sponsor-channel-id">✈️ Telegram Username yoki ID:</label>
             <input type="text" id="admin-sponsor-channel-id" class="form-input" placeholder="@peexell_official yoki -100...">
             <small id="hint-sponsor-channel-id" style="display: block; font-size: 0.74rem; color: var(--text-secondary); margin-top: 3px;">
-              <i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> Bot ushbu kanalda administrator bo'lishi shart!
+              <span>ℹ️</span> Bot ushbu kanalda administrator bo'lishi shart!
             </small>
           </div>
           <div class="form-group">
@@ -1230,7 +1286,7 @@
             </small>
           </div>
           <button id="btn-add-sponsor" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
-            <i class="fa-solid fa-circle-plus"></i> Sponsor Qo'shish
+            <span>➕</span> Sponsor Qo'shish
           </button>
 
           <div style="border-top: 1px solid var(--card-border); padding-top: 14px; margin-top: 18px;">
@@ -1251,7 +1307,7 @@
           <div style="display: flex; gap: 8px; margin-bottom: 14px; align-items: center; width: 100%;">
             <input type="text" id="admin-user-search-input" class="form-input" placeholder="ID (masalan: 12345678) yoki @username..." style="flex: 1; min-width: 0; width: auto; margin-bottom: 0; height: 46px; padding: 10px 14px; box-sizing: border-box;">
             <button id="btn-search-user" class="btn btn-primary" style="width: 52px; min-width: 52px; height: 46px; padding: 0; margin: 0; flex-shrink: 0; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;">
-              <i class="fa-solid fa-magnifying-glass" style="font-size: 1.05rem;"></i>
+              <span style="font-size: 1.1rem;">🔍</span>
             </button>
           </div>
 
@@ -1280,7 +1336,7 @@
           </div>
 
           <div id="admin-winners-channel-hint" style="margin-top: 10px; margin-bottom: 12px; padding: 10px 12px; background: rgba(197, 255, 0, 0.06); border: 1px dashed rgba(197, 255, 0, 0.3); border-radius: 8px; font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-bullhorn" style="color: var(--primary-color); font-size: 1.05rem;"></i>
+            <span style="font-size: 1.05rem;">📢</span>
             <div>
               E'lon qilinadigan rasmiy kanal: <b id="winners-target-channel-label" style="color: var(--primary-color);">Tanlanmagan</b>
               <div style="font-size: 0.71rem; color: var(--text-muted); margin-top: 2px;">(Sponsorlar bo'limidan istalgan Telegram kanalni belgilashingiz mumkin)</div>
@@ -1289,10 +1345,10 @@
 
           <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button id="btn-pick-winners" class="btn btn-cyan" style="flex: 2; width: auto;">
-              <i class="fa-solid fa-dice-five"></i> G'oliblarni Aniqlash (Random)
+              <span>🎲</span> G'oliblarni Aniqlash (Random)
             </button>
             <button id="btn-clear-winners" class="btn btn-secondary btn-sm" style="flex: 1; border-color: rgba(255,255,255,0.2);">
-              <i class="fa-solid fa-rotate-left"></i> Tozalash
+              <span>🔄</span> Tozalash
             </button>
           </div>
 
@@ -1311,11 +1367,11 @@
           </div>
           <!-- Gallery Media Upload (Photo or Video) -->
           <div class="form-group">
-            <label><i class="fa-solid fa-photo-film" style="color: var(--primary-color);"></i> Rasm yoki Video (Galereyadan tanlash):</label>
+            <label><span>🖼️</span> Rasm yoki Video (Galereyadan tanlash):</label>
             <input type="file" id="admin-broadcast-file" accept="image/*,video/*" style="display: none;">
 
             <div id="admin-media-upload-area" style="border: 2px dashed rgba(197, 255, 0, 0.4); border-radius: 12px; padding: 16px 12px; text-align: center; background: rgba(197, 255, 0, 0.03); cursor: pointer; transition: all 0.25s ease;">
-              <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--primary-color); margin-bottom: 6px;"></i>
+              <div style="font-size: 2rem; margin-bottom: 6px;">☁️</div>
               <div style="font-weight: 700; font-size: 0.88rem; color: #fff;">Galereyadan Rasm yoki Video Tanlash</div>
               <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 4px;">JPG, PNG, MP4, MOV (Galereya yoki fayllardan tanlang)</div>
             </div>
@@ -1329,7 +1385,7 @@
                   <div id="admin-media-info" style="font-size: 0.74rem; color: var(--primary-color); font-weight: 600; margin-top: 2px;"></div>
                 </div>
                 <button type="button" id="btn-remove-broadcast-media" class="btn btn-sm" style="background: rgba(255, 59, 48, 0.2); color: var(--danger-color); border: 1px solid var(--danger-color); padding: 5px 10px; font-size: 0.74rem;">
-                  <i class="fa-solid fa-trash"></i>
+                  <span>🗑️</span>
                 </button>
               </div>
             </div>
@@ -1350,7 +1406,7 @@
             </div>
           </div>
           <button id="btn-send-broadcast" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
-            <i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)
+            <span>📤</span> Barchaga Yuborish (Broadcast)
           </button>
         </div>
 
@@ -1362,10 +1418,10 @@
           </p>
           <div style="display: flex; gap: 10px; flex-direction: column; margin-bottom: 18px;">
             <button id="btn-reset-tickets" class="btn btn-secondary btn-sm" style="background: rgba(255, 59, 48, 0.15); border: 1px solid var(--danger-color); color: var(--danger-color); width: 100%;">
-              <i class="fa-solid fa-trash-can"></i> Barcha Biletlarni Nolga Tushirish
+              <span>🗑️</span> Barcha Biletlarni Nolga Tushirish
             </button>
             <button id="btn-clear-users" class="btn btn-secondary btn-sm" style="background: rgba(255, 59, 48, 0.25); border: 1px solid var(--danger-color); color: #fff; width: 100%;">
-              <i class="fa-solid fa-user-slash"></i> Barcha Foydalanuvchi Ma'lumotlarini Tozalash (Reset All)
+              <span>🧹</span> Barcha Foydalanuvchi Ma'lumotlarini Tozalash (Reset All)
             </button>
           </div>
 
@@ -1373,10 +1429,10 @@
             <h4 style="margin-bottom: 10px; font-size: 0.95rem;">📊 Ma'lumotlarni Botga Yuborish</h4>
             <div style="display: flex; gap: 10px;">
               <button id="btn-export-csv" class="btn btn-secondary btn-sm" style="flex: 1;">
-                <i class="fa-solid fa-file-arrow-down"></i> CSV Botga Yuborish
+                <span>📥</span> CSV Botga Yuborish
               </button>
               <button id="btn-export-json" class="btn btn-secondary btn-sm" style="flex: 1;">
-                <i class="fa-solid fa-code"></i> JSON Botga Yuborish
+                <span>💻</span> JSON Botga Yuborish
               </button>
             </div>
           </div>
@@ -1386,35 +1442,35 @@
     </section>
 
     <!-- FOOTER WITH PRIVACY POLICY & TERMS OF SERVICE LINKS FOR GOOGLE OAUTH VERIFICATION -->
-    <footer style="text-align: center; padding: 20px 10px 95px 10px; font-size: 0.82rem; color: var(--text-secondary); border-top: 1px solid var(--card-border); margin-top: 25px;">
+    <footer class="app-footer">
       <p>© 2026 PEEXELL Contest Bot. Barcha huquqlar himoyalangan.</p>
-      <div style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
-        <a href="/privacy.html" target="_blank" style="color: var(--primary-color); text-decoration: underline; font-weight: 600;">Maxfiylik Siyosati (Privacy Policy)</a>
+      <div class="app-footer-links">
+        <a href="/privacy.html" target="_blank">Maxfiylik Siyosati (Privacy Policy)</a>
         <span style="color: var(--card-border);">|</span>
-        <a href="/terms.html" target="_blank" style="color: var(--primary-color); text-decoration: underline; font-weight: 600;">Xizmat Ko'rsatish Shartlari (Terms of Service)</a>
+        <a href="/terms.html" target="_blank">Xizmat Ko'rsatish Shartlari (Terms of Service)</a>
       </div>
     </footer>
 
     <!-- STICKY BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
       <button class="nav-item active" data-tab="tab-contest">
-        <i class="fa-solid fa-bolt icon"></i>
+        <span class="nav-icon-3d">⚡</span>
         <span>Konkurs</span>
       </button>
       <button class="nav-item" data-tab="tab-friends">
-        <i class="fa-solid fa-user-plus icon"></i>
+        <span class="nav-icon-3d">👥</span>
         <span>Do'stlar</span>
       </button>
       <button class="nav-item" data-tab="tab-leaderboard">
-        <i class="fa-solid fa-trophy icon"></i>
+        <span class="nav-icon-3d">🏆</span>
         <span>Reyting</span>
       </button>
       <button class="nav-item" data-tab="tab-profile">
-        <i class="fa-solid fa-user icon"></i>
+        <span class="nav-icon-3d">👤</span>
         <span>Profil</span>
       </button>
       <button id="nav-item-admin" class="nav-item" data-tab="tab-admin" style="display: none;">
-        <i class="fa-solid fa-sliders icon"></i>
+        <span class="nav-icon-3d">⚙️</span>
         <span>Admin</span>
       </button>
     </nav>
@@ -1434,16 +1490,16 @@
           Google xavfsizlik qoidalariga ko'ra, tasdiqlash sahifasi <b>Chrome yoki Safari</b> brauzerida ochilishi kerak.
         </p>
         <div id="yt-modal-bot-status" style="display: none; background: rgba(197, 255, 0, 0.12); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 10px; border-radius: 8px; font-size: 0.8rem; margin-top: 8px;">
-          <i class="fa-solid fa-paper-plane"></i> Havola shuningdek bot chatiga ham yuborildi!
+          <span>✈️</span> Havola shuningdek bot chatiga ham yuborildi!
         </div>
       </div>
       
       <div style="display: flex; flex-direction: column; gap: 10px;">
         <a id="btn-yt-modal-proceed" href="#" target="_blank" class="btn btn-primary" style="display: block; width: 100%; padding: 13px; font-weight: 800; border-radius: 10px; text-align: center; text-decoration: none; font-size: 0.95rem;">
-          <i class="fa-brands fa-chrome"></i> Brauzerda Ochish (Chrome/Safari)
+          <span>🌐</span> Brauzerda Ochish (Chrome/Safari)
         </a>
         <button id="btn-yt-modal-check-done" class="btn btn-secondary" style="width: 100%; padding: 11px; font-weight: 700; border-radius: 10px;">
-          <i class="fa-solid fa-arrows-rotate"></i> Brauzerda tasdiqladim, tekshirish
+          <span>🔄</span> Brauzerda tasdiqladim, tekshirish
         </button>
         <button id="btn-yt-modal-close" class="btn btn-sm" style="background: transparent; color: #888; border: none; padding: 6px; font-size: 0.85rem; margin-top: 2px;">
           Yopish
@@ -1453,6 +1509,6 @@
   </div>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_08"></script>
+  <script src="js/app.js?v=20260925_09"></script>
 </body>
 </html>
