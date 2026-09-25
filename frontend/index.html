@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_07">
+  <link rel="stylesheet" href="css/style.css?v=20260925_08">
 
   <style>
     /* ==========================================================================
@@ -618,12 +618,40 @@
       transform: scale(0.97) !important;
       box-shadow: 0 3px 14px rgba(197, 255, 0, 0.4) !important;
     }
-    .participate-rocket {
-      animation: rocketHover 1.5s infinite ease-in-out;
+    .btn-colored-rocket {
+      font-size: 1.45rem !important;
+      display: inline-block !important;
+      line-height: 1 !important;
+      filter: drop-shadow(0 2px 6px rgba(255, 120, 0, 0.6)) !important;
+      animation: rocketHover 1.5s infinite ease-in-out !important;
     }
     @keyframes rocketHover {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px) scale(1.1); }
+      50% { transform: translateY(-4px) scale(1.12); }
+    }
+    .prize-3d-emoji {
+      font-size: 2.25rem !important;
+      line-height: 1 !important;
+      display: inline-block !important;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.7)) !important;
+    }
+    .ticket-3d-icon {
+      font-size: 1.15rem !important;
+      display: inline-block !important;
+      filter: drop-shadow(0 0 8px rgba(197, 255, 0, 0.6)) !important;
+      animation: ticketWiggle 2.5s infinite ease-in-out !important;
+    }
+    .invite-3d-icon {
+      font-size: 1.05rem !important;
+      display: inline-block !important;
+      margin-right: 2px !important;
+    }
+    .title-emoji {
+      font-size: 1.3rem !important;
+      line-height: 1 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5)) !important;
     }
 
     /* Task Item Card */
@@ -685,7 +713,7 @@
       </div>
       <div class="user-badge-header">
         <div class="tickets-pill-vip">
-          <i class="fa-solid fa-ticket ticket-shine-icon"></i>
+          <span class="ticket-3d-icon">🎟️</span>
           <span id="header-tickets-count">0</span> Bilet
         </div>
       </div>
@@ -703,7 +731,7 @@
               <span class="live-dot"></span> LIVE KONKURS
             </div>
             <div class="pxl-prize-tag">
-              <i class="fa-solid fa-fire"></i> 10,000,000+ UZS
+              🔥 10,000,000+ UZS
             </div>
           </div>
           <h2 id="contest-title" class="pxl-hero-title">PEEXELL GRAND KONKURS 2026</h2>
@@ -712,10 +740,10 @@
           </p>
           <div class="pxl-hero-stats">
             <div class="hero-stat-chip">
-              <i class="fa-solid fa-gem" style="color: #FFD700;"></i> 3 ta VIP Sovrin
+              💎 3 ta VIP Sovrin
             </div>
             <div class="hero-stat-chip">
-              <i class="fa-solid fa-shield-halved" style="color: var(--primary-color);"></i> 100% Shaffof
+              🛡️ 100% Shaffof
             </div>
           </div>
         </div>
@@ -725,8 +753,7 @@
       <div class="pxl-timer-card">
         <div class="pxl-timer-header">
           <div class="timer-title-box">
-            <i class="fa-regular fa-clock timer-clock-pulse"></i>
-            <span>Konkurs yakunlanishiga qoldi:</span>
+            ⏰ <span>Konkurs yakunlanishiga qoldi:</span>
           </div>
         </div>
         <div class="pxl-glass-timer">
@@ -759,9 +786,7 @@
       <!-- 3. VIP Prize Showcase (3D Luxury Cards) -->
       <div class="pxl-section-block">
         <div class="pxl-section-title">
-          <div class="title-icon-circle gold-circle">
-            <i class="fa-solid fa-trophy"></i>
-          </div>
+          <span class="title-emoji">🏆</span>
           <span>Bosh Sovrinlar Jamg'armasi</span>
         </div>
         
@@ -771,7 +796,7 @@
             <div class="prize-shine"></div>
             <div class="prize-card-badge">👑 1-O'RIN</div>
             <div class="prize-icon-wrap gold-aura">
-              <i class="fa-solid fa-mobile-screen-button"></i>
+              <span class="prize-3d-emoji">📱</span>
             </div>
             <div class="prize-card-name">iPhone 15 Pro</div>
             <div class="prize-card-tag">Titanium Gold</div>
@@ -782,7 +807,7 @@
             <div class="prize-shine"></div>
             <div class="prize-card-badge">⚡ 2-O'RIN</div>
             <div class="prize-icon-wrap lime-aura">
-              <i class="fa-solid fa-money-bill-trend-up"></i>
+              <span class="prize-3d-emoji">💵</span>
             </div>
             <div class="prize-card-name">10,000,000</div>
             <div class="prize-card-tag">UZS NAQD</div>
@@ -793,7 +818,7 @@
             <div class="prize-shine"></div>
             <div class="prize-card-badge">⭐️ 3-O'RIN</div>
             <div class="prize-icon-wrap cyan-aura">
-              <i class="fa-solid fa-star"></i>
+              <span class="prize-3d-emoji">🌟</span>
             </div>
             <div class="prize-card-name">5x TG Premium</div>
             <div class="prize-card-tag">Yillik Obuna</div>
@@ -808,14 +833,14 @@
         <div class="chance-card-top">
           <div class="chance-title-group">
             <div class="chance-main-title">
-              <i class="fa-solid fa-bolt" style="color: var(--primary-color);"></i> Mening Imkoniyatim
+              ⚡ Mening Imkoniyatim
             </div>
             <div class="chance-ticket-status">
               Sizda: <span id="chance-tickets-num" class="ticket-status-pill">0 ta bilet</span>
             </div>
           </div>
           <button id="btn-quick-invite" class="btn-invite-glow">
-            <i class="fa-solid fa-user-plus"></i> Taklif qilish
+            <span class="invite-3d-icon">👥</span> Taklif qilish
           </button>
         </div>
         <div class="chance-progress-wrapper">
@@ -824,7 +849,7 @@
           </div>
         </div>
         <div class="chance-progress-labels">
-          <span><i class="fa-regular fa-circle-dot"></i> Boshlang'ich</span>
+          <span>🎯 Boshlang'ich</span>
           <span id="chance-percent-label" class="chance-highlight">Imkoniyat: 15%</span>
           <span>Maksimal (100%) 🔥</span>
         </div>
@@ -833,31 +858,27 @@
       <!-- 5. Sponsor Vazifalar (Majburiy Obuna) -->
       <div class="pxl-section-block">
         <div class="pxl-section-title">
-          <div class="title-icon-circle lime-circle">
-            <i class="fa-solid fa-shield-halved"></i>
-          </div>
+          <span class="title-emoji">🎯</span>
           <span>Homiy Kanallar & Vazifalar</span>
         </div>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.45;">
-          Barcha homiylarga a'zo bo'ling va pastdagi <b>🚀 Qatnashish</b> tugmasini bosib bilet oling:
+          Barcha homiylarga a'zo bo'ling va pastdagi <b>Qatnashish</b> tugmasini bosib bilet oling:
         </p>
 
         <div id="tasks-container">
           <!-- Dynamic Task List items injected by JS -->
         </div>
 
-        <!-- Big Glow Participate Button -->
+        <!-- Big Glow Participate Button (NO BLACK ROCKET - ONLY VIBRANT 3D ROCKET) -->
         <button id="btn-participate-contest" class="btn btn-participate-glow">
-          <i class="fa-solid fa-rocket participate-rocket"></i> QATNASHISH
+          <span class="btn-colored-rocket">🚀</span> QATNASHISH
         </button>
       </div>
 
       <!-- 6. Konkurs G'oliblari -->
       <div class="pxl-section-block" style="margin-bottom: 24px;">
         <div class="pxl-section-title">
-          <div class="title-icon-circle cyan-circle">
-            <i class="fa-solid fa-award"></i>
-          </div>
+          <span class="title-emoji">🎖️</span>
           <span>Konkurs G'oliblari</span>
         </div>
         <div id="public-winners-list" style="margin-top: 10px;">
@@ -1432,6 +1453,6 @@
   </div>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_07"></script>
+  <script src="js/app.js?v=20260925_08"></script>
 </body>
 </html>

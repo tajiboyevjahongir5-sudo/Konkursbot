@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
               </div>
               <div class="task-reward-badge">
-                <i class="fa-solid fa-ticket"></i> +1 Bilet
+                <span style="font-size: 0.85rem;">🎟️</span> +1 Bilet
               </div>
             </div>
             <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">

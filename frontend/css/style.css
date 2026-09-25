@@ -813,13 +813,45 @@ body::before {
   box-shadow: 0 3px 14px rgba(197, 255, 0, 0.4) !important;
 }
 
-.participate-rocket {
-  animation: rocketHover 1.5s infinite ease-in-out;
+.btn-colored-rocket {
+  font-size: 1.45rem !important;
+  display: inline-block !important;
+  line-height: 1 !important;
+  filter: drop-shadow(0 2px 6px rgba(255, 120, 0, 0.6)) !important;
+  animation: rocketHover 1.5s infinite ease-in-out !important;
 }
 
 @keyframes rocketHover {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px) scale(1.1); }
+  50% { transform: translateY(-4px) scale(1.12); }
+}
+
+.prize-3d-emoji {
+  font-size: 2.25rem !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.7)) !important;
+}
+
+.ticket-3d-icon {
+  font-size: 1.15rem !important;
+  display: inline-block !important;
+  filter: drop-shadow(0 0 8px rgba(197, 255, 0, 0.6)) !important;
+  animation: ticketWiggle 2.5s infinite ease-in-out !important;
+}
+
+.invite-3d-icon {
+  font-size: 1.05rem !important;
+  display: inline-block !important;
+  margin-right: 2px !important;
+}
+
+.title-emoji {
+  font-size: 1.3rem !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5)) !important;
 }
 
 /* Task Item Card */
