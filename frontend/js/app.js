@@ -112,9 +112,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateNavVisibility(targetTab) {
     const bottomNav = document.querySelector(".bottom-nav");
-    if (!bottomNav) return;
-    bottomNav.style.display = "flex";
+    if (bottomNav) bottomNav.style.display = "flex";
     document.body.style.paddingBottom = "";
+
+    // Hide header card on all tabs except Konkurs (main page)
+    const headerCard = document.querySelector(".header-card");
+    if (headerCard) {
+      headerCard.style.display = (targetTab === "tab-contest") ? "flex" : "none";
+    }
   }
 
   navItems.forEach(item => {
@@ -139,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (targetTab === "tab-leaderboard") {
         loadLeaderboard();
       }
-      if (targetTab === "tab-profile" || targetTab === "tab-friends") {
+      if (targetTab === "tab-profile") {
         loadUserData();
       }
       if (targetTab === "tab-admin") {
@@ -227,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="pxl-ticket-notch notch-right"></div>
                 <div class="pxl-ticket-header">
                   <span class="pxl-ticket-icon">🎟️</span>
-                  <span class="pxl-ticket-brand">PEEXELL</span>
+                  <span class="pxl-ticket-brand">HASAN PACKAGE</span>
                 </div>
                 <div class="pxl-ticket-number">${t.ticket_number}</div>
                 <div class="pxl-ticket-reason">${t.reason || 'Omadli Bilet'}</div>
@@ -238,15 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ticketsContainer.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px; grid-column: 1/-1;">Hozircha biletlaringiz yo\'q. Konkursda qatnashib bilet oling!</div>';
           }
         }
-
-        // Update Friends Tab elements
-        const rInput = document.getElementById("ref-link-input");
-        const rCount = document.getElementById("profile-ref-count");
-        const rTickets = document.getElementById("profile-ref-tickets");
-
-        if (rInput) rInput.value = currentUser.ref_link;
-        if (rCount) rCount.textContent = currentUser.referrals_count;
-        if (rTickets) rTickets.textContent = currentUser.tickets;
 
         // Update "Mening Imkoniyatim" Widget
         const cTickets = document.getElementById("chance-tickets-num");
@@ -271,15 +267,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.log("Could not load user data");
     }
-  }
-
-  // Quick invite button switch to Friends tab
-  const quickInviteBtn = document.getElementById("btn-quick-invite");
-  if (quickInviteBtn) {
-    quickInviteBtn.addEventListener("click", () => {
-      const friendsNav = document.querySelector('.nav-item[data-tab="tab-friends"]');
-      if (friendsNav) friendsNav.click();
-    });
   }
 
   async function loadContestData() {
@@ -739,39 +726,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       showToast("Nusxalashda xatolik!", "danger");
     }
-  }
-
-  const copyBtn = document.getElementById("btn-copy-ref");
-  if (copyBtn) {
-    copyBtn.addEventListener("click", () => {
-      const linkInput = document.getElementById("ref-link-input");
-      if (linkInput && linkInput.value) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(linkInput.value).then(() => {
-            showToast("Taklif havolasi nusxalandi! 🚀", "success");
-          }).catch(() => {
-            fallbackCopyText(linkInput.value);
-          });
-        } else {
-          fallbackCopyText(linkInput.value);
-        }
-      }
-    });
-  }
-
-  const shareBtn = document.getElementById("btn-share-ref");
-  if (shareBtn) {
-    shareBtn.addEventListener("click", () => {
-      const link = document.getElementById("ref-link-input").value;
-      const shareText = `🚀 PEEXELL GRAND KONKURSda ishtirok eting! 10,000,000 UZS va iPhone 15 Pro yutib oling!\n\nQuyidagi havola orqali kiring va +1 Bonus Bilet oling:`;
-      const fullShareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(shareText)}`;
-
-      if (tg && tg.openTelegramLink) {
-        tg.openTelegramLink(fullShareUrl);
-      } else {
-        window.open(fullShareUrl, '_blank');
-      }
-    });
   }
 
   // --- ADMIN PANEL ACTIONS ---
