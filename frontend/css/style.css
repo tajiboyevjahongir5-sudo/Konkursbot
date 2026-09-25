@@ -489,100 +489,93 @@ body::before {
   gap: 4px;
 }
 
-/* RIGHT 3D PORTAL VISUAL */
+/* RIGHT HERO PERSON / HOST VISUAL */
 .pxl-hero-right {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  width: 86px;
-  height: 86px;
-}
-
-.hero-3d-portal {
+  width: 116px;
   position: relative;
-  width: 80px;
-  height: 80px;
+}
+
+.hero-person-wrap {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  animation: heroPortalFloat 3s infinite ease-in-out;
+  justify-content: flex-end;
+  animation: heroPersonFloat 3.2s infinite ease-in-out;
 }
 
-@keyframes heroPortalFloat {
+@keyframes heroPersonFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  50% { transform: translateY(-6px); }
 }
 
-.portal-ring {
+.hero-person-glow {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border: 2px solid rgba(197, 255, 0, 0.65);
-  background: radial-gradient(circle, rgba(197, 255, 0, 0.22) 0%, rgba(0, 229, 255, 0.12) 50%, rgba(13, 16, 26, 0.8) 80%);
-  box-shadow: 0 0 20px rgba(197, 255, 0, 0.45), inset 0 0 14px rgba(0, 229, 255, 0.3);
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(197, 255, 0, 0.35) 0%, rgba(0, 229, 255, 0.22) 50%, transparent 75%);
+  filter: blur(14px);
+  pointer-events: none;
+  z-index: 1;
+  animation: personGlowPulse 2.8s infinite ease-in-out alternate;
 }
 
-.portal-core {
+@keyframes personGlowPulse {
+  0% { opacity: 0.6; transform: translateX(-50%) scale(0.92); }
+  100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+
+.hero-person-img {
   position: relative;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: auto;
+  max-width: 116px;
+  height: 132px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 12px rgba(197, 255, 0, 0.4));
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-.portal-main-icon {
-  font-size: 2.5rem;
-  line-height: 1;
-  display: inline-block;
-  filter: drop-shadow(0 4px 14px rgba(255, 215, 0, 0.65));
-  animation: trophyShine 2.5s infinite ease-in-out;
-}
-
-@keyframes trophyShine {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.08) rotate(3deg); }
-}
-
-.portal-sub-sparkle {
-  position: absolute;
-  line-height: 1;
-}
-
-.sparkle-1 {
-  top: -6px;
-  right: -6px;
-  font-size: 1.1rem;
-  animation: sparkleBlink 1.8s infinite ease-in-out;
-}
-
-.sparkle-2 {
-  bottom: -2px;
-  left: -8px;
-  font-size: 1.1rem;
-  animation: sparkleBlink 2.2s infinite ease-in-out reverse;
-}
-
-@keyframes sparkleBlink {
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-}
-
-.portal-badge {
+.hero-person-badge {
   position: absolute;
   bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, #C5FF00 0%, #00E5FF 100%);
-  color: #0a0b0d;
+  color: #08090c;
   font-size: 0.58rem;
   font-weight: 900;
-  letter-spacing: 0.5px;
-  padding: 2px 7px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 2px 8px;
   border-radius: 9999px;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7), 0 0 10px rgba(197, 255, 0, 0.4);
   z-index: 3;
+}
+
+@media (max-width: 360px) {
+  .pxl-hero-right {
+    width: 96px;
+  }
+  .hero-person-img {
+    max-width: 96px;
+    height: 112px;
+  }
+  .hero-person-glow {
+    width: 85px;
+    height: 85px;
+  }
 }
 
 /* 2. GLASS TIMER */

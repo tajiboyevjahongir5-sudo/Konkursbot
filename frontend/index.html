@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_10">
+  <link rel="stylesheet" href="css/style.css?v=20260925_11">
 
   <style>
     /* ==========================================================================
@@ -345,88 +345,86 @@
       align-items: center !important;
       gap: 4px !important;
     }
+    /* RIGHT HERO PERSON / HOST VISUAL */
     .pxl-hero-right {
       flex-shrink: 0 !important;
       display: flex !important;
-      align-items: center !important;
+      align-items: flex-end !important;
       justify-content: center !important;
-      width: 86px !important;
-      height: 86px !important;
-    }
-    .hero-3d-portal {
+      width: 116px !important;
       position: relative !important;
-      width: 80px !important;
-      height: 80px !important;
+    }
+    .hero-person-wrap {
+      position: relative !important;
       display: flex !important;
+      flex-direction: column !important;
       align-items: center !important;
-      justify-content: center !important;
-      animation: heroPortalFloat 3s infinite ease-in-out !important;
+      justify-content: flex-end !important;
+      animation: heroPersonFloat 3.2s infinite ease-in-out !important;
     }
-    @keyframes heroPortalFloat {
+    @keyframes heroPersonFloat {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-6px); }
     }
-    .portal-ring {
+    .hero-person-glow {
       position: absolute !important;
-      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+      width: 100px !important;
+      height: 100px !important;
       border-radius: 50% !important;
-      border: 2px solid rgba(197, 255, 0, 0.65) !important;
-      background: radial-gradient(circle, rgba(197, 255, 0, 0.22) 0%, rgba(0, 229, 255, 0.12) 50%, rgba(13, 16, 26, 0.8) 80%) !important;
-      box-shadow: 0 0 20px rgba(197, 255, 0, 0.45), inset 0 0 14px rgba(0, 229, 255, 0.3) !important;
+      top: 8% !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      background: radial-gradient(circle, rgba(197, 255, 0, 0.35) 0%, rgba(0, 229, 255, 0.22) 50%, transparent 75%) !important;
+      filter: blur(14px) !important;
+      pointer-events: none !important;
+      z-index: 1 !important;
+      animation: personGlowPulse 2.8s infinite ease-in-out alternate !important;
     }
-    .portal-core {
+    @keyframes personGlowPulse {
+      0% { opacity: 0.6; transform: translateX(-50%) scale(0.92); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+    }
+    .hero-person-img {
       position: relative !important;
       z-index: 2 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
+      width: auto !important;
+      max-width: 116px !important;
+      height: 132px !important;
+      object-fit: contain !important;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 12px rgba(197, 255, 0, 0.4)) !important;
+      display: block !important;
+      user-select: none !important;
+      -webkit-user-drag: none !important;
     }
-    .portal-main-icon {
-      font-size: 2.5rem !important;
-      line-height: 1 !important;
-      display: inline-block !important;
-      filter: drop-shadow(0 4px 14px rgba(255, 215, 0, 0.65)) !important;
-      animation: trophyShine 2.5s infinite ease-in-out !important;
-    }
-    @keyframes trophyShine {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.08) rotate(3deg); }
-    }
-    .portal-sub-sparkle {
-      position: absolute !important;
-      line-height: 1 !important;
-    }
-    .sparkle-1 {
-      top: -6px !important;
-      right: -6px !important;
-      font-size: 1.1rem !important;
-      animation: sparkleBlink 1.8s infinite ease-in-out !important;
-    }
-    .sparkle-2 {
-      bottom: -2px !important;
-      left: -8px !important;
-      font-size: 1.1rem !important;
-      animation: sparkleBlink 2.2s infinite ease-in-out reverse !important;
-    }
-    @keyframes sparkleBlink {
-      0%, 100% { opacity: 0.3; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-    .portal-badge {
+    .hero-person-badge {
       position: absolute !important;
       bottom: -6px !important;
       left: 50% !important;
       transform: translateX(-50%) !important;
       background: linear-gradient(135deg, #C5FF00 0%, #00E5FF 100%) !important;
-      color: #0a0b0d !important;
+      color: #08090c !important;
       font-size: 0.58rem !important;
       font-weight: 900 !important;
-      letter-spacing: 0.5px !important;
-      padding: 2px 7px !important;
+      letter-spacing: 0.6px !important;
+      text-transform: uppercase !important;
+      padding: 2px 8px !important;
       border-radius: 9999px !important;
       white-space: nowrap !important;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7), 0 0 10px rgba(197, 255, 0, 0.4) !important;
       z-index: 3 !important;
+    }
+    @media (max-width: 360px) {
+      .pxl-hero-right {
+        width: 96px !important;
+      }
+      .hero-person-img {
+        max-width: 96px !important;
+        height: 112px !important;
+      }
+      .hero-person-glow {
+        width: 85px !important;
+        height: 85px !important;
+      }
     }
 
     /* 2. GLASS TIMER */
@@ -938,14 +936,10 @@
             </div>
           </div>
           <div class="pxl-hero-right">
-            <div class="hero-3d-portal">
-              <div class="portal-ring"></div>
-              <div class="portal-core">
-                <span class="portal-main-icon">🏆</span>
-                <span class="portal-sub-sparkle sparkle-1">✨</span>
-                <span class="portal-sub-sparkle sparkle-2">🎁</span>
-              </div>
-              <div class="portal-badge">VIP 2026</div>
+            <div class="hero-person-wrap">
+              <div class="hero-person-glow"></div>
+              <img src="assets/alex_hero.png?v=20260925_11" alt="PEEXELL VIP Host" class="hero-person-img" loading="eager">
+              <div class="hero-person-badge">⚡ VIP HOST</div>
             </div>
           </div>
         </div>
@@ -1655,6 +1649,6 @@
   </div>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_10"></script>
+  <script src="js/app.js?v=20260925_11"></script>
 </body>
 </html>
