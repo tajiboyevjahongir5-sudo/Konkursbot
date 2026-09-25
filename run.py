@@ -25,7 +25,7 @@ if __name__ == "__main__":
     setup_env()
     port = int(os.getenv("PORT", 8000))
     print("=" * 60)
-    print(f"🚀 PEEXELL KONKURS TELEGRAM BOT & WEB APP ISHGATUSHMOQDA... Port: {port}")
+    print(f"🚀 HASAN PACKAGE KONKURS TELEGRAM BOT & WEB APP ISHGATUSHMOQDA... Port: {port}")
     print("=" * 60)
     
     uvicorn.run(

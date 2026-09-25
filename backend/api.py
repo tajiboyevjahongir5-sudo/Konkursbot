@@ -560,7 +560,7 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
 
     winners = await pick_random_winners(contest["id"], body.count, body.prizes)
 
-    contest_title = contest.get("title", "PEEXELL GRAND KONKURS") if contest else "PEEXELL GRAND KONKURS"
+    contest_title = contest.get("title", "HASAN PACKAGE KONKURS") if contest else "HASAN PACKAGE KONKURS"
 
     # Auto-notify winners via Telegram bot with upgraded VIP celebration message
     if bot and winners:
@@ -581,7 +581,7 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
                     f"{t_str}\n\n"
                     f"📞 <i>Sovrinni qabul qilib olish tafsilotlari bo'yicha tez orada rasmiy adminimiz siz bilan shaxsiy xabar orqali bog'lanadi.</i>\n"
                     f"━━━━━━━━━━━━━━━━━━━━\n"
-                    f"🚀 <b>Ishtirokingiz uchun tashakkur! PEEXELL bilan doim bir qadam oldinda bo'ling!</b>"
+                    f"🚀 <b>Ishtirokingiz uchun tashakkur! HASAN PACKAGE bilan doim bir qadam oldinda bo'ling!</b>"
                 )
                 await bot.send_message(chat_id=w["user_id"], text=msg, parse_mode="HTML")
                 await asyncio.sleep(0.05)
@@ -608,7 +608,7 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
 
             # Build aesthetically upgraded, VIP winner announcement post
             lines = [
-                "🏆 <b>PEEXELL GRAND KONKURS</b> 🏆",
+                "🏆 <b>HASAN PACKAGE KONKURS</b> 🏆",
                 "🎉 <b>RASMIY G'OLIBLAR E'LON QILINDI!</b> 🎉",
                 "━━━━━━━━━━━━━━━━━━━━",
                 "",
@@ -676,7 +676,7 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
 
             kb_buttons = []
             if settings.clean_webapp_url:
-                kb_buttons.append([InlineKeyboardButton(text="🚀 PEEXELL Web App ni Ochish", url=settings.clean_webapp_url)])
+                kb_buttons.append([InlineKeyboardButton(text="🚀 HASAN PACKAGE Web App ni Ochish", url=settings.clean_webapp_url)])
             kb_buttons.append([
                 InlineKeyboardButton(text="🤖 Konkurs Boti", url=f"https://t.me/{bot_username}"),
                 InlineKeyboardButton(text="👥 Do'stlarni Taklif Qilish", url=f"https://t.me/{bot_username}?start=share")
@@ -910,7 +910,7 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
         async with db.execute("SELECT id, title FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c0:
             row_c = await c0.fetchone()
             contest_id = row_c["id"] if row_c else 1
-            contest_name = row_c["title"] if row_c else "PEEXELL GRAND KONKURS"
+            contest_name = row_c["title"] if row_c else "HASAN PACKAGE KONKURS"
 
         # Single fast query returning user info, aggregated ticket numbers, ticket count, and referral count
         async with db.execute("""
@@ -944,7 +944,7 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
         
         # Professional Report Header
         export_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        writer.writerow(["PEEXELL KONKURS RASMIY HISOBOTI"])
+        writer.writerow(["HASAN PACKAGE KONKURS RASMIY HISOBOTI"])
         writer.writerow(["Konkurs Nomi:", contest_name])
         writer.writerow(["Eksport Sanasi:", export_time])
         writer.writerow(["Jami Qatnashchilar:", f"{len(users_data)} nafar"])
@@ -983,7 +983,7 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
             ])
 
         csv_data = output.getvalue().encode('utf-8-sig')
-        filename = f"peexell_konkurs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        filename = f"hasan_package_konkurs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
 
         from backend.main import get_bot_instance
         from aiogram.types import BufferedInputFile
@@ -1000,7 +1000,7 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
                 active_users = sum(1 for u in users_data if u.get("ticket_count", 0) > 0)
 
                 caption = (
-                    f"📊 <b>PEEXELL KONKURS RASMIY HISOBOTI</b>\n"
+                    f"📊 <b>HASAN PACKAGE KONKURS RASMIY HISOBOTI</b>\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
                     f"🏆 <b>Konkurs:</b> {contest_name}\n"
                     f"📅 <b>Sana:</b> {export_time}\n"
@@ -1091,14 +1091,14 @@ async def admin_export(format: str = Query("csv"), admin: dict = Depends(get_cur
     if bot and admin_id:
         try:
             json_bytes = json.dumps(json_result, ensure_ascii=False, indent=2).encode('utf-8')
-            filename = f"peexell_konkurs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            filename = f"hasan_package_konkurs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             doc = BufferedInputFile(json_bytes, filename=filename)
 
             total_tickets = sum(u.get("ticket_count", 0) for u in users_data)
             total_refs = sum(u.get("referrals_count", 0) for u in users_data)
 
             caption = (
-                f"💻 <b>PEEXELL KONKURS BAZA HISOBOTI (JSON)</b>\n"
+                f"💻 <b>HASAN PACKAGE KONKURS BAZA HISOBOTI (JSON)</b>\n"
                 f"━━━━━━━━━━━━━━━━━━━━━━\n"
                 f"🏆 <b>Konkurs:</b> {contest_name}\n"
                 f"📅 <b>Sana:</b> {export_time}\n"

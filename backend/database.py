@@ -194,7 +194,7 @@ async def init_db():
                     INSERT INTO contests (title, description, prize_pool, end_time, is_active)
                     VALUES (?, ?, ?, ?, 1)
                 """, (
-                    "PEEXELL GRAND KONKURS 2026",
+                    "HASAN PACKAGE KONKURS 2026",
                     "Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'ling! Har bir bilet g'olib bo'lish imkoniyatini oshiradi.",
                     "10,000,000 UZS + iPhone 15 Pro + 5x Telegram Premium",
                     default_end
@@ -524,7 +524,7 @@ async def get_active_contest() -> Dict[str, Any]:
                 INSERT INTO contests (title, description, prize_pool, end_time, is_active)
                 VALUES (?, ?, ?, ?, 1)
             """, (
-                "PEEXELL GRAND KONKURS 2026",
+                "HASAN PACKAGE KONKURS 2026",
                 "Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'ling!",
                 "10,000,000 UZS + iPhone 15 Pro + 5x Telegram Premium",
                 default_end

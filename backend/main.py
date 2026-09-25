@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
                 from aiogram.types import MenuButtonWebApp, WebAppInfo
                 await bot_instance.set_chat_menu_button(
                     menu_button=MenuButtonWebApp(
-                        text="🚀 PEEXELL Web App",
+                        text="🚀 HASAN PACKAGE Web App",
                         web_app=WebAppInfo(url=settings.clean_webapp_url)
                     )
                 )
@@ -81,8 +81,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="PEEXELL KONKURS Web App API",
-    description="Telegram Mini App and Bot backend for PEEXELL Contest",
+    title="HASAN PACKAGE KONKURS Web App API",
+    description="Telegram Mini App and Bot backend for HASAN PACKAGE Contest",
     version="1.0.0",
     lifespan=lifespan
 )

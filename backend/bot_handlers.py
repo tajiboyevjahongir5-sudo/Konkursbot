@@ -15,7 +15,7 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🚀 PEEXELL Web App ↗",
+                    text="🚀 HASAN PACKAGE Web App ↗",
                     web_app=WebAppInfo(url=web_app_url)
                 )
             ]
@@ -64,7 +64,7 @@ async def start_handler(message: Message):
     phone = db_user.get("phone_number")
     if not is_uzb_phone(phone):
         verify_text = (
-            f"⚡ **PEEXELL KONKURS BOT** ⚡\n\n"
+            f"⚡ **HASAN PACKAGE KONKURS BOT** ⚡\n\n"
             f"Salom, **{user.first_name}**! 👋\n\n"
             f"🇺🇿 **DIQQAT: TELEFON RAQAMNI TASDIQLASH MAJBURIY!**\n"
             f"Konkursimizda faqat **O'zbekiston (`+998`)** telefon raqamiga ega foydalanuvchilar qatnashishi mumkin.\n\n"
@@ -78,9 +78,9 @@ async def start_handler(message: Message):
         return
 
     welcome_text = (
-        f"⚡ **PEEXELL KONKURS BOT** ⚡\n\n"
+        f"⚡ **HASAN PACKAGE KONKURS BOT** ⚡\n\n"
         f"Salom, **{user.first_name}**! 👋\n"
-        f"Konkursda qatnashish va bilet olish uchun pastdagi **🚀 PEEXELL Web App** tugmasini bosing:"
+        f"Konkursda qatnashish va bilet olish uchun pastdagi **🚀 HASAN PACKAGE Web App** tugmasini bosing:"
     )
 
     # Clear lingering bottom reply keyboard
@@ -95,7 +95,7 @@ async def start_handler(message: Message):
         await message.bot.set_chat_menu_button(
             chat_id=message.chat.id,
             menu_button=MenuButtonWebApp(
-                text="🚀 PEEXELL Web App",
+                text="🚀 HASAN PACKAGE Web App",
                 web_app=WebAppInfo(url=settings.clean_webapp_url)
             )
         )
@@ -137,7 +137,7 @@ async def contact_handler(message: Message):
     clean_phone = phone if phone.startswith("+") else f"+{phone}"
     success_text = (
         f"✅ **Telefon raqamingiz muvaffaqiyatli tasdiqlandi! ({clean_phone})** 🎉\n\n"
-        f"Endi konkursda qatnashishingiz mumkin! Pastdagi **🚀 PEEXELL Web App** tugmasini bosing:"
+        f"Endi konkursda qatnashishingiz mumkin! Pastdagi **🚀 HASAN PACKAGE Web App** tugmasini bosing:"
     )
 
     # Clear contact keyboard
@@ -152,7 +152,7 @@ async def contact_handler(message: Message):
         await message.bot.set_chat_menu_button(
             chat_id=message.chat.id,
             menu_button=MenuButtonWebApp(
-                text="🚀 PEEXELL Web App",
+                text="🚀 HASAN PACKAGE Web App",
                 web_app=WebAppInfo(url=settings.clean_webapp_url)
             )
         )
@@ -185,7 +185,7 @@ async def admin_handler(message: Message):
     )
 
     admin_text = (
-        f"⚙️ **PEEXELL ADMIN PANEL** ⚙️\n\n"
+        f"⚙️ **HASAN PACKAGE ADMIN PANEL** ⚙️\n\n"
         f"Siz admin huquqiga egasiz!\n"
         f"Admin panelini bevosita ochish uchun pastdagi tugmani bosing:"
     )
