@@ -48,33 +48,38 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20260925_14">
+  <link rel="stylesheet" href="css/style.css?v=20260925_15">
 
   <style>
     /* ==========================================================================
        ULTRA CYBER-PREMIUM VIP 3D STYLES (INLINE TO PREVENT ANY IOS CACHING)
        ========================================================================== */
 
-    /* GLOBAL SCROLL & ATMOSPHERIC CYBER BACKGROUND (STRICT HORIZONTAL LOCK) */
-    html, body {
+    /* GLOBAL SCROLL & ATMOSPHERIC CYBER BACKGROUND */
+    html {
       width: 100% !important;
-      max-width: 100% !important;
+      min-height: 100% !important;
       overflow-x: hidden !important;
-      position: relative !important;
-      touch-action: pan-y !important;
-      overscroll-behavior-x: none !important;
+      overflow-y: scroll !important; /* Critical for iOS Safari vertical momentum scroll */
       -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior-y: auto !important;
+      overscroll-behavior-x: none !important;
     }
 
     body {
-      padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+      width: 100% !important;
+      min-height: 100% !important;
+      overflow-x: hidden !important;
+      overflow-y: visible !important;
+      position: relative !important;
+      -webkit-overflow-scrolling: touch !important;
+      padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)) !important;
       background-color: #0c0e14 !important;
       background-image: 
         radial-gradient(ellipse 80% 40% at 50% -10%, rgba(197, 255, 0, 0.12) 0%, transparent 70%),
         radial-gradient(circle 320px at 92% 16%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
         radial-gradient(circle 280px at 8% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 60%) !important;
       background-attachment: fixed !important;
-      overflow-x: hidden !important;
     }
     body::before {
       content: "" !important;
@@ -93,7 +98,6 @@
       width: 100% !important;
       max-width: 540px !important;
       margin: 0 auto !important;
-      overflow-x: hidden !important;
       box-sizing: border-box !important;
       padding: 12px 16px 0 16px !important;
       padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + 8px) !important;
@@ -105,7 +109,6 @@
     .tab-content {
       width: 100% !important;
       max-width: 100% !important;
-      overflow-x: hidden !important;
       box-sizing: border-box !important;
     }
     .tab-content.active {
@@ -114,7 +117,6 @@
     }
     .admin-subnav {
       overflow-x: auto !important;
-      touch-action: pan-x pan-y !important;
       -webkit-overflow-scrolling: touch !important;
       max-width: 100% !important;
       box-sizing: border-box !important;
@@ -244,6 +246,9 @@
     .pxl-hero-card.banner-art-mode {
       position: relative !important;
       overflow: hidden !important;
+      contain: paint !important;
+      isolation: isolate !important;
+      -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
       border-radius: 24px !important;
       border: 1.5px solid rgba(197, 255, 0, 0.65) !important;
       padding: 0 !important;
@@ -840,6 +845,8 @@
       min-height: 165px !important;
       position: relative !important;
       overflow: hidden !important;
+      contain: paint !important;
+      isolation: isolate !important;
       transition: transform 0.2s ease, box-shadow 0.2s ease !important;
     }
     .prize-card:active {
@@ -1183,8 +1190,8 @@
     <section id="tab-contest" class="tab-content active">
       
       <!-- 1. Hero Card (Ultra Cyber-Premium VIP 3D Banner) -->
-      <div class="pxl-hero-card banner-art-mode" onclick="window.switchTab && window.switchTab('tab-tasks')">
-        <img src="assets/grand_banner.jpg?v=20260925_13" alt="PEEXELL GRAND KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
+      <div class="pxl-hero-card banner-art-mode" onclick="window.scrollToTasks && window.scrollToTasks()">
+        <img src="assets/grand_banner.jpg?v=20260925_15" alt="PEEXELL GRAND KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
         <div class="pxl-hero-banner-glare"></div>
         <span id="contest-title" style="display:none;">PEEXELL GRAND KONKURS 2026</span>
         <span id="contest-description" style="display:none;">Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'ling!</span>
@@ -1297,7 +1304,7 @@
       </div>
 
       <!-- 5. Sponsor Vazifalar (Majburiy Obuna) -->
-      <div class="pxl-section-block">
+      <div class="pxl-section-block" id="tasks-section">
         <div class="pxl-section-title">
           <span class="title-emoji">🎯</span>
           <span>Homiy Kanallar & Vazifalar</span>
@@ -1893,7 +1900,17 @@
     </div>
   </div>
 
+  <script>
+    // Smooth scroll from hero banner to tasks & participate section
+    window.scrollToTasks = function() {
+      const el = document.getElementById("tasks-section") || document.getElementById("tasks-container");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+  </script>
+
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20260925_14"></script>
+  <script src="js/app.js?v=20260925_15"></script>
 </body>
 </html>
