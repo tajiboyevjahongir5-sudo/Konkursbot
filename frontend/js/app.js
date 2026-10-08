@@ -405,7 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="task-subtitle ${platform}">${subtitleText}</div>
               </div>
               <div class="task-reward-pill ${isDone ? 'done' : ''}">
-                ${isDone ? '<i class="fa-solid fa-check"></i> Berildi' : '<i class="fa-solid fa-ticket"></i> +1 Bilet'}
+                ${isDone ? '<i class="fa-solid fa-check"></i> Berildi' : '<i class="fa-solid fa-box-archive"></i> +1 Bilet'}
               </div>
             </div>
             <div class="task-card-actions">

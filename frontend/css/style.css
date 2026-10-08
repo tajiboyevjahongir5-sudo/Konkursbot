@@ -1,29 +1,29 @@
 /* ==========================================================================
-   PEEXELL KONKURS TELEGRAM WEB APP - CYBERPUNK NEON LIME THEME
+   PEEXELL KONKURS TELEGRAM WEB APP - PUBG BATTLEGROUNDS TACTICAL GOLD THEME
    ========================================================================== */
 
 :root {
-  --bg-color: #0b0c0e;
-  --card-bg: #14161e;
-  --card-bg-hover: #1c1f2a;
-  --card-border: rgba(255, 255, 255, 0.08);
+  --bg-color: #0b0e13;
+  --card-bg: #141a22;
+  --card-bg-hover: #1c2430;
+  --card-border: rgba(255, 184, 0, 0.2);
   
-  --primary-color: #C5FF00;       /* Neon Lime */
-  --primary-glow: rgba(197, 255, 0, 0.45);
-  --primary-dark: #9ecb00;
+  --primary-color: #FFB800;       /* PUBG Tactical Gold */
+  --primary-glow: rgba(255, 184, 0, 0.5);
+  --primary-dark: #d99b00;
 
-  --secondary-color: #00E5FF;     /* Neon Cyan */
-  --secondary-glow: rgba(0, 229, 255, 0.35);
+  --secondary-color: #FF5722;     /* PUBG AirDrop Flame Red/Orange */
+  --secondary-glow: rgba(255, 87, 34, 0.4);
 
-  --gold-color: #FFD700;          /* Gold VIP */
-  --gold-glow: rgba(255, 215, 0, 0.4);
+  --gold-color: #FFD700;          /* Winner Winner Chicken Dinner Gold */
+  --gold-glow: rgba(255, 215, 0, 0.5);
 
   --text-main: #FFFFFF;
-  --text-secondary: #949ab0;
-  --text-muted: #5e6479;
+  --text-secondary: #a0a8be;
+  --text-muted: #626a80;
 
   --danger-color: #FF3B30;
-  --success-color: #34C759;
+  --success-color: #10B981;
   --warning-color: #FF9500;
 
   --radius-sm: 8px;
@@ -55,7 +55,7 @@ html {
 }
 
 body {
-  background-color: #0c0e14;
+  background-color: #0a0d12;
   color: var(--text-main);
   min-height: 100%;
   width: 100%;
@@ -68,9 +68,9 @@ body {
   -webkit-overflow-scrolling: touch;
   padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
   background-image: 
-    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(197, 255, 0, 0.12) 0%, transparent 70%),
-    radial-gradient(circle 320px at 92% 16%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
-    radial-gradient(circle 280px at 8% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(255, 184, 0, 0.16) 0%, transparent 70%),
+    radial-gradient(circle 340px at 92% 16%, rgba(255, 87, 34, 0.12) 0%, transparent 60%),
+    radial-gradient(circle 280px at 8% 40%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
   background-attachment: fixed;
 }
 
