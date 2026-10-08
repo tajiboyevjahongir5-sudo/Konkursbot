@@ -230,16 +230,16 @@ document.addEventListener("DOMContentLoaded", () => {
             ticketsContainer.innerHTML = "";
             currentUser.tickets_list.forEach(t => {
               const card = document.createElement("div");
-              card.className = "pxl-ticket-card";
+              card.className = "pxl-ticket-card pubg-level3-crate";
               card.innerHTML = `
                 <div class="pxl-ticket-notch notch-left"></div>
                 <div class="pxl-ticket-notch notch-right"></div>
                 <div class="pxl-ticket-header">
-                  <span class="pxl-ticket-icon">🎟️</span>
-                  <span class="pxl-ticket-brand">HASAN PACKAGE</span>
+                  <span class="pxl-ticket-icon"><i class="fa-solid fa-box-archive" style="color: #FFB800;"></i></span>
+                  <span class="pxl-ticket-brand">PUBG LEVEL 3 CRATE</span>
                 </div>
                 <div class="pxl-ticket-number">${t.ticket_number}</div>
-                <div class="pxl-ticket-reason">${t.reason || 'Omadli Bilet'}</div>
+                <div class="pxl-ticket-reason"><i class="fa-solid fa-parachute-box"></i> ${t.reason || 'PUBG AirDrop Bilet'}</div>
               `;
               ticketsContainer.appendChild(card);
             });
@@ -404,8 +404,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="task-title" title="${task.title}">${task.title}</div>
                 <div class="task-subtitle ${platform}">${subtitleText}</div>
               </div>
-              <div class="task-reward-pill ${isDone ? 'done' : ''}">
-                ${isDone ? '<i class="fa-solid fa-check"></i> Berildi' : '<i class="fa-solid fa-box-archive"></i> +1 Bilet'}
+              <div class="task-reward-pill pubg-gold-badge ${isDone ? 'done' : ''}">
+                ${isDone ? '<i class="fa-solid fa-box-archive"></i> Olindi' : '<i class="fa-solid fa-parachute-box"></i> +1 AirDrop Bilet'}
               </div>
             </div>
             <div class="task-card-actions">
@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isDone 
                 ? `
                   <div class="task-done-strip">
-                    <span class="task-done-label"><i class="fa-solid fa-circle-check"></i> Obuna tasdiqlandi</span>
+                    <span class="task-done-label"><i class="fa-solid fa-box-archive"></i> PUBG AirDrop Bilet Berildi</span>
                     <a ${linkAttr} class="task-revisit-btn" onclick="event.stopPropagation();" title="Kanalni ko'rish">
                       <span>Kanal</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
@@ -424,7 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <i class="fa-brands ${iconClass}"></i> ${btnText}
                   </a>
                   <button class="task-btn task-btn-verify btn-check-task" data-id="${task.sponsor_id}" data-platform="${platform}">
-                    <i class="fa-solid fa-arrows-rotate"></i> Tekshirish
+                    <i class="fa-solid fa-parachute-box"></i> Tekshirish
                   </button>
                 `
               }
@@ -649,35 +649,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (board[0]) {
           if (p1Name) p1Name.textContent = board[0].first_name || board[0].username || "Foydalanuvchi";
-          if (p1Tickets) p1Tickets.textContent = `${board[0].tickets} Bilet`;
+          if (p1Tickets) p1Tickets.innerHTML = `<i class="fa-solid fa-parachute-box"></i> ${board[0].tickets} Bilet`;
         }
         if (board[1]) {
           if (p2Name) p2Name.textContent = board[1].first_name || board[1].username || "Foydalanuvchi";
-          if (p2Tickets) p2Tickets.textContent = `${board[1].tickets} Bilet`;
+          if (p2Tickets) p2Tickets.innerHTML = `<i class="fa-solid fa-parachute-box"></i> ${board[1].tickets} Bilet`;
         }
         if (board[2]) {
           if (p3Name) p3Name.textContent = board[2].first_name || board[2].username || "Foydalanuvchi";
-          if (p3Tickets) p3Tickets.textContent = `${board[2].tickets} Bilet`;
+          if (p3Tickets) p3Tickets.innerHTML = `<i class="fa-solid fa-parachute-box"></i> ${board[2].tickets} Bilet`;
         }
 
-        // List render for rank 4+
+        // List render for rank 1+
         listEl.innerHTML = "";
         board.forEach((u, index) => {
           const rank = index + 1;
           const row = document.createElement("div");
-          row.className = "leader-row";
+          row.className = "leader-row pubg-crate-card";
 
           let rankBadge = `${rank}`;
-          if (rank === 1) rankBadge = "🥇";
-          if (rank === 2) rankBadge = "🥈";
-          if (rank === 3) rankBadge = "🥉";
+          if (rank === 1) rankBadge = "👑 1";
+          if (rank === 2) rankBadge = "🥈 2";
+          if (rank === 3) rankBadge = "🥉 3";
 
-          const nameStr = `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username || `User ${u.id}`;
+          const nameStr = `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username || `Jangchi ${u.id}`;
 
           row.innerHTML = `
             <div class="leader-rank">${rankBadge}</div>
-            <div class="leader-user">${nameStr}</div>
-            <div class="leader-stats">${u.tickets} 🎟️</div>
+            <div class="leader-user">
+              <span style="font-weight: 700; color: #fff;">${nameStr}</span>
+              <span class="leader-user-badge"><i class="fa-solid fa-box-archive"></i> Level 3</span>
+            </div>
+            <div class="leader-stats pubg-gold-badge"><i class="fa-solid fa-parachute-box"></i> ${u.tickets} Bilet</div>
           `;
           listEl.appendChild(row);
         });
@@ -857,11 +860,11 @@ document.addEventListener("DOMContentLoaded", () => {
               else if (s.platform === "instagram") platformIcon = "📸";
 
               const winnerBadgeHtml = isWinner 
-                ? `<span class="badge" style="background: rgba(197, 255, 0, 0.2); color: var(--primary-color); border: 1px solid var(--primary-color); font-size: 0.72rem; padding: 2px 7px; border-radius: 5px; margin-left: 6px; font-weight: 700;"><i class="fa-solid fa-bullhorn"></i> G'oliblar Kanali</span>`
+                ? `<span class="pubg-gold-badge" style="font-size: 0.72rem; padding: 2px 7px; margin-left: 6px;"><i class="fa-solid fa-box-archive"></i> G'oliblar Kanali</span>`
                 : "";
 
               const makeWinnerBtnHtml = (isTelegram && !isWinner)
-                ? `<button class="btn btn-sm btn-set-winner" data-id="${s.id}" data-title="${s.title}" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;" title="G'oliblarni e'lon qilish kanali qilib belgilash"><i class="fa-solid fa-bullhorn"></i> E'lon kanali qilish</button>`
+                ? `<button class="btn btn-sm btn-set-winner" data-id="${s.id}" data-title="${s.title}" style="background: rgba(255, 184, 0, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;" title="G'oliblarni e'lon qilish kanali qilib belgilash"><i class="fa-solid fa-bullhorn"></i> E'lon kanali qilish</button>`
                 : "";
 
               item.innerHTML = `
@@ -1163,7 +1166,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
               </div>
               <div style="text-align: right;">
-                <span class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-weight: 700; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px;">
+                <span class="badge" style="background: rgba(255, 184, 0, 0.15); color: var(--primary-color); font-weight: 700; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px;">
                   🎟️ <span id="user-tickets-badge-${u.id}">${u.tickets}</span> bilet
                 </span>
               </div>
@@ -1176,10 +1179,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-              <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="1" style="background: rgba(197, 255, 0, 0.2); color: #fff; border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;">
+              <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="1" style="background: rgba(255, 184, 0, 0.2); color: #fff; border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;">
                 +1 Bilet
               </button>
-              <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="5" style="background: rgba(197, 255, 0, 0.2); color: #fff; border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;">
+              <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="5" style="background: rgba(255, 184, 0, 0.2); color: #fff; border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;">
                 +5 Bilet
               </button>
               <button class="btn btn-sm btn-ticket-mod" data-id="${u.id}" data-delta="-1" style="background: rgba(255, 59, 48, 0.2); color: #fff; border: 1px solid var(--danger-color); padding: 4px 8px; font-size: 0.74rem;">
@@ -1188,7 +1191,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <button class="btn btn-sm btn-ticket-custom" data-id="${u.id}" style="background: rgba(255, 255, 255, 0.1); color: #fff; padding: 4px 8px; font-size: 0.74rem;">
                 ✏️ Miqdor kiritish
               </button>
-              <button class="btn btn-sm btn-user-profile" data-username="${u.username || ''}" data-id="${u.id}" data-phone="${u.phone_number || ''}" style="background: rgba(0, 195, 255, 0.18); color: #00c3ff; border: 1px solid #00c3ff; padding: 4px 10px; font-size: 0.74rem; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; cursor: pointer;">
+              <button class="btn btn-sm btn-user-profile" data-username="${u.username || ''}" data-id="${u.id}" data-phone="${u.phone_number || ''}" style="background: rgba(0, 195, 255, 0.18); color: #FFB800; border: 1px solid #FFB800; padding: 4px 10px; font-size: 0.74rem; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; cursor: pointer;">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Profilga o'tish
               </button>
             </div>
@@ -1332,7 +1335,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.announced_channel && !res.announced_channel.error) {
               const photoNote = res.announced_channel.sent_with_photo ? " (Rasm/Banner bilan)" : "";
               channelNotice = `
-                <div style="margin-bottom: 14px; padding: 12px; background: rgba(197, 255, 0, 0.1); border: 1px solid var(--primary-color); border-radius: 10px; font-size: 0.82rem; color: var(--primary-color);">
+                <div style="margin-bottom: 14px; padding: 12px; background: rgba(255, 184, 0, 0.1); border: 1px solid var(--primary-color); border-radius: 10px; font-size: 0.82rem; color: var(--primary-color);">
                   <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 4px;">
                     <i class="fa-solid fa-circle-check"></i>
                     <span>Kanalda muvaffaqiyatli e'lon qilindi!${photoNote}</span>
@@ -1363,7 +1366,7 @@ document.addEventListener("DOMContentLoaded", () => {
               const medal = medals[idx] || "🎖";
               const userHandle = w.username ? `@${w.username}` : `ID: ${w.user_id}`;
               const ticketBadge = w.ticket_number 
-                ? `<span class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(197, 255, 0, 0.3);">🎟 #${w.ticket_number}</span>`
+                ? `<span class="badge" style="background: rgba(255, 184, 0, 0.15); color: var(--primary-color); font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255, 184, 0, 0.3);">🎟 #${w.ticket_number}</span>`
                 : '';
 
               winnersHtml += `
@@ -1540,7 +1543,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (mediaFileInput) mediaFileInput.value = "";
       if (mediaPreviewBox) mediaPreviewBox.style.display = "none";
       if (mediaThumb) mediaThumb.innerHTML = "";
-      if (mediaUploadArea) mediaUploadArea.style.borderColor = "rgba(197, 255, 0, 0.4)";
+      if (mediaUploadArea) mediaUploadArea.style.borderColor = "rgba(255, 184, 0, 0.4)";
     });
   }
 

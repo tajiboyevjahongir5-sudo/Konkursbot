@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20261008_pubg_01">
+  <link rel="stylesheet" href="css/style.css?v=20261008_pubg_02">
 
   <style>
     /* ==========================================================================
@@ -76,9 +76,9 @@
       padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)) !important;
       background-color: #0c0e14 !important;
       background-image: 
-        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(197, 255, 0, 0.12) 0%, transparent 70%),
-        radial-gradient(circle 320px at 92% 16%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
-        radial-gradient(circle 280px at 8% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 60%) !important;
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(255, 184, 0, 0.12) 0%, transparent 70%),
+        radial-gradient(circle 320px at 92% 16%, rgba(255, 87, 34, 0.08) 0%, transparent 60%),
+        radial-gradient(circle 280px at 8% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 60%) !important;
       background-attachment: fixed !important;
     }
     body::before {
@@ -158,7 +158,7 @@
     }
     .nav-item.active .nav-icon-3d {
       transform: translateY(-2px) scale(1.18) !important;
-      filter: drop-shadow(0 0 8px rgba(197, 255, 0, 0.65)) !important;
+      filter: drop-shadow(0 0 8px rgba(255, 184, 0, 0.65)) !important;
     }
 
     /* HEADER */
@@ -167,28 +167,30 @@
       border: 1px solid rgba(255, 184, 0, 0.25) !important;
       backdrop-filter: blur(16px) !important;
       border-radius: 20px !important;
-      padding: 10px 12px !important;
+      padding: 8px 10px !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      gap: 8px !important;
+      gap: 6px !important;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 184, 0, 0.15) !important;
       margin-bottom: 14px !important;
       overflow: hidden !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
     }
     .brand-wrapper {
       display: flex !important;
       align-items: center !important;
-      gap: 8px !important;
+      gap: 6px !important;
       flex: 1 !important;
       min-width: 0 !important;
       overflow: hidden !important;
     }
     .logo-box-glow {
       position: relative;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 36px !important;
+      height: 36px !important;
+      border-radius: 10px !important;
       padding: 2px;
       background: linear-gradient(135deg, #FFB800 0%, #FF5722 100%);
       box-shadow: 0 0 14px rgba(255, 184, 0, 0.45);
@@ -197,31 +199,33 @@
     .logo-img {
       width: 100%;
       height: 100%;
-      border-radius: 10px;
+      border-radius: 8px;
       object-fit: cover;
       display: block;
     }
     .brand-text-box {
       flex: 1 !important;
       min-width: 0 !important;
-      overflow: hidden !important;
+      overflow: visible !important;
     }
     .brand-title {
-      font-size: clamp(0.68rem, 2.7vw, 0.88rem) !important;
+      font-size: clamp(0.62rem, 2.5vw, 0.82rem) !important;
       font-weight: 900 !important;
-      letter-spacing: -0.2px !important;
+      letter-spacing: -0.3px !important;
       color: #fff !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      flex-shrink: 0 !important;
     }
     .brand-highlight {
       color: #FFB800 !important;
       text-shadow: 0 0 12px rgba(255, 184, 0, 0.6) !important;
     }
     .brand-subtitle {
-      font-size: 0.65rem !important;
+      font-size: clamp(0.56rem, 2.1vw, 0.66rem) !important;
+      letter-spacing: -0.2px !important;
       color: #a0a8be !important;
       margin-top: 1px !important;
       display: flex !important;
@@ -244,18 +248,20 @@
       flex-direction: column !important;
       align-items: flex-end !important;
       flex-shrink: 0 !important;
+      margin-left: auto !important;
     }
     .tickets-pill-vip {
       background: linear-gradient(135deg, rgba(255, 184, 0, 0.2) 0%, rgba(255, 87, 34, 0.1) 100%) !important;
       border: 1.5px solid #FFB800 !important;
       color: #FFB800 !important;
-      padding: 5px 10px !important;
+      padding: 4px 8px !important;
       border-radius: 9999px !important;
       font-weight: 800 !important;
-      font-size: 0.78rem !important;
+      font-size: clamp(0.62rem, 2.3vw, 0.78rem) !important;
+      letter-spacing: -0.2px !important;
       display: flex !important;
       align-items: center !important;
-      gap: 5px !important;
+      gap: 4px !important;
       box-shadow: 0 0 14px rgba(255, 184, 0, 0.4) !important;
       white-space: nowrap !important;
       flex-shrink: 0 !important;
@@ -272,15 +278,15 @@
       80% { transform: rotate(0deg); }
     }
 
-    /* 1. HERO BANNER CARD (ULTRA-LUXURY 3D VIP BANNER) */
+    /* 1. HERO BANNER CARD (PUBG AIRDROP / WINNER WINNER CHICKEN DINNER TACTICAL GOLD BANNER) */
     .pxl-hero-card.banner-art-mode {
       position: relative !important;
       overflow: hidden !important;
       contain: paint !important;
       isolation: isolate !important;
       -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-      border-radius: 20px !important;
-      border: 1.5px solid rgba(255, 184, 0, 0.75) !important;
+      border-radius: 22px !important;
+      border: 2px solid rgba(255, 184, 0, 0.85) !important;
       padding: 0 !important;
       margin-bottom: 14px !important;
       width: 100% !important;
@@ -289,9 +295,11 @@
       height: auto !important;
       box-sizing: border-box !important;
       box-shadow: 
-        0 18px 45px rgba(0, 0, 0, 0.85),
-        0 0 35px rgba(255, 184, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+        0 18px 45px rgba(0, 0, 0, 0.88),
+        0 0 35px rgba(255, 184, 0, 0.5),
+        0 0 18px rgba(255, 87, 34, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38),
+        inset 0 0 25px rgba(255, 184, 0, 0.2) !important;
       background: #0d121f !important;
       aspect-ratio: 1376 / 768 !important;
       display: block !important;
@@ -300,6 +308,9 @@
     }
     .pxl-hero-card.banner-art-mode:active {
       transform: scale(0.985) !important;
+      box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 184, 0, 0.3) !important;
     }
     .pxl-hero-banner-img {
       width: 100% !important;
@@ -308,6 +319,7 @@
       object-fit: cover !important;
       display: block !important;
     }
+    /* AirDrop Golden-Red Glare Beam Sweep */
     .pxl-hero-banner-glare {
       position: absolute !important;
       top: -60% !important;
@@ -316,18 +328,203 @@
       height: 220% !important;
       background: linear-gradient(
         115deg,
-        transparent 40%,
-        rgba(255, 255, 255, 0.06) 47%,
-        rgba(255, 184, 0, 0.18) 50%,
-        rgba(255, 87, 34, 0.14) 53%,
-        transparent 60%
+        transparent 38%,
+        rgba(255, 255, 255, 0.08) 45%,
+        rgba(255, 215, 0, 0.32) 49%,
+        rgba(255, 87, 34, 0.35) 52%,
+        rgba(255, 184, 0, 0.22) 55%,
+        transparent 62%
       ) !important;
       pointer-events: none !important;
+      z-index: 2 !important;
       animation: glareSweep 5.5s infinite ease-in-out alternate !important;
     }
     @keyframes glareSweep {
-      0% { transform: translateY(-25px) rotate(0deg); opacity: 0.35; }
-      100% { transform: translateY(25px) rotate(2deg); opacity: 0.85; }
+      0% { transform: translateY(-25px) rotate(0deg); opacity: 0.4; }
+      100% { transform: translateY(25px) rotate(2.5deg); opacity: 0.9; }
+    }
+
+    /* AirDrop Flare Smoke Layer */
+    .pubg-airdrop-flare-layer {
+      position: absolute !important;
+      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+      pointer-events: none !important;
+      z-index: 2 !important;
+    }
+    .airdrop-flare-glow {
+      position: absolute !important;
+      width: 140px !important;
+      height: 140px !important;
+      border-radius: 50% !important;
+      filter: blur(24px) !important;
+      pointer-events: none !important;
+    }
+    .airdrop-flare-glow.flare-top-left {
+      top: -30px !important;
+      left: -30px !important;
+      background: radial-gradient(circle, rgba(255, 87, 34, 0.55) 0%, rgba(255, 184, 0, 0.3) 50%, transparent 75%) !important;
+      animation: flarePulseLeft 3.6s infinite ease-in-out alternate !important;
+    }
+    .airdrop-flare-glow.flare-bottom-right {
+      bottom: -30px !important;
+      right: -30px !important;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.55) 0%, rgba(255, 87, 34, 0.3) 50%, transparent 75%) !important;
+      animation: flarePulseRight 4.2s infinite ease-in-out alternate !important;
+    }
+    @keyframes flarePulseLeft {
+      0% { transform: scale(0.85); opacity: 0.5; }
+      100% { transform: scale(1.25); opacity: 0.95; }
+    }
+    @keyframes flarePulseRight {
+      0% { transform: scale(0.9); opacity: 0.55; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* PUBG Tactical HUD Overlay Tags & Brackets */
+    .pubg-tactical-hud-overlay {
+      position: absolute !important;
+      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+      pointer-events: none !important;
+      z-index: 3 !important;
+      padding: 10px 12px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+    }
+
+    .pubg-hud-tag {
+      position: absolute !important;
+      background: rgba(12, 16, 24, 0.72) !important;
+      border: 1px solid rgba(255, 184, 0, 0.55) !important;
+      border-radius: 8px !important;
+      padding: 3px 8px !important;
+      font-size: 0.62rem !important;
+      font-weight: 800 !important;
+      color: #FFD700 !important;
+      letter-spacing: 0.5px !important;
+      text-transform: uppercase !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+      backdrop-filter: blur(6px) !important;
+      -webkit-backdrop-filter: blur(6px) !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      z-index: 4 !important;
+    }
+
+    .pubg-hud-top-left {
+      top: 10px !important;
+      left: 10px !important;
+      border-color: rgba(255, 87, 34, 0.75) !important;
+      color: #FF5722 !important;
+    }
+    .hud-live-dot {
+      width: 6px !important;
+      height: 6px !important;
+      background: #FF5722 !important;
+      border-radius: 50% !important;
+      box-shadow: 0 0 8px #FF5722 !important;
+      animation: liveDotBlink 1.2s infinite ease-in-out !important;
+    }
+    @keyframes liveDotBlink {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .pubg-hud-top-right {
+      top: 10px !important;
+      right: 10px !important;
+      border-color: rgba(255, 184, 0, 0.75) !important;
+      color: #FFB800 !important;
+    }
+    .pubg-crosshair-icon {
+      font-size: 0.72rem !important;
+      color: #FFB800 !important;
+      animation: crosshairRotate 8s linear infinite !important;
+    }
+    @keyframes crosshairRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .pubg-hud-bottom-left {
+      bottom: 10px !important;
+      left: 10px !important;
+      background: linear-gradient(135deg, rgba(20, 16, 8, 0.85) 0%, rgba(10, 8, 4, 0.9) 100%) !important;
+      border-color: rgba(255, 215, 0, 0.8) !important;
+      color: #FFD700 !important;
+      font-size: 0.65rem !important;
+    }
+    .pubg-gold-crown {
+      font-size: 0.75rem !important;
+      filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)) !important;
+    }
+
+    .pubg-hud-bottom-right {
+      bottom: 10px !important;
+      right: 10px !important;
+      border-color: rgba(255, 87, 34, 0.75) !important;
+      color: #FFF !important;
+    }
+    .pubg-airdrop-box-icon {
+      font-size: 0.75rem !important;
+      animation: boxBounce 2s infinite ease-in-out !important;
+    }
+    @keyframes boxBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* PUBG Tactical Radar in Corner */
+    .pubg-corner-radar {
+      position: absolute !important;
+      top: 50% !important;
+      right: 18px !important;
+      transform: translateY(-50%) !important;
+      width: 55px !important;
+      height: 55px !important;
+      pointer-events: none !important;
+      opacity: 0.75 !important;
+    }
+    .radar-hud-ring.ring-1 {
+      position: absolute !important;
+      top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important;
+      border-radius: 50% !important;
+      border: 1.5px dashed rgba(255, 184, 0, 0.7) !important;
+      animation: rotateRadar 12s linear infinite !important;
+    }
+    .radar-hud-ring.ring-2 {
+      position: absolute !important;
+      top: 10px !important; left: 10px !important; width: 35px !important; height: 35px !important;
+      border-radius: 50% !important;
+      border: 1px solid rgba(255, 87, 34, 0.8) !important;
+      border-top-color: transparent !important;
+      animation: rotateRadarRev 7s linear infinite !important;
+    }
+    .radar-hud-line {
+      position: absolute !important;
+      top: 27px !important; left: 27px !important; width: 1px !important; height: 26px !important;
+      background: linear-gradient(180deg, #FFB800 0%, transparent 100%) !important;
+      transform-origin: top center !important;
+      animation: rotateRadar 5s linear infinite !important;
+    }
+
+    @media (max-width: 420px) {
+      .pubg-hud-tag {
+        font-size: 0.55rem !important;
+        padding: 2px 6px !important;
+      }
+      .pubg-corner-radar {
+        width: 40px !important;
+        height: 40px !important;
+        right: 10px !important;
+      }
+      .radar-hud-ring.ring-2 {
+        top: 7px !important; left: 7px !important; width: 26px !important; height: 26px !important;
+      }
+      .radar-hud-line {
+        top: 20px !important; left: 20px !important; height: 18px !important;
+      }
     }
 
     .pxl-hero-card:not(.banner-art-mode) {
@@ -457,23 +654,23 @@
       display: inline-flex !important;
       align-items: center !important;
       gap: 6px !important;
-      background: rgba(197, 255, 0, 0.18) !important;
-      border: 1px solid #C5FF00 !important;
-      color: #C5FF00 !important;
+      background: rgba(255, 184, 0, 0.18) !important;
+      border: 1px solid #FFB800 !important;
+      color: #FFB800 !important;
       font-size: 0.68rem !important;
       font-weight: 800 !important;
       letter-spacing: 0.5px !important;
       text-transform: uppercase !important;
       padding: 3px 9px !important;
       border-radius: 9999px !important;
-      box-shadow: 0 0 14px rgba(197, 255, 0, 0.45) !important;
+      box-shadow: 0 0 14px rgba(255, 184, 0, 0.45) !important;
     }
     .live-dot {
       width: 7px !important;
       height: 7px !important;
-      background: #C5FF00 !important;
+      background: #FFB800 !important;
       border-radius: 50% !important;
-      box-shadow: 0 0 8px #C5FF00 !important;
+      box-shadow: 0 0 8px #FFB800 !important;
       animation: livePulse 1.4s infinite ease-in-out !important;
     }
     .pxl-prize-tag {
@@ -493,13 +690,13 @@
       font-size: 1.35rem !important;
       font-weight: 900 !important;
       letter-spacing: 0.2px !important;
-      background: linear-gradient(135deg, #FFFFFF 20%, #E7FF70 65%, #C5FF00 100%) !important;
+      background: linear-gradient(135deg, #FFFFFF 20%, #FFD700 65%, #FFB800 100%) !important;
       -webkit-background-clip: text !important;
       -webkit-text-fill-color: transparent !important;
       line-height: 1.16 !important;
       margin-bottom: 6px !important;
       text-transform: uppercase !important;
-      filter: drop-shadow(0 2px 10px rgba(197, 255, 0, 0.3)) !important;
+      filter: drop-shadow(0 2px 10px rgba(255, 184, 0, 0.3)) !important;
     }
     .pxl-hero-subtitle {
       font-size: 0.76rem !important;
@@ -555,8 +752,8 @@
       position: absolute !important;
       top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important;
       border-radius: 50% !important;
-      border: 2px dashed rgba(0, 229, 255, 0.85) !important;
-      box-shadow: 0 0 24px rgba(0, 229, 255, 0.45), inset 0 0 20px rgba(0, 229, 255, 0.3) !important;
+      border: 2px dashed rgba(255, 87, 34, 0.85) !important;
+      box-shadow: 0 0 24px rgba(255, 87, 34, 0.45), inset 0 0 20px rgba(255, 87, 34, 0.3) !important;
       animation: rotateHud 18s linear infinite !important;
       opacity: 0.9 !important;
     }
@@ -564,10 +761,10 @@
       position: absolute !important;
       top: 20px !important; left: 20px !important; width: 145px !important; height: 145px !important;
       border-radius: 50% !important;
-      border: 2px solid rgba(197, 255, 0, 0.8) !important;
+      border: 2px solid rgba(255, 184, 0, 0.8) !important;
       border-top-color: transparent !important;
       border-bottom-color: transparent !important;
-      box-shadow: 0 0 18px rgba(197, 255, 0, 0.45) !important;
+      box-shadow: 0 0 18px rgba(255, 184, 0, 0.45) !important;
       animation: rotateHudRev 10s linear infinite !important;
       opacity: 0.9 !important;
     }
@@ -575,7 +772,7 @@
       position: absolute !important;
       top: 42px !important; left: 42px !important; width: 100px !important; height: 100px !important;
       border-radius: 50% !important;
-      background: radial-gradient(circle, rgba(197, 255, 0, 0.65) 0%, rgba(0, 229, 255, 0.45) 55%, transparent 75%) !important;
+      background: radial-gradient(circle, rgba(255, 184, 0, 0.65) 0%, rgba(255, 87, 34, 0.45) 55%, transparent 75%) !important;
       filter: blur(14px) !important;
     }
     @keyframes rotateHud {
@@ -610,7 +807,7 @@
       top: 18% !important;
       left: 50% !important;
       transform: translateX(-50%) !important;
-      background: radial-gradient(circle, rgba(197, 255, 0, 0.6) 0%, rgba(0, 229, 255, 0.45) 45%, transparent 72%) !important;
+      background: radial-gradient(circle, rgba(255, 184, 0, 0.6) 0%, rgba(255, 87, 34, 0.45) 45%, transparent 72%) !important;
       filter: blur(20px) !important;
       pointer-events: none !important;
       z-index: 1 !important;
@@ -624,7 +821,7 @@
       width: 150px !important;
       height: 26px !important;
       border-radius: 50% !important;
-      background: radial-gradient(ellipse, rgba(197, 255, 0, 0.85) 0%, rgba(0, 229, 255, 0.6) 50%, transparent 75%) !important;
+      background: radial-gradient(ellipse, rgba(255, 184, 0, 0.85) 0%, rgba(255, 87, 34, 0.6) 50%, transparent 75%) !important;
       filter: blur(6px) !important;
       pointer-events: none !important;
       z-index: 2 !important;
@@ -638,7 +835,7 @@
       max-width: 165px !important;
       height: 202px !important;
       object-fit: contain !important;
-      filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.92)) drop-shadow(0 0 18px rgba(197, 255, 0, 0.5)) !important;
+      filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.92)) drop-shadow(0 0 18px rgba(255, 184, 0, 0.5)) !important;
       display: block !important;
       user-select: none !important;
       -webkit-user-drag: none !important;
@@ -649,7 +846,7 @@
       position: absolute !important;
       bottom: 8px !important;
       left: 24px !important;
-      background: linear-gradient(135deg, #C5FF00 0%, #00E5FF 100%) !important;
+      background: linear-gradient(135deg, #FFB800 0%, #FF5722 100%) !important;
       color: #06080c !important;
       font-size: 0.65rem !important;
       font-weight: 900 !important;
@@ -658,7 +855,7 @@
       padding: 3px 11px !important;
       border-radius: 9999px !important;
       white-space: nowrap !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85), 0 0 16px rgba(197, 255, 0, 0.6) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85), 0 0 16px rgba(255, 184, 0, 0.6) !important;
       z-index: 4 !important;
       display: flex !important;
       align-items: center !important;
@@ -682,16 +879,16 @@
       top: 14px !important;
       left: 51% !important;
       font-size: 0.9rem !important;
-      color: #C5FF00 !important;
-      filter: drop-shadow(0 0 6px #C5FF00) !important;
+      color: #FFB800 !important;
+      filter: drop-shadow(0 0 6px #FFB800) !important;
       animation: sparkleFloat 2.6s infinite ease-in-out !important;
     }
     .sp-2 {
       bottom: 22px !important;
       left: 50% !important;
       font-size: 0.85rem !important;
-      color: #00E5FF !important;
-      filter: drop-shadow(0 0 6px #00E5FF) !important;
+      color: #FF5722 !important;
+      filter: drop-shadow(0 0 6px #FF5722) !important;
       animation: sparkleFloat 3.2s infinite ease-in-out reverse !important;
     }
     .sp-3 {
@@ -709,7 +906,7 @@
 
     .hero-cyber-divider {
       height: 1px !important;
-      background: linear-gradient(90deg, rgba(197, 255, 0, 0.6) 0%, rgba(0, 229, 255, 0.4) 60%, transparent 100%) !important;
+      background: linear-gradient(90deg, rgba(255, 184, 0, 0.6) 0%, rgba(255, 87, 34, 0.4) 60%, transparent 100%) !important;
       margin: 8px 0 10px 0 !important;
       max-width: 90% !important;
     }
@@ -1115,7 +1312,7 @@
       font-weight: 600 !important;
     }
     .hero-action-hint i {
-      color: #C5FF00 !important;
+      color: #FFB800 !important;
       animation: bounceDown 1.5s infinite ease-in-out !important;
     }
     @keyframes bounceDown {
@@ -1131,7 +1328,7 @@
     .ticket-3d-icon {
       font-size: 1.15rem !important;
       display: inline-block !important;
-      filter: drop-shadow(0 0 8px rgba(197, 255, 0, 0.6)) !important;
+      filter: drop-shadow(0 0 8px rgba(255, 184, 0, 0.6)) !important;
       animation: ticketWiggle 2.5s infinite ease-in-out !important;
     }
     .invite-3d-icon {
@@ -1243,40 +1440,43 @@
       justify-content: center !important;
     }
     .task-title {
-      font-size: 0.94rem !important;
+      font-size: clamp(0.78rem, 2.8vw, 0.94rem) !important;
       font-weight: 800 !important;
       color: #ffffff !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       white-space: nowrap !important;
-      line-height: 1.3 !important;
+      line-height: 1.25 !important;
+      letter-spacing: -0.2px !important;
     }
     .task-subtitle {
-      font-size: 0.74rem !important;
+      font-size: clamp(0.66rem, 2.2vw, 0.74rem) !important;
       margin-top: 2px !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       white-space: nowrap !important;
       font-weight: 600 !important;
+      letter-spacing: -0.1px !important;
     }
     .task-subtitle.telegram { color: #38bdf8 !important; }
     .task-subtitle.youtube { color: #f87171 !important; }
     .task-subtitle.instagram { color: #f472b6 !important; }
 
     .task-reward-pill {
-      background: rgba(197, 255, 0, 0.12) !important;
-      border: 1.2px solid rgba(197, 255, 0, 0.45) !important;
-      color: #C5FF00 !important;
-      font-size: 0.74rem !important;
+      background: rgba(255, 184, 0, 0.12) !important;
+      border: 1.2px solid rgba(255, 184, 0, 0.45) !important;
+      color: #FFB800 !important;
+      font-size: clamp(0.64rem, 2.2vw, 0.74rem) !important;
       font-weight: 800 !important;
-      padding: 4px 10px !important;
+      padding: 4px 8px !important;
       border-radius: 999px !important;
       white-space: nowrap !important;
       display: flex !important;
       align-items: center !important;
-      gap: 5px !important;
-      box-shadow: 0 0 10px rgba(197, 255, 0, 0.18) !important;
+      gap: 4px !important;
+      box-shadow: 0 0 10px rgba(255, 184, 0, 0.18) !important;
       flex-shrink: 0 !important;
+      letter-spacing: -0.1px !important;
     }
     .task-reward-pill.done {
       background: rgba(34, 197, 94, 0.15) !important;
@@ -1287,7 +1487,7 @@
 
     .task-card-actions {
       display: flex !important;
-      gap: 8px !important;
+      gap: 6px !important;
       width: 100% !important;
     }
     .task-btn {
@@ -1295,9 +1495,9 @@
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
-      gap: 7px !important;
-      padding: 10px 14px !important;
-      font-size: 0.84rem !important;
+      gap: 6px !important;
+      padding: 9px 10px !important;
+      font-size: clamp(0.74rem, 2.5vw, 0.84rem) !important;
       font-weight: 800 !important;
       border-radius: 12px !important;
       cursor: pointer !important;
@@ -1305,6 +1505,8 @@
       transition: all 0.2s ease !important;
       border: none !important;
       line-height: 1 !important;
+      letter-spacing: -0.1px !important;
+      white-space: nowrap !important;
     }
     .task-btn:active {
       transform: scale(0.97) !important;
@@ -1325,12 +1527,12 @@
       color: #f472b6 !important;
     }
     .task-btn-verify {
-      background: rgba(197, 255, 0, 0.12) !important;
-      border: 1.2px solid rgba(197, 255, 0, 0.55) !important;
-      color: #C5FF00 !important;
+      background: rgba(255, 184, 0, 0.12) !important;
+      border: 1.2px solid rgba(255, 184, 0, 0.55) !important;
+      color: #FFB800 !important;
     }
     .task-btn-verify:active {
-      background: #C5FF00 !important;
+      background: #FFB800 !important;
       color: #0b0e17 !important;
     }
     .task-done-strip {
@@ -1377,6 +1579,279 @@
       justify-content: center !important;
       gap: 5px !important;
     }
+
+    /* ==========================================================================
+       PUBG MOBILE TACTICAL HUD ANIMATIONS & MICRO-INTERACTIONS
+       ========================================================================== */
+
+    /* 1. Tactical Radar Rotating Animations */
+    @keyframes rotateRadar {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes radarSweep {
+      0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 0.75;
+        filter: drop-shadow(0 0 8px rgba(255, 184, 0, 0.4));
+      }
+      50% {
+        transform: rotate(180deg) scale(1.05);
+        opacity: 1;
+        filter: drop-shadow(0 0 20px rgba(255, 184, 0, 0.85));
+      }
+      100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 0.75;
+        filter: drop-shadow(0 0 8px rgba(255, 184, 0, 0.4));
+      }
+    }
+
+    /* 2. AirDrop Flame Smoke Glow Animations */
+    @keyframes airdropFlame {
+      0%, 100% {
+        box-shadow: 0 0 16px rgba(255, 87, 34, 0.55), 0 0 32px rgba(255, 184, 0, 0.35), inset 0 0 16px rgba(255, 87, 34, 0.25);
+        filter: drop-shadow(0 0 10px rgba(255, 87, 34, 0.75));
+        border-color: #FF5722 !important;
+      }
+      50% {
+        box-shadow: 0 0 32px rgba(255, 87, 34, 0.95), 0 0 60px rgba(255, 184, 0, 0.8), inset 0 0 28px rgba(255, 184, 0, 0.5);
+        filter: drop-shadow(0 0 20px rgba(255, 184, 0, 1));
+        border-color: #FFB800 !important;
+      }
+    }
+
+    @keyframes airdropSmokeGlow {
+      0%, 100% {
+        opacity: 0.4;
+        transform: scale(0.96) translateY(0);
+        filter: blur(14px) brightness(1);
+      }
+      50% {
+        opacity: 0.85;
+        transform: scale(1.1) translateY(-4px);
+        filter: blur(22px) brightness(1.4);
+      }
+    }
+
+    /* 3. Gold & Metal Shimmer Sweep Animations */
+    @keyframes goldShimmer {
+      0% {
+        left: -130%;
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.85;
+      }
+      75% {
+        opacity: 0.85;
+      }
+      100% {
+        left: 190%;
+        opacity: 0;
+      }
+    }
+
+    @keyframes metalShimmerSweep {
+      0% {
+        transform: translateX(-120%) skewX(-25deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.9;
+      }
+      80% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(220%) skewX(-25deg);
+        opacity: 0;
+      }
+    }
+
+    /* 4. Timer & Tickets Pulsing HUD Animations */
+    @keyframes hudPulse {
+      0%, 100% {
+        border-color: rgba(255, 184, 0, 0.45) !important;
+        box-shadow: 0 0 14px rgba(255, 184, 0, 0.25), inset 0 0 8px rgba(255, 184, 0, 0.12) !important;
+      }
+      50% {
+        border-color: rgba(255, 184, 0, 0.95) !important;
+        box-shadow: 0 0 28px rgba(255, 184, 0, 0.75), inset 0 0 18px rgba(255, 184, 0, 0.35) !important;
+      }
+    }
+
+    @keyframes pubgGoldPulse {
+      0%, 100% {
+        color: #FFB800 !important;
+        text-shadow: 0 0 12px rgba(255, 184, 0, 0.65) !important;
+        transform: scale(1);
+      }
+      50% {
+        color: #FFD700 !important;
+        text-shadow: 0 0 26px rgba(255, 215, 0, 1), 0 0 40px rgba(255, 87, 34, 0.7) !important;
+        transform: scale(1.06);
+      }
+    }
+
+    /* Tactical HUD Utility Classes */
+    .hud-pulse-active {
+      animation: hudPulse 2.8s infinite ease-in-out !important;
+    }
+
+    .airdrop-flame-glow {
+      animation: airdropFlame 3.2s infinite ease-in-out !important;
+      position: relative !important;
+    }
+
+    .airdrop-smoke-bg {
+      position: absolute !important;
+      top: -8px; left: -8px; right: -8px; bottom: -8px;
+      background: radial-gradient(circle, rgba(255, 87, 34, 0.35) 0%, rgba(255, 184, 0, 0.2) 50%, transparent 70%) !important;
+      pointer-events: none !important;
+      z-index: 0 !important;
+      border-radius: inherit !important;
+      animation: airdropSmokeGlow 4s infinite ease-in-out alternate !important;
+    }
+
+    .tactical-radar-spin {
+      animation: rotateRadar 12s linear infinite !important;
+      display: inline-block !important;
+    }
+
+    .tactical-radar-sweep {
+      animation: radarSweep 6s infinite ease-in-out !important;
+    }
+
+    .pubg-gold-num {
+      animation: pubgGoldPulse 2.4s infinite ease-in-out !important;
+    }
+
+    /* 3D Tactile Button Press Effects with Gold Shimmer */
+    .btn-3d-tactical,
+    .btn-participate-glow,
+    .task-btn,
+    .nav-item {
+      position: relative !important;
+      overflow: hidden !important;
+      transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, background-color 0.2s ease !important;
+      transform-style: preserve-3d !important;
+    }
+
+    .btn-3d-tactical:active,
+    .btn-participate-glow:active,
+    .task-btn:active {
+      transform: translateY(3px) scale(0.97) !important;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.65), inset 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .gold-shimmer-overlay {
+      position: absolute !important;
+      top: -50% !important;
+      left: -130% !important;
+      width: 70% !important;
+      height: 200% !important;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.25) 45%,
+        rgba(255, 215, 0, 0.7) 50%,
+        rgba(255, 255, 255, 0.25) 55%,
+        transparent 100%
+      ) !important;
+      transform: skewX(-25deg) !important;
+      pointer-events: none !important;
+      animation: goldShimmer 3.8s infinite ease-in-out !important;
+      z-index: 2 !important;
+    }
+
+    .glass-time-cell.hud-cell-glow {
+      animation: hudPulse 3.5s infinite ease-in-out !important;
+    }
+
+    /* PUBG Tactical Gold Badges & Level 3 Crate / AirDrop Enhancements */
+    .pubg-gold-badge {
+      background: linear-gradient(135deg, rgba(255, 184, 0, 0.22) 0%, rgba(255, 87, 34, 0.12) 100%) !important;
+      border: 1.2px solid #FFB800 !important;
+      color: #FFB800 !important;
+      font-weight: 800 !important;
+      border-radius: 9999px !important;
+      padding: 4px 10px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      box-shadow: 0 0 10px rgba(255, 184, 0, 0.3) !important;
+      text-transform: uppercase !important;
+    }
+    .pubg-gold-badge.done {
+      background: rgba(34, 197, 94, 0.18) !important;
+      border-color: #22c55e !important;
+      color: #4ade80 !important;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3) !important;
+    }
+    .pubg-level-badge {
+      background: linear-gradient(135deg, rgba(255, 184, 0, 0.25) 0%, rgba(255, 87, 34, 0.18) 100%) !important;
+      border: 1px solid #FFB800 !important;
+      color: #FFB800 !important;
+      font-size: 0.65rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.6px !important;
+      padding: 2px 7px !important;
+      border-radius: 6px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+    .pubg-crate-card {
+      background: linear-gradient(145deg, #161c28 0%, #0d121c 100%) !important;
+      border: 1.5px solid rgba(255, 184, 0, 0.3) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 184, 0, 0.12) !important;
+    }
+    .podium-crate-tag {
+      font-size: 0.62rem !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.5px !important;
+      padding: 3px 8px !important;
+      border-radius: 6px !important;
+      margin-bottom: 6px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+    .podium-crate-tag.gold {
+      background: rgba(255, 215, 0, 0.25) !important;
+      color: #FFD700 !important;
+      border: 1px solid #FFD700 !important;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.35) !important;
+    }
+    .podium-crate-tag.silver {
+      background: rgba(255, 184, 0, 0.2) !important;
+      color: #FFB800 !important;
+      border: 1px solid #FFB800 !important;
+    }
+    .podium-crate-tag.bronze {
+      background: rgba(255, 87, 34, 0.2) !important;
+      color: #FF5722 !important;
+      border: 1px solid #FF5722 !important;
+    }
+    .leader-user-badge {
+      font-size: 0.65rem !important;
+      color: #FFB800 !important;
+      background: rgba(255, 184, 0, 0.15) !important;
+      border: 1px solid rgba(255, 184, 0, 0.3) !important;
+      padding: 2px 6px !important;
+      border-radius: 4px !important;
+      margin-left: 6px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+    }
+    .pubg-crate-stat {
+      background: linear-gradient(135deg, rgba(26, 32, 46, 0.9) 0%, rgba(14, 18, 26, 0.95) 100%) !important;
+      border: 1.2px solid rgba(255, 184, 0, 0.28) !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    }
   </style>
 </head>
 <body>
@@ -1401,50 +1876,97 @@
           </div>
         </div>
         <div class="user-badge-header">
-          <div class="tickets-pill-vip">
-            <span class="ticket-3d-icon">📦</span>
+          <div class="tickets-pill-vip hud-pulse-active airdrop-flame-glow">
+            <div class="airdrop-smoke-bg"></div>
+            <span class="ticket-3d-icon"><i class="fa-solid fa-parachute-box"></i></span>
             <span id="header-tickets-count">0</span> AirDrop Bilet
           </div>
         </div>
       </header>
       
-      <!-- 1. Hero Card (Ultra Cyber-Premium VIP 3D Banner) -->
+      <!-- 1. Hero Card (PUBG AirDrop & Winner Winner Chicken Dinner Level 3 VIP Banner) -->
       <div class="pxl-hero-card banner-art-mode" onclick="window.scrollToTasks && window.scrollToTasks()">
-        <img src="assets/grand_banner.jpg?v=20261008_pubg_01" alt="HASAN PACKAGE KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
+        <!-- Main PUBG Banner Art -->
+        <img src="assets/grand_banner.jpg?v=20261008_pubg_02" alt="HASAN PACKAGE PUBG KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
+        
+        <!-- AirDrop Golden Flame Glare Sweep -->
         <div class="pxl-hero-banner-glare"></div>
+
+        <!-- AirDrop Flare Smoke Effects Layer -->
+        <div class="pubg-airdrop-flare-layer">
+          <div class="airdrop-flare-glow flare-top-left"></div>
+          <div class="airdrop-flare-glow flare-bottom-right"></div>
+        </div>
+
+        <!-- Tactical HUD Overlay Tags & Radar Brackets -->
+        <div class="pubg-tactical-hud-overlay">
+          <!-- Top Left Tactical Drop Tag -->
+          <div class="pubg-hud-tag pubg-hud-top-left">
+            <span class="hud-live-dot"></span>
+            <span>AIRDROP DROP #L3</span>
+          </div>
+
+          <!-- Top Right Crosshairs & Mode Tag -->
+          <div class="pubg-hud-tag pubg-hud-top-right">
+            <i class="fa-solid fa-crosshairs pubg-crosshair-icon"></i>
+            <span>WWCD 2026</span>
+          </div>
+
+          <!-- Bottom Left Winner Winner Chicken Dinner Tag -->
+          <div class="pubg-hud-tag pubg-hud-bottom-left">
+            <span class="pubg-gold-crown">👑</span> WINNER WINNER CHICKEN DINNER
+          </div>
+
+          <!-- Bottom Right AirDrop Crate Badge -->
+          <div class="pubg-hud-tag pubg-hud-bottom-right">
+            <span class="pubg-airdrop-box-icon">📦</span> TICKET CRATE ACTIVE
+          </div>
+
+          <!-- Tactical Corner Radar -->
+          <div class="pubg-corner-radar">
+            <div class="radar-hud-ring ring-1"></div>
+            <div class="radar-hud-ring ring-2"></div>
+            <div class="radar-hud-line"></div>
+          </div>
+        </div>
+
         <span id="contest-title" style="display:none;">HASAN PACKAGE PUBG KONKURS 2026</span>
         <span id="contest-description" style="display:none;">Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'lib AirDrop biletlarini oling!</span>
       </div>
 
       <!-- 2. Futuristic Glass Countdown Timer -->
-      <div class="pxl-timer-card">
+      <div class="pxl-timer-card hud-pulse-active">
         <div class="pxl-timer-header">
           <div class="timer-title-box">
-            📦 <span>AirDrop Konkurs Yakunlanishiga Qoldi:</span>
+            <i class="fa-solid fa-radar tactical-radar-spin" style="color: #FFB800; font-size: 0.95rem;"></i> <span>AirDrop Konkurs Yakunlanishiga Qoldi:</span>
           </div>
         </div>
         <div class="pxl-glass-timer">
-          <div class="glass-time-cell">
+          <div class="glass-time-cell hud-cell-glow">
             <div class="cell-gloss"></div>
-            <div id="timer-days" class="timer-val">00</div>
+            <div class="gold-shimmer-overlay"></div>
+            <div id="timer-days" class="timer-val pubg-gold-num">00</div>
             <div class="timer-lbl">Kun</div>
           </div>
           <div class="timer-dots"><span class="dot"></span><span class="dot"></span></div>
-          <div class="glass-time-cell">
+          <div class="glass-time-cell hud-cell-glow">
             <div class="cell-gloss"></div>
-            <div id="timer-hours" class="timer-val">00</div>
+            <div class="gold-shimmer-overlay"></div>
+            <div id="timer-hours" class="timer-val pubg-gold-num">00</div>
             <div class="timer-lbl">Soat</div>
           </div>
           <div class="timer-dots"><span class="dot"></span><span class="dot"></span></div>
-          <div class="glass-time-cell">
+          <div class="glass-time-cell hud-cell-glow">
             <div class="cell-gloss"></div>
-            <div id="timer-mins" class="timer-val">00</div>
+            <div class="gold-shimmer-overlay"></div>
+            <div id="timer-mins" class="timer-val pubg-gold-num">00</div>
             <div class="timer-lbl">Daq</div>
           </div>
           <div class="timer-dots"><span class="dot"></span><span class="dot"></span></div>
-          <div class="glass-time-cell">
+          <div class="glass-time-cell hud-cell-glow">
             <div class="cell-gloss"></div>
-            <div id="timer-secs" class="timer-val">00</div>
+            <div class="gold-shimmer-overlay"></div>
+            <div id="timer-secs" class="timer-val pubg-gold-num">00</div>
             <div class="timer-lbl">Son</div>
           </div>
         </div>
@@ -1452,7 +1974,8 @@
 
       <!-- 3. Bosh Qatnashish Tugmasi (Homiylarga yo'naltiruvchi) -->
       <div class="pxl-hero-action-box">
-        <button id="btn-hero-participate" class="btn btn-participate-glow" onclick="window.scrollToTasks && window.scrollToTasks()">
+        <button id="btn-hero-participate" class="btn btn-participate-glow btn-3d-tactical" onclick="window.scrollToTasks && window.scrollToTasks()">
+          <div class="gold-shimmer-overlay"></div>
           <span class="btn-colored-rocket">🪂</span> AIRDROP QATNASHISH
         </button>
         <div class="hero-action-hint">
@@ -1467,7 +1990,7 @@
             <span class="title-icon-badge"><i class="fa-solid fa-box-archive"></i></span>
             <span>AirDrop Homiy Kanallar & Vazifalar</span>
           </div>
-          <div class="tasks-progress-pill">
+          <div class="tasks-progress-pill hud-pulse-active">
             <i class="fa-solid fa-parachute-box" style="color: #FFB800;"></i> +1 Bilet har biriga
           </div>
         </div>
@@ -1480,7 +2003,8 @@
         </div>
 
         <!-- Big Glow Participate Button -->
-        <button id="btn-participate-contest" class="btn btn-participate-glow">
+        <button id="btn-participate-contest" class="btn btn-participate-glow btn-3d-tactical">
+          <div class="gold-shimmer-overlay"></div>
           <span class="btn-colored-rocket">🪂</span> AIRDROP QATNASHISH
         </button>
         <div class="participate-secure-notice">
@@ -1538,37 +2062,40 @@
 
     <!-- TAB 2: PROFIL (PROFILE & TICKETS) -->
     <section id="tab-profile" class="tab-content">
-      <div class="card">
+      <div class="card pubg-crate-card">
         <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
-          <div class="user-avatar-wrapper" style="width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary-color); flex-shrink: 0;">
+          <div class="user-avatar-wrapper" style="width: 58px; height: 58px; border-radius: 50%; overflow: hidden; border: 2px solid #FFB800; box-shadow: 0 0 16px rgba(255, 184, 0, 0.4); flex-shrink: 0; position: relative;">
             <img id="prof-user-avatar" src="assets/avatar.png" alt="Profile Avatar" style="width: 100%; height: 100%; object-fit: cover;">
           </div>
           <div>
-            <div id="prof-user-name" style="font-size: 1.1rem; font-weight: 700; color: #fff;">PUBG Jangchisi</div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div id="prof-user-name" style="font-size: 1.1rem; font-weight: 800; color: #fff;">PUBG Jangchisi</div>
+              <span class="pubg-level-badge"><i class="fa-solid fa-shield-halved"></i> LEVEL 3</span>
+            </div>
             <div id="prof-user-id" style="font-size: 0.78rem; color: var(--text-secondary);">ID: 00000000</div>
           </div>
         </div>
 
         <div class="stats-grid" style="margin-bottom: 16px;">
-          <div class="stat-card">
-            <div id="prof-tickets-count" class="stat-value" style="color: var(--primary-color);">0</div>
-            <div class="stat-label">AirDrop Biletlaringiz</div>
+          <div class="stat-card pubg-crate-stat">
+            <div id="prof-tickets-count" class="stat-value" style="color: #FFB800;">0</div>
+            <div class="stat-label"><i class="fa-solid fa-parachute-box"></i> AirDrop Biletlaringiz</div>
           </div>
-          <div class="stat-card">
-            <div id="prof-referrals-count" class="stat-value">0</div>
-            <div class="stat-label">Taklif qilinganlar</div>
+          <div class="stat-card pubg-crate-stat">
+            <div id="prof-referrals-count" class="stat-value" style="color: #00E5FF;">0</div>
+            <div class="stat-label"><i class="fa-solid fa-users"></i> Taklif qilinganlar</div>
           </div>
         </div>
       </div>
 
       <!-- Tickets Grid Card -->
-      <div class="card">
+      <div class="card pubg-crate-card">
         <div class="card-header-title">
-          <span class="ticket-3d-icon">📦</span>
+          <span class="ticket-3d-icon"><i class="fa-solid fa-box-archive" style="color: #FFB800;"></i></span>
           <span>Sizning Omadli AirDrop Biletlaringiz</span>
         </div>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
-          Har bir unikal bilet seriyasi g'olib bo'lish imkoniyatingizni oshiradi:
+          Har bir PUBG Level 3 Crate bilet seriyasi g'olib bo'lish imkoniyatingizni oshiradi:
         </p>
 
         <div id="user-tickets-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
@@ -1579,40 +2106,43 @@
 
     <!-- TAB: REYTING (LEADERBOARD) -->
     <section id="tab-leaderboard" class="tab-content">
-      <div class="card">
+      <div class="card pubg-crate-card">
         <div class="card-header-title">
-          <span style="font-size: 1.2rem;">🏆</span>
+          <span style="font-size: 1.2rem; color: #FFB800;"><i class="fa-solid fa-trophy"></i></span>
           <span>Winner Winner Chicken Dinner Reytingi</span>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
-          Eng ko'p AirDrop biletiga ega jangchilar ro'yxati. Har bir bilet g'olib bo'lish imkoniyatingizni oshiradi!
+          Eng ko'p AirDrop biletiga ega PUBG jangchilari ro'yxati. Har bir bilet g'olib bo'lish imkoniyatingizni oshiradi!
         </p>
 
         <!-- TOP 3 PODIUM -->
         <div class="podium-container">
           <!-- Rank 2 -->
-          <div class="podium-card rank-2">
+          <div class="podium-card rank-2 pubg-crate-card">
+            <div class="podium-crate-tag silver"><i class="fa-solid fa-box-archive"></i> LEVEL 2</div>
             <div class="podium-crown">🥈</div>
             <div id="podium-2-name" class="podium-name">---</div>
-            <div id="podium-2-tickets" class="podium-tickets">0 Bilet</div>
+            <div id="podium-2-tickets" class="podium-tickets pubg-gold-badge"><i class="fa-solid fa-parachute-box"></i> 0 Bilet</div>
           </div>
           <!-- Rank 1 -->
-          <div class="podium-card rank-1">
+          <div class="podium-card rank-1 pubg-crate-card">
+            <div class="podium-crate-tag gold"><i class="fa-solid fa-crown"></i> LEVEL 3 VIP</div>
             <div class="podium-crown">👑</div>
             <div id="podium-1-name" class="podium-name">---</div>
-            <div id="podium-1-tickets" class="podium-tickets">0 Bilet</div>
+            <div id="podium-1-tickets" class="podium-tickets pubg-gold-badge"><i class="fa-solid fa-parachute-box"></i> 0 Bilet</div>
           </div>
           <!-- Rank 3 -->
-          <div class="podium-card rank-3">
+          <div class="podium-card rank-3 pubg-crate-card">
+            <div class="podium-crate-tag bronze"><i class="fa-solid fa-parachute-box"></i> LEVEL 1</div>
             <div class="podium-crown">🥉</div>
             <div id="podium-3-name" class="podium-name">---</div>
-            <div id="podium-3-tickets" class="podium-tickets">0 Bilet</div>
+            <div id="podium-3-tickets" class="podium-tickets pubg-gold-badge"><i class="fa-solid fa-parachute-box"></i> 0 Bilet</div>
           </div>
         </div>
 
         <!-- Leaderboard List -->
         <div style="border-top: 1px solid var(--card-border); padding-top: 14px;">
-          <h4 style="font-size: 0.95rem; color: var(--primary-color); margin-bottom: 12px;">🎖️ Top Jangchilar</h4>
+          <h4 style="font-size: 0.95rem; color: var(--primary-color); margin-bottom: 12px;"><i class="fa-solid fa-box-archive"></i> Top PUBG Jangchilar</h4>
           <div id="leaderboard-list">
             <div style="text-align: center; color: var(--text-secondary); padding: 15px;">Yuklanmoqda...</div>
           </div>
@@ -1631,25 +2161,25 @@
         <!-- Admin Sub-navigation (Mini Tabs) -->
         <div class="admin-subnav">
           <button type="button" class="admin-subtab-btn active" data-subtab="subtab-stats">
-            <span>📊</span> Statistika
+            <i class="fa-solid fa-chart-pie"></i> Statistika
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-contest">
-            <span>🏆</span> Konkurs
+            <i class="fa-solid fa-trophy"></i> Konkurs
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-sponsors">
-            <span>📢</span> Sponsorlar
+            <i class="fa-solid fa-parachute-box"></i> Sponsorlar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-users">
-            <span>👥</span> Foydalanuvchilar
+            <i class="fa-solid fa-users-gear"></i> Foydalanuvchilar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-winners">
-            <span>🎖️</span> G'oliblar
+            <i class="fa-solid fa-box-archive"></i> G'oliblar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-broadcast">
-            <span>📨</span> Xabarnoma
+            <i class="fa-solid fa-paper-plane"></i> Xabarnoma
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-system">
-            <span>🛡️</span> Boshqaruv
+            <i class="fa-solid fa-shield-halved"></i> Boshqaruv
           </button>
         </div>
 
@@ -1672,7 +2202,7 @@
               <div class="stat-label">Tarqatilgan Biletlar</div>
             </div>
             <div class="stat-card">
-              <div id="admin-stat-today-users" class="stat-value" style="color: #00F0FF;">0</div>
+              <div id="admin-stat-today-users" class="stat-value" style="color: #FF5722;">0</div>
               <div class="stat-label">Bugungi Yangi Userlar</div>
             </div>
             <div class="stat-card">
@@ -1772,13 +2302,13 @@
         <!-- SUBTAB 3: SPONSORLAR -->
         <div id="subtab-sponsors" class="admin-subcontent">
           <!-- G'OLIBLARNI E'LON QILISH KANALI SOZLAMASI -->
-          <div style="background: rgba(197, 255, 0, 0.05); border: 1px solid rgba(197, 255, 0, 0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
+          <div style="background: rgba(255, 184, 0, 0.05); border: 1px solid rgba(255, 184, 0, 0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 1.15rem;">📢</span>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #fff; font-weight: 700;">📢 G'oliblar E'lon Qilinadigan Kanal</h4>
               </div>
-              <span id="badge-winner-channel-active" class="badge" style="background: rgba(197, 255, 0, 0.15); color: var(--primary-color); font-size: 0.75rem; border: 1px solid var(--primary-color); display: none;">
+              <span id="badge-winner-channel-active" class="badge" style="background: rgba(255, 184, 0, 0.15); color: var(--primary-color); font-size: 0.75rem; border: 1px solid var(--primary-color); display: none;">
                 <span>✅</span> Faol
               </span>
             </div>
@@ -1883,7 +2413,7 @@
             </select>
           </div>
 
-          <div id="admin-winners-channel-hint" style="margin-top: 10px; margin-bottom: 12px; padding: 10px 12px; background: rgba(197, 255, 0, 0.06); border: 1px dashed rgba(197, 255, 0, 0.3); border-radius: 8px; font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+          <div id="admin-winners-channel-hint" style="margin-top: 10px; margin-bottom: 12px; padding: 10px 12px; background: rgba(255, 184, 0, 0.06); border: 1px dashed rgba(255, 184, 0, 0.3); border-radius: 8px; font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 1.05rem;">📢</span>
             <div>
               E'lon qilinadigan rasmiy kanal: <b id="winners-target-channel-label" style="color: var(--primary-color);">Tanlanmagan</b>
@@ -1918,7 +2448,7 @@
             <label><span>🖼️</span> Rasm yoki Video (Galereyadan tanlash):</label>
             <input type="file" id="admin-broadcast-file" accept="image/*,video/*" style="display: none;">
 
-            <div id="admin-media-upload-area" style="border: 2px dashed rgba(197, 255, 0, 0.4); border-radius: 12px; padding: 16px 12px; text-align: center; background: rgba(197, 255, 0, 0.03); cursor: pointer; transition: all 0.25s ease;">
+            <div id="admin-media-upload-area" style="border: 2px dashed rgba(255, 184, 0, 0.4); border-radius: 12px; padding: 16px 12px; text-align: center; background: rgba(255, 184, 0, 0.03); cursor: pointer; transition: all 0.25s ease;">
               <div style="font-size: 2rem; margin-bottom: 6px;">☁️</div>
               <div style="font-weight: 700; font-size: 0.88rem; color: #fff;">Galereyadan Rasm yoki Video Tanlash</div>
               <div style="font-size: 0.74rem; color: var(--text-secondary); margin-top: 4px;">JPG, PNG, MP4, MOV (Galereya yoki fayllardan tanlang)</div>
@@ -1994,19 +2524,19 @@
     <!-- STICKY BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
       <button class="nav-item active" data-tab="tab-contest">
-        <span class="nav-icon-3d">🪂</span>
+        <span class="nav-icon-3d"><i class="fa-solid fa-parachute-box"></i></span>
         <span>Konkurs</span>
       </button>
       <button class="nav-item" data-tab="tab-leaderboard">
-        <span class="nav-icon-3d">🏆</span>
+        <span class="nav-icon-3d"><i class="fa-solid fa-trophy"></i></span>
         <span>Reyting</span>
       </button>
       <button class="nav-item" data-tab="tab-profile">
-        <span class="nav-icon-3d">🎖️</span>
+        <span class="nav-icon-3d"><i class="fa-solid fa-box-archive"></i></span>
         <span>Profil</span>
       </button>
       <button id="nav-item-admin" class="nav-item" data-tab="tab-admin" style="display: none;">
-        <span class="nav-icon-3d">⚙️</span>
+        <span class="nav-icon-3d"><i class="fa-solid fa-shield-halved"></i></span>
         <span>Admin</span>
       </button>
     </nav>
@@ -2015,7 +2545,7 @@
 
   <!-- YouTube Google OAuth Modal Guide -->
   <div id="yt-oauth-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: #1a1d24; border: 1px solid var(--primary-color); border-radius: 16px; padding: 24px; max-width: 420px; width: 100%; box-shadow: 0 0 25px rgba(197, 255, 0, 0.25); color: #fff;">
+    <div style="background: #1a1d24; border: 1px solid var(--primary-color); border-radius: 16px; padding: 24px; max-width: 420px; width: 100%; box-shadow: 0 0 25px rgba(255, 184, 0, 0.25); color: #fff;">
       <div style="text-align: center; margin-bottom: 14px;">
         <i class="fa-brands fa-youtube" style="font-size: 2.8rem; color: #ff0000;"></i>
         <h3 style="color: #fff; font-size: 1.15rem; margin-top: 10px; font-weight: 800;">Google OAuth YouTube Tekshiruvi</h3>
@@ -2025,7 +2555,7 @@
         <p style="margin-bottom: 6px; color: #cbd5e1;">
           Google xavfsizlik qoidalariga ko'ra, tasdiqlash sahifasi <b>Chrome yoki Safari</b> brauzerida ochilishi kerak.
         </p>
-        <div id="yt-modal-bot-status" style="display: none; background: rgba(197, 255, 0, 0.12); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 10px; border-radius: 8px; font-size: 0.8rem; margin-top: 8px;">
+        <div id="yt-modal-bot-status" style="display: none; background: rgba(255, 184, 0, 0.12); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 10px; border-radius: 8px; font-size: 0.8rem; margin-top: 8px;">
           <span>✈️</span> Havola shuningdek bot chatiga ham yuborildi!
         </div>
       </div>
@@ -2060,6 +2590,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20261008_pubg_01"></script>
+  <script src="js/app.js?v=20261008_pubg_02"></script>
 </body>
 </html>
