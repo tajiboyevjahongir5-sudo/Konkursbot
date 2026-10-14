@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20261008_pubg_02">
+  <link rel="stylesheet" href="css/style.css?v=20261014_icons3d">
 
   <style>
     /* ==========================================================================
@@ -1852,6 +1852,14 @@
       border: 1.2px solid rgba(255, 184, 0, 0.28) !important;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
     }
+
+    /* Rangli 3D ikonkalar (Microsoft Fluent Emoji) */
+    .i3d { width: 1.2em; height: 1.2em; object-fit: contain; display: inline-block; vertical-align: -0.24em; flex-shrink: 0; }
+    .prize-3d-emoji .i3d { width: 1.5em; height: 1.5em; }
+    .podium-crown .i3d { width: 1.6em; height: 1.6em; }
+    .title-icon-badge .i3d { width: 1.5em; height: 1.5em; }
+    .nav-icon-3d .nav3d { width: 1.5em; height: 1.5em; vertical-align: middle; opacity: .55; filter: saturate(.7); transition: opacity .2s, filter .2s; }
+    .nav-item.active .nav-icon-3d .nav3d { opacity: 1; filter: none; }
   </style>
 </head>
 <body>
@@ -1877,7 +1885,7 @@
         </div>
         <div class="user-badge-header">
           <div class="tickets-pill-vip">
-            <span class="ticket-3d-icon">🎟️</span>
+            <span class="ticket-3d-icon"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"></span>
             <span id="header-tickets-count">0</span> Bilet
           </div>
         </div>
@@ -1899,7 +1907,7 @@
       <div class="pxl-timer-card">
         <div class="pxl-timer-header">
           <div class="timer-title-box">
-            ⏰ <span>Konkurs yakunlanishiga qoldi:</span>
+            <img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Alarm%20clock/3D/alarm_clock_3d.png" alt="" loading="lazy"> <span>Konkurs yakunlanishiga qoldi:</span>
           </div>
         </div>
         <div class="pxl-glass-timer">
@@ -1932,7 +1940,7 @@
       <!-- 3. Bosh Qatnashish Tugmasi (Homiylarga yo'naltiruvchi) -->
       <div class="pxl-hero-action-box">
         <button id="btn-hero-participate" class="btn btn-participate-glow" onclick="window.scrollToTasks && window.scrollToTasks()">
-          <span class="btn-colored-rocket">🚀</span> QATNASHISH
+          <span class="btn-colored-rocket"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Rocket/3D/rocket_3d.png" alt="" loading="lazy"></span> QATNASHISH
         </button>
         <div class="hero-action-hint">
           <i class="fa-solid fa-arrow-down"></i> Homiylarga obuna bo'lish uchun bosing
@@ -1943,15 +1951,15 @@
       <div class="pxl-section-block pxl-tasks-card" id="tasks-section">
         <div class="pxl-section-header-modern">
           <div class="pxl-section-title">
-            <span class="title-icon-badge"><i class="fa-solid fa-bullseye"></i></span>
+            <span class="title-icon-badge"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Bullseye/3D/bullseye_3d.png" alt="" loading="lazy"></span>
             <span>Homiy Kanallar & Vazifalar</span>
           </div>
           <div class="tasks-progress-pill">
-            <i class="fa-solid fa-ticket" style="color: #FFB800;"></i> +1 Bilet har biriga
+            <img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"> Hammasiga = 1 Bilet
           </div>
         </div>
         <p class="tasks-subtitle-hint">
-          Barcha homiylarga a'zo bo'ling va biletlarni qo'lga kiriting:
+          Barcha homiy kanallarga obuna bo'ling va 1 ta bilet oling:
         </p>
 
         <div id="tasks-container">
@@ -1960,17 +1968,17 @@
 
         <!-- Big Glow Participate Button -->
         <button id="btn-participate-contest" class="btn btn-participate-glow">
-          <span class="btn-colored-rocket">🚀</span> QATNASHISH
+          <span class="btn-colored-rocket"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Rocket/3D/rocket_3d.png" alt="" loading="lazy"></span> QATNASHISH
         </button>
         <div class="participate-secure-notice">
-          <i class="fa-solid fa-shield-halved" style="color: #FFB800;"></i> Barcha homiylar tekshirilib, biletlar balansingizga qo'shiladi
+          <img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shield/3D/shield_3d.png" alt="" loading="lazy"> Barcha homiylar tekshirilgach, 1 ta bilet balansingizga qo'shiladi
         </div>
       </div>
 
       <!-- 5. VIP Prize Showcase (3D Luxury Cards - Pastki Qism) -->
       <div class="pxl-section-block" style="margin-bottom: 24px;">
         <div class="pxl-section-title">
-          <span class="title-emoji">🏆</span>
+          <span class="title-emoji"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Trophy/3D/trophy_3d.png" alt="" loading="lazy"></span>
           <span>Bosh Sovrinlar Jamg'armasi</span>
         </div>
         
@@ -1978,9 +1986,9 @@
           <!-- 1-O'rin Gold VIP (iPhone 15 Pro) -->
           <div class="prize-card gold">
             <div class="prize-shine"></div>
-            <div class="prize-card-badge">👑 1-O'RIN</div>
+            <div class="prize-card-badge"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Crown/3D/crown_3d.png" alt="" loading="lazy"> 1-O'RIN</div>
             <div class="prize-icon-wrap gold-aura">
-              <span class="prize-3d-emoji">📱</span>
+              <span class="prize-3d-emoji"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Mobile%20phone/3D/mobile_phone_3d.png" alt="" loading="lazy"></span>
             </div>
             <div class="prize-card-name">iPhone 15 Pro</div>
             <div class="prize-card-tag">Titanium Gold</div>
@@ -1989,9 +1997,9 @@
           <!-- 2-O'rin Neon Lime (10,000,000 UZS) -->
           <div class="prize-card lime">
             <div class="prize-shine"></div>
-            <div class="prize-card-badge">⚡ 2-O'RIN</div>
+            <div class="prize-card-badge"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/High%20voltage/3D/high_voltage_3d.png" alt="" loading="lazy"> 2-O'RIN</div>
             <div class="prize-icon-wrap lime-aura">
-              <span class="prize-3d-emoji">💵</span>
+              <span class="prize-3d-emoji"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Dollar%20banknote/3D/dollar_banknote_3d.png" alt="" loading="lazy"></span>
             </div>
             <div class="prize-card-name">10,000,000</div>
             <div class="prize-card-tag">UZS NAQD</div>
@@ -2000,9 +2008,9 @@
           <!-- 3-O'rin Cyber Cyan (5x Telegram Premium) -->
           <div class="prize-card cyan">
             <div class="prize-shine"></div>
-            <div class="prize-card-badge">⭐️ 3-O'RIN</div>
+            <div class="prize-card-badge"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Star/3D/star_3d.png" alt="" loading="lazy"> 3-O'RIN</div>
             <div class="prize-icon-wrap cyan-aura">
-              <span class="prize-3d-emoji">🌟</span>
+              <span class="prize-3d-emoji"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Glowing%20star/3D/glowing_star_3d.png" alt="" loading="lazy"></span>
             </div>
             <div class="prize-card-name">5x TG Premium</div>
             <div class="prize-card-tag">Yillik Obuna</div>
@@ -2045,7 +2053,7 @@
       <!-- Tickets Grid Card -->
       <div class="card pubg-crate-card">
         <div class="card-header-title">
-          <span class="ticket-3d-icon">🎟️</span>
+          <span class="ticket-3d-icon"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"></span>
           <span>Sizning Omadli Biletlaringiz</span>
         </div>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
@@ -2062,7 +2070,7 @@
     <section id="tab-leaderboard" class="tab-content">
       <div class="card pubg-crate-card">
         <div class="card-header-title">
-          <span style="font-size: 1.2rem; color: #FFB800;"><i class="fa-solid fa-trophy"></i></span>
+          <span style="font-size: 1.3rem;"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Trophy/3D/trophy_3d.png" alt="" loading="lazy"></span>
           <span>Ishtirokchilar Reytingi</span>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
@@ -2073,19 +2081,19 @@
         <div class="podium-container">
           <!-- Rank 2 -->
           <div class="podium-card rank-2 pubg-crate-card">
-            <div class="podium-crown">🥈</div>
+            <div class="podium-crown"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/2nd%20place%20medal/3D/2nd_place_medal_3d.png" alt="" loading="lazy"></div>
             <div id="podium-2-name" class="podium-name">---</div>
             <div id="podium-2-tickets" class="podium-tickets pubg-gold-badge">0 Bilet</div>
           </div>
           <!-- Rank 1 -->
           <div class="podium-card rank-1 pubg-crate-card">
-            <div class="podium-crown">👑</div>
+            <div class="podium-crown"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Crown/3D/crown_3d.png" alt="" loading="lazy"></div>
             <div id="podium-1-name" class="podium-name">---</div>
             <div id="podium-1-tickets" class="podium-tickets pubg-gold-badge">0 Bilet</div>
           </div>
           <!-- Rank 3 -->
           <div class="podium-card rank-3 pubg-crate-card">
-            <div class="podium-crown">🥉</div>
+            <div class="podium-crown"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/3rd%20place%20medal/3D/3rd_place_medal_3d.png" alt="" loading="lazy"></div>
             <div id="podium-3-name" class="podium-name">---</div>
             <div id="podium-3-tickets" class="podium-tickets pubg-gold-badge">0 Bilet</div>
           </div>
@@ -2093,7 +2101,7 @@
 
         <!-- Leaderboard List -->
         <div style="border-top: 1px solid var(--card-border); padding-top: 14px;">
-          <h4 style="font-size: 0.95rem; color: var(--primary-color); margin-bottom: 12px;">📊 Barcha Ishtirokchilar</h4>
+          <h4 style="font-size: 0.95rem; color: var(--primary-color); margin-bottom: 12px;"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Bar%20chart/3D/bar_chart_3d.png" alt="" loading="lazy"> Barcha Ishtirokchilar</h4>
           <div id="leaderboard-list">
             <div style="text-align: center; color: var(--text-secondary); padding: 15px;">Yuklanmoqda...</div>
           </div>
@@ -2105,7 +2113,7 @@
     <section id="tab-admin" class="tab-content">
       <div class="card">
         <div class="card-header-title">
-          <span style="font-size: 1.2rem;">⚙️</span>
+          <span style="font-size: 1.3rem;"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Gear/3D/gear_3d.png" alt="" loading="lazy"></span>
           <span>PEEXELL Admin Boshqaruvi</span>
         </div>
 
@@ -2475,19 +2483,19 @@
     <!-- STICKY BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
       <button class="nav-item active" data-tab="tab-contest">
-        <span class="nav-icon-3d"><i class="fa-solid fa-parachute-box"></i></span>
+        <span class="nav-icon-3d"><img class="i3d nav3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Parachute/3D/parachute_3d.png" alt="" loading="lazy"></span>
         <span>Konkurs</span>
       </button>
       <button class="nav-item" data-tab="tab-leaderboard">
-        <span class="nav-icon-3d"><i class="fa-solid fa-trophy"></i></span>
+        <span class="nav-icon-3d"><img class="i3d nav3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Trophy/3D/trophy_3d.png" alt="" loading="lazy"></span>
         <span>Reyting</span>
       </button>
       <button class="nav-item" data-tab="tab-profile">
-        <span class="nav-icon-3d"><i class="fa-solid fa-box-archive"></i></span>
+        <span class="nav-icon-3d"><img class="i3d nav3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Military%20helmet/3D/military_helmet_3d.png" alt="" loading="lazy"></span>
         <span>Profil</span>
       </button>
       <button id="nav-item-admin" class="nav-item" data-tab="tab-admin" style="display: none;">
-        <span class="nav-icon-3d"><i class="fa-solid fa-shield-halved"></i></span>
+        <span class="nav-icon-3d"><img class="i3d nav3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Gear/3D/gear_3d.png" alt="" loading="lazy"></span>
         <span>Admin</span>
       </button>
     </nav>
@@ -2541,6 +2549,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20261008_pubg_02"></script>
+  <script src="js/app.js?v=20261014_icons3d"></script>
 </body>
 </html>
