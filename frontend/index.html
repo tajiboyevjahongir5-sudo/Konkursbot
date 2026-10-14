@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20261014_icons_anim">
+  <link rel="stylesheet" href="css/style.css?v=20261014_icons_anim2">
 
   <style>
     /* ==========================================================================
@@ -1860,6 +1860,8 @@
     .title-icon-badge .i3d { width: 1.5em; height: 1.5em; }
     .nav-icon-3d .nav3d { width: 1.5em; height: 1.5em; vertical-align: middle; opacity: .55; filter: saturate(.7); transition: opacity .2s, filter .2s; }
     .nav-item.active .nav-icon-3d .nav3d { opacity: 1; filter: none; }
+    .emo { width: 1.25em; height: 1.25em; object-fit: contain; display: inline-block; vertical-align: -0.25em; flex-shrink: 0; pointer-events: none; }
+    .prize-3d-emoji .emo, .avatar-yt-icon .emo, .avatar-ig-icon .emo { width: 1.5em; height: 1.5em; }
   </style>
 </head>
 <body>
@@ -1943,7 +1945,7 @@
           <span class="btn-colored-rocket"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.webp" alt="" loading="lazy"></span> QATNASHISH
         </button>
         <div class="hero-action-hint">
-          <i class="fa-solid fa-arrow-down"></i> Homiylarga obuna bo'lish uchun bosing
+          👇 Homiylarga obuna bo'lish uchun bosing
         </div>
       </div>
 
@@ -2120,25 +2122,25 @@
         <!-- Admin Sub-navigation (Mini Tabs) -->
         <div class="admin-subnav">
           <button type="button" class="admin-subtab-btn active" data-subtab="subtab-stats">
-            <i class="fa-solid fa-chart-pie"></i> Statistika
+            📊 Statistika
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-contest">
-            <i class="fa-solid fa-trophy"></i> Konkurs
+            🏆 Konkurs
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-sponsors">
-            <i class="fa-solid fa-parachute-box"></i> Sponsorlar
+            📢 Sponsorlar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-users">
-            <i class="fa-solid fa-users-gear"></i> Foydalanuvchilar
+            👥 Foydalanuvchilar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-winners">
-            <i class="fa-solid fa-box-archive"></i> G'oliblar
+            📦 G'oliblar
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-broadcast">
-            <i class="fa-solid fa-paper-plane"></i> Xabarnoma
+            📤 Xabarnoma
           </button>
           <button type="button" class="admin-subtab-btn" data-subtab="subtab-system">
-            <i class="fa-solid fa-shield-halved"></i> Boshqaruv
+            🛡️ Boshqaruv
           </button>
         </div>
 
@@ -2319,7 +2321,7 @@
             <label id="lbl-sponsor-yt-id">🔴 YouTube Channel ID (Google API UC...):</label>
             <input type="text" id="admin-sponsor-yt-id" class="form-input" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx">
             <small style="display: block; font-size: 0.74rem; color: var(--primary-color); margin-top: 3px;">
-              <i class="fa-brands fa-youtube" style="color: #ff3b30;"></i> Google OAuth (youtube.readonly) orqali 100% real obuna tekshiriladi.
+              📺 Google OAuth (youtube.readonly) orqali 100% real obuna tekshiriladi.
             </small>
           </div>
           <button id="btn-add-sponsor" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
@@ -2483,7 +2485,7 @@
     <!-- STICKY BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
       <button class="nav-item active" data-tab="tab-contest">
-        <span class="nav-icon-3d"><img class="i3d nav3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1fa82/512.webp" alt="" loading="lazy"></span>
+        <span class="nav-icon-3d"><img class="i3d nav3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f381/512.webp" alt="" loading="lazy"></span>
         <span>Konkurs</span>
       </button>
       <button class="nav-item" data-tab="tab-leaderboard">
@@ -2506,7 +2508,7 @@
   <div id="yt-oauth-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
     <div style="background: #1a1d24; border: 1px solid var(--primary-color); border-radius: 16px; padding: 24px; max-width: 420px; width: 100%; box-shadow: 0 0 25px rgba(255, 184, 0, 0.25); color: #fff;">
       <div style="text-align: center; margin-bottom: 14px;">
-        <i class="fa-brands fa-youtube" style="font-size: 2.8rem; color: #ff0000;"></i>
+        📺
         <h3 style="color: #fff; font-size: 1.15rem; margin-top: 10px; font-weight: 800;">Google OAuth YouTube Tekshiruvi</h3>
       </div>
       <div style="font-size: 0.85rem; color: #ccc; line-height: 1.5; margin-bottom: 16px; background: rgba(255,255,255,0.05); padding: 14px; border-radius: 10px; border-left: 3px solid var(--primary-color);">
@@ -2549,6 +2551,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20261014_icons_anim"></script>
+  <script src="js/app.js?v=20261014_icons_anim2"></script>
 </body>
 </html>

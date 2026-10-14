@@ -2,6 +2,83 @@
    PEEXELL KONKURS TELEGRAM WEB APP - JAVASCRIPT SPA LOGIC
    ========================================================================== */
 
+/* ==========================================================================
+   ANIMATED 3D EMOJI: replaces every emoji character on the page with
+   Google Noto Animated Emoji (falls back to the static Noto SVG when no
+   animated version exists). Runs on initial DOM and on every DOM update.
+   ========================================================================== */
+(function () {
+  const EMOJI_RE = /\p{Extended_Pictographic}️?(?:‍\p{Extended_Pictographic}️?)*/gu;
+  const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "OPTION", "SELECT", "TEXTAREA", "INPUT", "TITLE", "CODE"]);
+  const noAnimation = new Set();
+  const base = "https://fonts.gstatic.com/s/e/notoemoji/latest/";
+
+  function codeOf(emoji) {
+    return [...emoji].map(ch => ch.codePointAt(0).toString(16)).join("_");
+  }
+
+  function makeImg(emoji) {
+    const code = codeOf(emoji);
+    const img = document.createElement("img");
+    img.className = "emo";
+    img.alt = emoji;
+    img.draggable = false;
+    img.loading = "lazy";
+    img.src = noAnimation.has(code) ? `${base}${code}/emoji.svg` : `${base}${code}/512.webp`;
+    img.onerror = () => {
+      if (img.src.endsWith("512.webp")) {
+        noAnimation.add(code);
+        img.src = `${base}${code}/emoji.svg`;
+      } else {
+        img.replaceWith(document.createTextNode(emoji));
+      }
+    };
+    return img;
+  }
+
+  function emojify(root) {
+    if (!root) return;
+    if (root.nodeType === Node.TEXT_NODE) root = root.parentNode;
+    if (!root || root.nodeType !== Node.ELEMENT_NODE || SKIP_TAGS.has(root.tagName)) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentNode;
+        if (!parent || SKIP_TAGS.has(parent.tagName) || parent.closest("select, textarea, [contenteditable]")) return NodeFilter.FILTER_REJECT;
+        EMOJI_RE.lastIndex = 0;
+        return EMOJI_RE.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      const text = node.nodeValue;
+      const frag = document.createDocumentFragment();
+      let last = 0;
+      text.replace(EMOJI_RE, (match, offset) => {
+        if (offset > last) frag.appendChild(document.createTextNode(text.slice(last, offset)));
+        frag.appendChild(makeImg(match));
+        last = offset + match.length;
+        return match;
+      });
+      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      node.replaceWith(frag);
+    });
+  }
+
+  window.emojify = emojify;
+  const start = () => {
+    emojify(document.body);
+    new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        if (m.type === "characterData") emojify(m.target);
+        else m.addedNodes.forEach(n => emojify(n));
+      });
+    }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Telegram WebApp SDK Initialization
   const tg = window.Telegram?.WebApp;
@@ -91,11 +168,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
     
-    let icon = "fa-circle-check";
-    if (type === "danger") icon = "fa-circle-xmark";
-    if (type === "warning") icon = "fa-triangle-exclamation";
+    let icon = "✅";
+    if (type === "danger") icon = "❌";
+    if (type === "warning") icon = "⚠️";
 
-    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
     container.appendChild(toast);
 
     setTimeout(() => {
@@ -364,9 +441,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const isIG = rawPlatform === "instagram" || invLink.includes("instagram.com");
           const platform = isYT ? "youtube" : (isIG ? "instagram" : "telegram");
 
-          let iconClass = "fa-telegram";
+          let iconClass = "✈️";
           let platformBadgeClass = "badge-tg";
-          let platformBadgeIcon = '<i class="fa-brands fa-telegram"></i>';
+          let platformBadgeIcon = '✈️';
           let btnText = "A'zo bo'lish";
           let channelHandle = (task.channel_id || "").trim();
           let subtitleText = channelHandle ? (channelHandle.startsWith("@") ? channelHandle : `@${channelHandle}`) : "Telegram Kanal";
@@ -374,19 +451,19 @@ document.addEventListener("DOMContentLoaded", () => {
           let linkAttr = `href="${task.invite_link}" target="_blank"`;
 
           if (isYT) {
-            iconClass = "fa-youtube";
+            iconClass = "📺";
             platformBadgeClass = "badge-yt";
-            platformBadgeIcon = '<i class="fa-brands fa-youtube"></i>';
+            platformBadgeIcon = '📺';
             btnText = "Obuna bo'lish";
             subtitleText = "YouTube Kanal (Google API)";
-            avatarHtml = '<div class="avatar-yt-icon"><i class="fa-brands fa-youtube"></i></div>';
+            avatarHtml = '<div class="avatar-yt-icon">📺</div>';
           } else if (isIG) {
-            iconClass = "fa-instagram";
+            iconClass = "📸";
             platformBadgeClass = "badge-ig";
-            platformBadgeIcon = '<i class="fa-brands fa-instagram"></i>';
+            platformBadgeIcon = '📸';
             btnText = "Obuna bo'lish";
             subtitleText = "Instagram Profil";
-            avatarHtml = '<div class="avatar-ig-icon"><i class="fa-brands fa-instagram"></i></div>';
+            avatarHtml = '<div class="avatar-ig-icon">📸</div>';
             linkAttr = `href="#" data-url="${task.invite_link}" data-id="${task.sponsor_id}"`;
           }
 
@@ -415,16 +492,16 @@ document.addEventListener("DOMContentLoaded", () => {
                   <div class="task-done-strip">
                     <span class="task-done-label"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/2705/512.webp" alt="" loading="lazy"> Obuna tasdiqlandi</span>
                     <a ${linkAttr} class="task-revisit-btn ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();" title="Kanalni ko'rish">
-                      <span>Kanal</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                      <span>Kanal</span> 🔗
                     </a>
                   </div>
                 `
                 : `
                   <a ${linkAttr} class="task-btn task-btn-join ${platform} ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();">
-                    <i class="fa-brands ${iconClass}"></i> ${btnText}
+                    ${iconClass} ${btnText}
                   </a>
                   <button class="task-btn task-btn-verify btn-check-task" data-id="${task.sponsor_id}" data-platform="${platform}">
-                    <i class="fa-solid fa-parachute-box"></i> Tekshirish
+                    🔍 Tekshirish
                   </button>
                 `
               }
@@ -461,14 +538,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const sponsorId = parseInt(btn.getAttribute("data-id"));
             const platform = btn.getAttribute("data-platform");
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Tekshirilmoqda...';
+            btn.innerHTML = '⏳ Tekshirilmoqda...';
 
             if (platform === "instagram") {
               const trackData = igClickTracker[sponsorId];
               if (!trackData || !trackData.clicked) {
                 showToast("❌ Avval Instagram havolasiga kirib obuna bo'ling!", "warning");
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                btn.innerHTML = '🔍 Tekshirish';
                 return;
               }
 
@@ -476,7 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
               if (elapsedSeconds < 4) {
                 showToast("⏳ Iltimos, profilni ko'rish va obuna bo'lish uchun Instagram'da kamida 5 soniya turing!", "warning");
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                btn.innerHTML = '🔍 Tekshirish';
                 return;
               }
 
@@ -484,7 +561,7 @@ document.addEventListener("DOMContentLoaded", () => {
               if (!userIgNik || userIgNik.trim().length < 2) {
                 showToast("❌ Obunani tasdiqlash uchun Instagram nikingizni kiritishingiz shart!", "warning");
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                btn.innerHTML = '🔍 Tekshirish';
                 return;
               }
 
@@ -505,7 +582,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showToast("Tekshirishda xatolik yuz berdi", "danger");
               } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                btn.innerHTML = '🔍 Tekshirish';
               }
               return;
             }
@@ -558,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       checkDoneBtn.onclick = async () => {
                         try {
                           checkDoneBtn.disabled = true;
-                          checkDoneBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Tekshirilmoqda...';
+                          checkDoneBtn.innerHTML = '⏳ Tekshirilmoqda...';
                           const resDone = await apiFetch("/api/tasks/check", {
                             method: "POST",
                             body: JSON.stringify({ sponsor_id: sponsorId })
@@ -575,7 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
                           showToast("Tekshirishda xatolik yuz berdi", "danger");
                         } finally {
                           checkDoneBtn.disabled = false;
-                          checkDoneBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Brauzerda tasdiqladim, tekshirish';
+                          checkDoneBtn.innerHTML = '🔄 Brauzerda tasdiqladim, tekshirish';
                         }
                       };
                     }
@@ -597,7 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showToast(err.message || "Google API bilan ulanishda xatolik!", "danger");
               } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                btn.innerHTML = '🔍 Tekshirish';
               }
               return;
             }
@@ -615,11 +692,11 @@ document.addEventListener("DOMContentLoaded", () => {
               } else {
                 showToast(checkRes.message, "danger");
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+                btn.innerHTML = '🔍 Tekshirish';
               }
             } catch (err) {
               btn.disabled = false;
-              btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Tekshirish';
+              btn.innerHTML = '🔍 Tekshirish';
             }
           });
         });
@@ -695,7 +772,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (participateBtn) {
     participateBtn.addEventListener("click", async () => {
       participateBtn.disabled = true;
-      participateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Obuna tekshirilmoqda...';
+      participateBtn.innerHTML = '⏳ Obuna tekshirilmoqda...';
 
       try {
         const res = await apiFetch("/api/contest/participate", { method: "POST" });
@@ -832,7 +909,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (winnerBadge) winnerBadge.style.display = "inline-flex";
           if (winnerInfo) {
             winnerInfo.style.display = "block";
-            winnerInfo.innerHTML = `<i class="fa-solid fa-bullhorn"></i> Hozirgi e'lon kanali: <b>${activeWinnerCh.title}</b> (<code>${activeWinnerCh.channel_id}</code>)`;
+            winnerInfo.innerHTML = `📢 Hozirgi e'lon kanali: <b>${activeWinnerCh.title}</b> (<code>${activeWinnerCh.channel_id}</code>)`;
           }
           if (winnersHintLabel) {
             winnersHintLabel.textContent = `${activeWinnerCh.title} (${activeWinnerCh.channel_id})`;
@@ -860,11 +937,11 @@ document.addEventListener("DOMContentLoaded", () => {
               else if (s.platform === "instagram") platformIcon = "📸";
 
               const winnerBadgeHtml = isWinner 
-                ? `<span class="pubg-gold-badge" style="font-size: 0.72rem; padding: 2px 7px; margin-left: 6px;"><i class="fa-solid fa-box-archive"></i> G'oliblar Kanali</span>`
+                ? `<span class="pubg-gold-badge" style="font-size: 0.72rem; padding: 2px 7px; margin-left: 6px;">📦 G'oliblar Kanali</span>`
                 : "";
 
               const makeWinnerBtnHtml = (isTelegram && !isWinner)
-                ? `<button class="btn btn-sm btn-set-winner" data-id="${s.id}" data-title="${s.title}" style="background: rgba(255, 184, 0, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;" title="G'oliblarni e'lon qilish kanali qilib belgilash"><i class="fa-solid fa-bullhorn"></i> E'lon kanali qilish</button>`
+                ? `<button class="btn btn-sm btn-set-winner" data-id="${s.id}" data-title="${s.title}" style="background: rgba(255, 184, 0, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 4px 8px; font-size: 0.74rem;" title="G'oliblarni e'lon qilish kanali qilib belgilash">📢 E'lon kanali qilish</button>`
                 : "";
 
               item.innerHTML = `
@@ -880,7 +957,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0; margin-left: 8px;">
                   ${makeWinnerBtnHtml}
                   <button class="btn btn-sm btn-delete-sponsor" data-id="${s.id}" style="background: var(--danger-color); color: #fff; padding: 6px 10px;">
-                    <i class="fa-solid fa-trash"></i>
+                    🗑️
                   </button>
                 </div>
               `;
@@ -975,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (lblChannelId) lblChannelId.textContent = "✈️ Telegram Username yoki ID:";
       if (channelIdInput) channelIdInput.placeholder = "@peexell_news yoki -1001234567890";
-      if (hintChannelId) hintChannelId.innerHTML = '<i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> Bot ushbu kanalda administrator bo\'lishi shart!';
+      if (hintChannelId) hintChannelId.innerHTML = 'ℹ️ Bot ushbu kanalda administrator bo\'lishi shart!';
 
       if (lblLink) lblLink.textContent = "✈️ Taklif Havolasi (Invite Link):";
       if (linkInput) linkInput.placeholder = "https://t.me/peexell_news";
@@ -988,7 +1065,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (lblChannelId) lblChannelId.textContent = "🔴 YouTube Handle yoki ID:";
       if (channelIdInput) channelIdInput.placeholder = "@JahongirProjects";
-      if (hintChannelId) hintChannelId.innerHTML = '<i class="fa-brands fa-youtube" style="color: #ff3b30;"></i> YouTube kanali @handle yoki qidiruv nomi';
+      if (hintChannelId) hintChannelId.innerHTML = '📺 YouTube kanali @handle yoki qidiruv nomi';
 
       if (lblLink) lblLink.textContent = "🔴 YouTube Kanal Havolasi (URL):";
       if (linkInput) linkInput.placeholder = "https://youtube.com/@JahongirProjects";
@@ -1002,7 +1079,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (lblChannelId) lblChannelId.textContent = "📸 Instagram Username (@username):";
       if (channelIdInput) channelIdInput.placeholder = "@peexell.uz";
-      if (hintChannelId) hintChannelId.innerHTML = '<i class="fa-brands fa-instagram" style="color: #E1306C;"></i> Instagram foydalanuvchi nomi';
+      if (hintChannelId) hintChannelId.innerHTML = '📸 Instagram foydalanuvchi nomi';
 
       if (lblLink) lblLink.textContent = "📸 Instagram Profil Havolasi (URL):";
       if (linkInput) linkInput.placeholder = "https://instagram.com/peexell.uz";
@@ -1027,7 +1104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const sponsorId = val ? parseInt(val) : null;
 
       saveWinnerChannelBtn.disabled = true;
-      saveWinnerChannelBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saqlanmoqda...';
+      saveWinnerChannelBtn.innerHTML = '⏳ Saqlanmoqda...';
 
       try {
         const res = await apiFetch("/api/admin/sponsors/winner-channel", {
@@ -1044,7 +1121,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("E'lon kanalini saqlashda xatolik!", "danger");
       } finally {
         saveWinnerChannelBtn.disabled = false;
-        saveWinnerChannelBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saqlash';
+        saveWinnerChannelBtn.innerHTML = '✅ Saqlash';
       }
     });
   }
@@ -1105,11 +1182,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (refreshStatsBtn) {
     refreshStatsBtn.addEventListener("click", async () => {
       refreshStatsBtn.disabled = true;
-      refreshStatsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      refreshStatsBtn.innerHTML = '⏳';
       await loadAdminData();
       showToast("Statistikalar yangilandi! 📊", "success");
       refreshStatsBtn.disabled = false;
-      refreshStatsBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Yangilash';
+      refreshStatsBtn.innerHTML = '🔄 Yangilash';
     });
   }
 
@@ -1122,7 +1199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const q = (queryOverride !== undefined) ? queryOverride : (searchUserInput?.value.trim() || "");
 
     if (searchResultsDiv) {
-      searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px;"><i class="fa-solid fa-spinner fa-spin"></i> Foydalanuvchilar yuklanmoqda...</div>';
+      searchResultsDiv.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 15px;">⏳ Foydalanuvchilar yuklanmoqda...</div>';
     }
 
     try {
@@ -1161,7 +1238,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">${userName}</div>
                 <div style="font-size: 0.78rem; margin-top: 2px;">
                   <a href="${profileLink}" class="user-direct-profile-link" data-username="${u.username || ''}" data-id="${u.id}" data-phone="${u.phone_number || ''}" style="color: var(--primary-color); text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
-                    ${userHandle} (ID: ${u.id}) <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.65rem;"></i>
+                    ${userHandle} (ID: ${u.id}) 🔗
                   </a>
                 </div>
               </div>
@@ -1192,7 +1269,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ✏️ Miqdor kiritish
               </button>
               <button class="btn btn-sm btn-user-profile" data-username="${u.username || ''}" data-id="${u.id}" data-phone="${u.phone_number || ''}" style="background: rgba(0, 195, 255, 0.18); color: #FFB800; border: 1px solid #FFB800; padding: 4px 10px; font-size: 0.74rem; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; cursor: pointer;">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> Profilga o'tish
+                🔗 Profilga o'tish
               </button>
             </div>
           `;
@@ -1311,7 +1388,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!confirm(`Biletlar asosida ${countVal} ta tasodifiy g'olibni aniqlashni tasdiqlaysizmi?`)) return;
 
       pickWinnersBtn.disabled = true;
-      pickWinnersBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aniqlanmoqda...';
+      pickWinnersBtn.innerHTML = '⏳ Aniqlanmoqda...';
 
       try {
         const res = await apiFetch("/api/admin/winners/pick", {
@@ -1337,7 +1414,7 @@ document.addEventListener("DOMContentLoaded", () => {
               channelNotice = `
                 <div style="margin-bottom: 14px; padding: 12px; background: rgba(255, 184, 0, 0.1); border: 1px solid var(--primary-color); border-radius: 10px; font-size: 0.82rem; color: var(--primary-color);">
                   <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 4px;">
-                    <i class="fa-solid fa-circle-check"></i>
+                    ✅
                     <span>Kanalda muvaffaqiyatli e'lon qilindi!${photoNote}</span>
                   </div>
                   <div style="color: #fff; font-size: 0.78rem;">
@@ -1348,7 +1425,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (res.announced_channel && res.announced_channel.error) {
               channelNotice = `
                 <div style="margin-bottom: 14px; padding: 12px; background: rgba(255, 59, 48, 0.1); border: 1px solid var(--danger-color); border-radius: 10px; font-size: 0.8rem; color: var(--danger-color);">
-                  <i class="fa-solid fa-triangle-exclamation"></i> Kanalga yuborishda xatolik: ${res.announced_channel.error}
+                  ⚠️ Kanalga yuborishda xatolik: ${res.announced_channel.error}
                 </div>
               `;
             }
@@ -1356,7 +1433,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let winnersHtml = `
               <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; margin-top: 10px;">
                 <div style="font-weight: 800; font-size: 0.95rem; color: var(--primary-color); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                  <i class="fa-solid fa-trophy"></i>
+                  🏆
                   <span>Rasmiy G'oliblar Ro'yxati</span>
                 </div>
             `;
@@ -1395,7 +1472,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (err) {
       } finally {
         pickWinnersBtn.disabled = false;
-        pickWinnersBtn.innerHTML = '<i class="fa-solid fa-dice-five"></i> G\'oliblarni Aniqlash (Random)';
+        pickWinnersBtn.innerHTML = '🎲 G\'oliblarni Aniqlash (Random)';
       }
     });
   }
@@ -1450,7 +1527,7 @@ document.addEventListener("DOMContentLoaded", () => {
     exportCsvBtn.addEventListener("click", async () => {
       try {
         exportCsvBtn.disabled = true;
-        exportCsvBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
+        exportCsvBtn.innerHTML = '⏳ Yuborilmoqda...';
         const res = await apiFetch("/api/admin/export?format=csv");
         if (res.status === "success") {
           showToast(res.message || "CSV fayli Telegram botingizga yuborildi! 📥", "success");
@@ -1461,7 +1538,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("CSV yuborishda xatolik!", "danger");
       } finally {
         exportCsvBtn.disabled = false;
-        exportCsvBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down"></i> CSV Botga Yuborish';
+        exportCsvBtn.innerHTML = '📥 CSV Botga Yuborish';
       }
     });
   }
@@ -1471,7 +1548,7 @@ document.addEventListener("DOMContentLoaded", () => {
     exportJsonBtn.addEventListener("click", async () => {
       try {
         exportJsonBtn.disabled = true;
-        exportJsonBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Yuborilmoqda...';
+        exportJsonBtn.innerHTML = '⏳ Yuborilmoqda...';
         const res = await apiFetch("/api/admin/export?format=json");
         if (res.status === "success") {
           showToast(res.message || "JSON fayli Telegram botingizga yuborildi! 📥", "success");
@@ -1482,7 +1559,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("JSON yuborishda xatolik!", "danger");
       } finally {
         exportJsonBtn.disabled = false;
-        exportJsonBtn.innerHTML = '<i class="fa-solid fa-code"></i> JSON Botga Yuborish';
+        exportJsonBtn.innerHTML = '💻 JSON Botga Yuborish';
       }
     });
   }
@@ -1523,7 +1600,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (mediaThumb) {
         mediaThumb.innerHTML = "";
         if (isVideo) {
-          mediaThumb.innerHTML = '<i class="fa-solid fa-file-video" style="font-size: 1.8rem; color: var(--primary-color);"></i>';
+          mediaThumb.innerHTML = '🎥';
         } else {
           const img = document.createElement("img");
           img.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
@@ -1569,7 +1646,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!confirm("Barcha bot foydalanuvchilariga ushbu xabarni yuborishni tasdiqlaysizmi?")) return;
 
       sendBroadcastBtn.disabled = true;
-      sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-bolt fa-spin"></i> Tezkor yuborilmoqda...';
+      sendBroadcastBtn.innerHTML = '⚡ Tezkor yuborilmoqda...';
 
       try {
         let res;
@@ -1607,7 +1684,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("Xabar yuborishda xatolik!", "danger");
       } finally {
         sendBroadcastBtn.disabled = false;
-        sendBroadcastBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Barchaga Yuborish (Broadcast)';
+        sendBroadcastBtn.innerHTML = '📤 Barchaga Yuborish (Broadcast)';
       }
     });
   }
