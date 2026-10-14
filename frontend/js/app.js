@@ -235,11 +235,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="pxl-ticket-notch notch-left"></div>
                 <div class="pxl-ticket-notch notch-right"></div>
                 <div class="pxl-ticket-header">
-                  <span class="pxl-ticket-icon"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"></span>
+                  <span class="pxl-ticket-icon"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39f_fe0f/512.webp" alt="" loading="lazy"></span>
                   <span class="pxl-ticket-brand">PUBG LEVEL 3 CRATE</span>
                 </div>
                 <div class="pxl-ticket-number">${t.ticket_number}</div>
-                <div class="pxl-ticket-reason"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" alt="" loading="lazy"> ${t.reason || 'PUBG AirDrop Bilet'}</div>
+                <div class="pxl-ticket-reason"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/2705/512.webp" alt="" loading="lazy"> ${t.reason || 'PUBG AirDrop Bilet'}</div>
               `;
               ticketsContainer.appendChild(card);
             });
@@ -405,7 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="task-subtitle ${platform}">${subtitleText}</div>
               </div>
               <div class="task-reward-pill pubg-gold-badge ${isDone ? 'done' : ''}">
-                ${isDone ? '<img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" alt="" loading="lazy"> Bajarildi' : '<img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Bullseye/3D/bullseye_3d.png" alt="" loading="lazy"> Majburiy'}
+                ${isDone ? '<img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/2705/512.webp" alt="" loading="lazy"> Bajarildi' : '<img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f3af/512.webp" alt="" loading="lazy"> Majburiy'}
               </div>
             </div>
             <div class="task-card-actions">
@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isDone 
                 ? `
                   <div class="task-done-strip">
-                    <span class="task-done-label"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" alt="" loading="lazy"> Obuna tasdiqlandi</span>
+                    <span class="task-done-label"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/2705/512.webp" alt="" loading="lazy"> Obuna tasdiqlandi</span>
                     <a ${linkAttr} class="task-revisit-btn ${isIG ? 'btn-ig-link' : ''}" onclick="event.stopPropagation();" title="Kanalni ko'rish">
                       <span>Kanal</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
@@ -649,15 +649,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (board[0]) {
           if (p1Name) p1Name.textContent = board[0].first_name || board[0].username || "Foydalanuvchi";
-          if (p1Tickets) p1Tickets.innerHTML = `<img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"> ${board[0].tickets} Bilet`;
+          if (p1Tickets) p1Tickets.innerHTML = `<img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39f_fe0f/512.webp" alt="" loading="lazy"> ${board[0].tickets} Bilet`;
         }
         if (board[1]) {
           if (p2Name) p2Name.textContent = board[1].first_name || board[1].username || "Foydalanuvchi";
-          if (p2Tickets) p2Tickets.innerHTML = `<img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"> ${board[1].tickets} Bilet`;
+          if (p2Tickets) p2Tickets.innerHTML = `<img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39f_fe0f/512.webp" alt="" loading="lazy"> ${board[1].tickets} Bilet`;
         }
         if (board[2]) {
           if (p3Name) p3Name.textContent = board[2].first_name || board[2].username || "Foydalanuvchi";
-          if (p3Tickets) p3Tickets.innerHTML = `<img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"> ${board[2].tickets} Bilet`;
+          if (p3Tickets) p3Tickets.innerHTML = `<img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39f_fe0f/512.webp" alt="" loading="lazy"> ${board[2].tickets} Bilet`;
         }
 
         // List render for rank 1+
@@ -678,9 +678,9 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="leader-rank">${rankBadge}</div>
             <div class="leader-user">
               <span style="font-weight: 700; color: #fff;">${nameStr}</span>
-              <span class="leader-user-badge"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Package/3D/package_3d.png" alt="" loading="lazy"> Level 3</span>
+              <span class="leader-user-badge"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4e6/512.webp" alt="" loading="lazy"> Level 3</span>
             </div>
-            <div class="leader-stats pubg-gold-badge"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Admission%20tickets/3D/admission_tickets_3d.png" alt="" loading="lazy"> ${u.tickets} Bilet</div>
+            <div class="leader-stats pubg-gold-badge"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f39f_fe0f/512.webp" alt="" loading="lazy"> ${u.tickets} Bilet</div>
           `;
           listEl.appendChild(row);
         });
@@ -708,7 +708,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (err) {
       } finally {
         participateBtn.disabled = false;
-        participateBtn.innerHTML = '<span class="btn-colored-rocket"><img class=\"i3d\" src=\"https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Rocket/3D/rocket_3d.png\" alt=\"\" loading=\"lazy\"></span> QATNASHISH';
+        participateBtn.innerHTML = '<span class="btn-colored-rocket"><img class=\"i3d\" src=\"https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.webp\" alt=\"\" loading=\"lazy\"></span> QATNASHISH';
       }
     });
   }
