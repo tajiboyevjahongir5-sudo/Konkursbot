@@ -1031,6 +1031,79 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- CONTEST BANNER UPLOAD ---
+  const bannerFileInput = document.getElementById("admin-banner-file");
+  const bannerPreview = document.getElementById("admin-banner-preview");
+  const pickBannerBtn = document.getElementById("btn-pick-banner");
+  const uploadBannerBtn = document.getElementById("btn-upload-banner");
+  const resetBannerBtn = document.getElementById("btn-reset-banner");
+  let selectedBannerFile = null;
+
+  function refreshBannerImages() {
+    const url = `/api/banner?t=${Date.now()}`;
+    const heroImg = document.getElementById("hero-banner-img");
+    if (heroImg) heroImg.src = url;
+    if (bannerPreview) bannerPreview.src = url;
+  }
+
+  if (pickBannerBtn && bannerFileInput) {
+    pickBannerBtn.addEventListener("click", () => bannerFileInput.click());
+    bannerFileInput.addEventListener("change", () => {
+      const file = bannerFileInput.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showToast("Faqat rasm fayli tanlang!", "warning");
+        bannerFileInput.value = "";
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("Rasm hajmi 5MB dan oshmasligi kerak!", "warning");
+        bannerFileInput.value = "";
+        return;
+      }
+      selectedBannerFile = file;
+      if (bannerPreview) bannerPreview.src = URL.createObjectURL(file);
+      if (uploadBannerBtn) uploadBannerBtn.disabled = false;
+    });
+  }
+
+  if (uploadBannerBtn) {
+    uploadBannerBtn.addEventListener("click", async () => {
+      if (!selectedBannerFile) {
+        showToast("Avval rasm tanlang!", "warning");
+        return;
+      }
+      uploadBannerBtn.disabled = true;
+      uploadBannerBtn.innerHTML = "⏳ Yuklanmoqda...";
+      try {
+        const formData = new FormData();
+        formData.append("banner", selectedBannerFile);
+        const res = await apiFetch("/api/admin/banner", { method: "POST", body: formData });
+        showToast(res.message || "Banner yangilandi!", "success");
+        selectedBannerFile = null;
+        if (bannerFileInput) bannerFileInput.value = "";
+        refreshBannerImages();
+      } catch (err) {
+        uploadBannerBtn.disabled = false;
+      } finally {
+        uploadBannerBtn.innerHTML = "⬆️ Yuklash";
+      }
+    });
+  }
+
+  if (resetBannerBtn) {
+    resetBannerBtn.addEventListener("click", async () => {
+      if (!confirm("Standart banner rasmiga qaytarilsinmi?")) return;
+      try {
+        const res = await apiFetch("/api/admin/banner", { method: "DELETE" });
+        showToast(res.message || "Standart banner tiklandi", "success");
+        selectedBannerFile = null;
+        if (uploadBannerBtn) uploadBannerBtn.disabled = true;
+        refreshBannerImages();
+      } catch (err) {}
+    });
+  }
+
   const platformSelect = document.getElementById("admin-sponsor-platform");
   function updateSponsorFormUI() {
     if (!platformSelect) return;

@@ -167,6 +167,16 @@ async def init_db():
             )
         """)
 
+        # App media table (admin-uploaded images such as the contest banner)
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS app_media (
+                key TEXT PRIMARY KEY,
+                content_type TEXT NOT NULL,
+                data BLOB NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
         # Database Indexes for ultra-fast query speeds
         await db.execute("CREATE INDEX IF NOT EXISTS idx_user_tickets_user_contest ON user_tickets (user_id, contest_id)")
         await db.execute("CREATE INDEX IF NOT EXISTS idx_contest_participants_user_contest ON contest_participants (user_id, contest_id)")
@@ -1004,3 +1014,29 @@ async def clear_winners() -> Dict[str, Any]:
         return {"status": "success", "message": "G'oliblar ro'yxati muvaffaqiyatli tozalandi."}
 
 
+
+
+async def set_app_media(key: str, content_type: str, data: bytes) -> None:
+    async with get_db() as db:
+        await db.execute("""
+            INSERT INTO app_media (key, content_type, data, updated_at)
+            VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(key) DO UPDATE SET content_type = excluded.content_type,
+                data = excluded.data, updated_at = CURRENT_TIMESTAMP
+        """, (key, content_type, data))
+        await db.commit()
+
+
+async def get_app_media(key: str) -> Optional[Dict[str, Any]]:
+    async with get_db() as db:
+        async with db.execute(
+            "SELECT content_type, data, updated_at FROM app_media WHERE key = ?", (key,)
+        ) as c:
+            row = await c.fetchone()
+            return dict(row) if row else None
+
+
+async def delete_app_media(key: str) -> None:
+    async with get_db() as db:
+        await db.execute("DELETE FROM app_media WHERE key = ?", (key,))
+        await db.commit()

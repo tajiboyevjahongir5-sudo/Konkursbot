@@ -1896,7 +1896,7 @@
       <!-- 1. Hero Card (PUBG Banner) -->
       <div class="pxl-hero-card banner-art-mode" onclick="window.scrollToTasks && window.scrollToTasks()">
         <!-- Main Banner Art -->
-        <img src="assets/grand_banner.jpg?v=20261008_pubg_03" alt="HASAN PACKAGE PUBG KONKURS 2026" class="pxl-hero-banner-img" loading="eager">
+        <img id="hero-banner-img" src="/api/banner" alt="HASAN PACKAGE PUBG KONKURS 2026" class="pxl-hero-banner-img" loading="eager" onerror="this.onerror=null; this.src='assets/grand_banner.jpg';">
         
         <!-- Golden Flame Glare Sweep -->
         <div class="pxl-hero-banner-glare"></div>
@@ -2184,6 +2184,18 @@
         <!-- SUBTAB 2: KONKURS SOZLAMALARI -->
         <div id="subtab-contest" class="admin-subcontent">
           <h4 style="margin-bottom: 12px; font-size: 0.95rem; color: var(--primary-color);">⚡ Konkurs Ma'lumotlarini Tahrirlash</h4>
+          <!-- Banner rasmini yuklash -->
+          <div class="form-group" style="background: rgba(255, 184, 0, 0.05); border: 1px solid rgba(255, 184, 0, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+            <label>🖼️ Bosh sahifa banneri:</label>
+            <img id="admin-banner-preview" src="/api/banner" alt="Banner" style="width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 10px; border: 1px solid var(--card-border); background: #0d0f0b; margin-bottom: 10px;" onerror="this.onerror=null; this.src='assets/grand_banner.jpg';">
+            <input type="file" id="admin-banner-file" accept="image/jpeg,image/png,image/webp,image/gif" style="display: none;">
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="btn-pick-banner" class="btn btn-secondary btn-sm" style="flex: 1;">📁 Rasm tanlash</button>
+              <button type="button" id="btn-upload-banner" class="btn btn-primary btn-sm" style="flex: 1;" disabled>⬆️ Yuklash</button>
+            </div>
+            <button type="button" id="btn-reset-banner" class="btn btn-sm" style="width: 100%; margin-top: 8px; background: transparent; border: 1px dashed rgba(255,255,255,0.2); color: var(--text-secondary);">↩️ Standart bannerga qaytarish</button>
+            <small style="display: block; font-size: 0.74rem; color: var(--text-secondary); margin-top: 6px;">JPG, PNG, WEBP yoki GIF · 5MB gacha · tavsiya: 16:9 (masalan 1280×720)</small>
+          </div>
           <div class="form-group">
             <label>Konkurs Nomi:</label>
             <input type="text" id="admin-contest-title" class="form-input" placeholder="PEEXELL GRAND KONKURS 2026">

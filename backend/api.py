@@ -310,6 +310,59 @@ async def get_contest():
     return {"status": "success", "contest": contest}
 
 
+BANNER_KEY = "contest_banner"
+BANNER_MAX_BYTES = 5 * 1024 * 1024
+BANNER_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+
+
+@router.get("/banner")
+async def get_banner(request: Request):
+    """Serves the admin-uploaded contest banner, or the bundled default image."""
+    from fastapi.responses import RedirectResponse
+    from backend.database import get_app_media
+
+    media = await get_app_media(BANNER_KEY)
+    if not media:
+        return RedirectResponse(url="/assets/grand_banner.jpg", status_code=302)
+
+    etag = '"' + hashlib.md5(str(media["updated_at"]).encode()).hexdigest() + '"'
+    headers = {"Cache-Control": "no-cache", "ETag": etag}
+    if request.headers.get("if-none-match") == etag:
+        return Response(status_code=304, headers=headers)
+    return Response(content=media["data"], media_type=media["content_type"], headers=headers)
+
+
+@router.post("/admin/banner")
+async def admin_upload_banner(request: Request, admin: dict = Depends(get_current_admin)):
+    from backend.database import set_app_media
+
+    form = await request.form()
+    upload = form.get("banner")
+    if not upload or not hasattr(upload, "read"):
+        raise HTTPException(status_code=400, detail="Rasm fayli tanlanmagan")
+
+    content_type = (getattr(upload, "content_type", "") or "").lower()
+    if content_type not in BANNER_TYPES:
+        raise HTTPException(status_code=400, detail="Faqat JPG, PNG, WEBP yoki GIF rasm yuklash mumkin")
+
+    data = await upload.read()
+    if not data:
+        raise HTTPException(status_code=400, detail="Fayl bo'sh")
+    if len(data) > BANNER_MAX_BYTES:
+        raise HTTPException(status_code=400, detail="Rasm hajmi 5MB dan oshmasligi kerak")
+
+    await set_app_media(BANNER_KEY, content_type, data)
+    return {"status": "success", "message": "Banner yangilandi! 🖼️"}
+
+
+@router.delete("/admin/banner")
+async def admin_reset_banner(admin: dict = Depends(get_current_admin)):
+    from backend.database import delete_app_media
+
+    await delete_app_media(BANNER_KEY)
+    return {"status": "success", "message": "Standart banner tiklandi"}
+
+
 @router.get("/tasks")
 async def get_tasks(user: dict = Depends(get_current_user)):
     tasks = await get_user_tasks(user["id"])
