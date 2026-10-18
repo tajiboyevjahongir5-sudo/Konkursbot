@@ -177,6 +177,15 @@ async def init_db():
             )
         """)
 
+        # App settings table (admin-editable key/value config stored as JSON text)
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS app_settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
         # Database Indexes for ultra-fast query speeds
         await db.execute("CREATE INDEX IF NOT EXISTS idx_user_tickets_user_contest ON user_tickets (user_id, contest_id)")
         await db.execute("CREATE INDEX IF NOT EXISTS idx_contest_participants_user_contest ON contest_participants (user_id, contest_id)")
@@ -559,7 +568,7 @@ async def update_contest(title: str, description: str, prize_pool: str, end_time
 
 async def pick_random_winners(contest_id: int, count: int = 3, prizes: Optional[List[str]] = None) -> List[Dict[str, Any]]:
     if not prizes:
-        prizes = ["🥇 1-O'rin: iPhone 15 Pro", "🥈 2-O'rin: 3,000,000 UZS", "🥉 3-O'rin: Telegram Premium (1 yil)"]
+        prizes = [p["title"] for p in await get_prizes()]
     
     async with get_db() as db:
         # Get candidates who joined THIS contest and have tickets for THIS contest
@@ -1040,3 +1049,45 @@ async def delete_app_media(key: str) -> None:
     async with get_db() as db:
         await db.execute("DELETE FROM app_media WHERE key = ?", (key,))
         await db.commit()
+
+
+DEFAULT_PRIZES = [
+    {"emoji": "📱", "title": "iPhone 15 Pro", "subtitle": "Titanium Gold"},
+    {"emoji": "💸", "title": "10,000,000 UZS", "subtitle": "Naqd pul"},
+    {"emoji": "⭐", "title": "5x TG Premium", "subtitle": "Yillik obuna"},
+]
+
+
+async def get_app_setting(key: str) -> Optional[str]:
+    async with get_db() as db:
+        async with db.execute("SELECT value FROM app_settings WHERE key = ?", (key,)) as c:
+            row = await c.fetchone()
+            return row["value"] if row else None
+
+
+async def set_app_setting(key: str, value: str) -> None:
+    async with get_db() as db:
+        await db.execute("""
+            INSERT INTO app_settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+        """, (key, value))
+        await db.commit()
+
+
+async def get_prizes() -> List[Dict[str, str]]:
+    """Returns the 3 prize cards (emoji, title, subtitle); falls back to defaults."""
+    import json
+    raw = await get_app_setting("prizes")
+    if raw:
+        try:
+            prizes = json.loads(raw)
+            if isinstance(prizes, list) and prizes:
+                return prizes
+        except ValueError:
+            pass
+    return [dict(p) for p in DEFAULT_PRIZES]
+
+
+async def set_prizes(prizes: List[Dict[str, str]]) -> None:
+    import json
+    await set_app_setting("prizes", json.dumps(prizes, ensure_ascii=False))

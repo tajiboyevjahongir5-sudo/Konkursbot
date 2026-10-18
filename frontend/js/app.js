@@ -218,6 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Tab specific refresh logic
       if (targetTab === "tab-contest") {
+        loadPrizes();
         loadContestData();
         loadTasks();
         loadPublicWinners();
@@ -858,6 +859,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      loadPrizes();
+
       // Load Detailed Stats
       try {
         const statsRes = await apiFetch("/api/admin/stats/detailed");
@@ -1028,6 +1031,88 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("Konkurs ma'lumotlari yangilandi! 🏆", "success");
         await loadContestData();
       } catch (err) {}
+    });
+  }
+
+  // --- PRIZES (homepage cards + admin editor) ---
+  const PRIZE_TIERS = [
+    { cls: "gold", badge: "👑" },
+    { cls: "lime", badge: "⚡" },
+    { cls: "cyan", badge: "⭐" }
+  ];
+
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text == null ? "" : String(text);
+    return div.innerHTML;
+  }
+
+  function renderPrizes(prizes) {
+    const grid = document.getElementById("prizes-grid");
+    if (!grid) return;
+    grid.innerHTML = prizes.slice(0, 3).map((p, idx) => {
+      const tier = PRIZE_TIERS[idx] || PRIZE_TIERS[2];
+      return `
+        <div class="prize-card ${tier.cls}">
+          <div class="prize-shine"></div>
+          <div class="prize-card-badge">${tier.badge} ${idx + 1}-O'RIN</div>
+          <div class="prize-icon-wrap ${tier.cls}-aura">
+            <span class="prize-3d-emoji">${escapeHtml(p.emoji || "🎁")}</span>
+          </div>
+          <div class="prize-card-name">${escapeHtml(p.title)}</div>
+          <div class="prize-card-tag">${escapeHtml(p.subtitle || "")}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function fillPrizeForm(prizes) {
+    for (let i = 0; i < 3; i++) {
+      const p = prizes[i] || {};
+      const e = document.querySelector(`.admin-prize-emoji[data-idx="${i}"]`);
+      const t = document.querySelector(`.admin-prize-title[data-idx="${i}"]`);
+      const st = document.querySelector(`.admin-prize-subtitle[data-idx="${i}"]`);
+      if (e) e.value = p.emoji || "";
+      if (t) t.value = p.title || "";
+      if (st) st.value = p.subtitle || "";
+    }
+  }
+
+  async function loadPrizes() {
+    try {
+      const res = await apiFetch("/api/prizes");
+      if (res.status === "success" && res.prizes) {
+        renderPrizes(res.prizes);
+        fillPrizeForm(res.prizes);
+      }
+    } catch (err) {}
+  }
+
+  const savePrizesBtn = document.getElementById("btn-save-prizes");
+  if (savePrizesBtn) {
+    savePrizesBtn.addEventListener("click", async () => {
+      const prizes = [];
+      for (let i = 0; i < 3; i++) {
+        const emoji = document.querySelector(`.admin-prize-emoji[data-idx="${i}"]`)?.value.trim() || "🎁";
+        const title = document.querySelector(`.admin-prize-title[data-idx="${i}"]`)?.value.trim() || "";
+        const subtitle = document.querySelector(`.admin-prize-subtitle[data-idx="${i}"]`)?.value.trim() || "";
+        if (!title) {
+          showToast(`${i + 1}-o'rin sovrin nomini kiriting!`, "warning");
+          return;
+        }
+        prizes.push({ emoji, title, subtitle });
+      }
+      savePrizesBtn.disabled = true;
+      savePrizesBtn.innerHTML = "⏳ Saqlanmoqda...";
+      try {
+        const res = await apiFetch("/api/admin/prizes", { method: "POST", body: JSON.stringify({ prizes }) });
+        showToast(res.message || "Sovrinlar yangilandi!", "success");
+        renderPrizes(res.prizes || prizes);
+      } catch (err) {
+      } finally {
+        savePrizesBtn.disabled = false;
+        savePrizesBtn.innerHTML = "💾 Sovrinlarni saqlash";
+      }
     });
   }
 
@@ -1764,6 +1849,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- INITIAL STARTUP ---
   async function init() {
+    loadPrizes();
     await loadUserData();
     await loadContestData();
     await loadTasks();

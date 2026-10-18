@@ -310,6 +310,43 @@ async def get_contest():
     return {"status": "success", "contest": contest}
 
 
+class PrizeItem(BaseModel):
+    emoji: str = "🎁"
+    title: str
+    subtitle: str = ""
+
+
+class UpdatePrizesRequest(BaseModel):
+    prizes: List[PrizeItem]
+
+
+@router.get("/prizes")
+async def get_prizes_endpoint():
+    from backend.database import get_prizes
+    return {"status": "success", "prizes": await get_prizes()}
+
+
+@router.post("/admin/prizes")
+async def admin_update_prizes(body: UpdatePrizesRequest, admin: dict = Depends(get_current_admin)):
+    from backend.database import set_prizes
+
+    cleaned = []
+    for p in body.prizes[:10]:
+        title = p.title.strip()[:60]
+        if not title:
+            raise HTTPException(status_code=400, detail="Sovrin nomi bo'sh bo'lmasligi kerak")
+        cleaned.append({
+            "emoji": (p.emoji.strip() or "🎁")[:8],
+            "title": title,
+            "subtitle": p.subtitle.strip()[:40],
+        })
+    if not cleaned:
+        raise HTTPException(status_code=400, detail="Kamida bitta sovrin kiriting")
+
+    await set_prizes(cleaned)
+    return {"status": "success", "message": "Sovrinlar yangilandi! 🏆", "prizes": cleaned}
+
+
 BANNER_KEY = "contest_banner"
 BANNER_MAX_BYTES = 5 * 1024 * 1024
 BANNER_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
@@ -623,18 +660,21 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
             try:
                 place = w.get("place", 1)
                 m_icon = medals[place - 1] if place <= len(medals) else "🎖"
-                t_str = f"\n🎟 <b>Yutuqli biletingiz:</b> <code>#{w['ticket_number']}</code>" if w.get("ticket_number") else ""
-                
+                ticket_code = str(w.get("ticket_number") or "").lstrip("#")
+                t_str = f"\n🎟 <b>Yutuqli biletingiz:</b> <code>#{ticket_code}</code>" if ticket_code else ""
+
                 msg = (
-                    f"🎉 <b>TABRIKLAYMIZ, SIZ G'OLIBSISIZ!</b> {m_icon}\n"
-                    f"━━━━━━━━━━━━━━━━━━━━\n"
-                    f"Siz <b>«{contest_title}»</b>da omadli ishtirok etib, g'oliblar safidan joy oldingiz!\n\n"
-                    f"{m_icon} <b>O'rningiz:</b> {place}-O'rin\n"
-                    f"🎁 <b>Yutib olingan sovrin:</b> <b>{w['prize']}</b>"
+                    f"🎉 <b>TABRIKLAYMIZ!</b>\n"
+                    f"<b>Siz g'olib bo'ldingiz!</b> {m_icon}\n"
+                    f"━━━━━━━━━━━━\n"
+                    f"Siz <b>«{html.escape(str(contest_title))}»</b> konkursida omadli ishtirok etib, g'oliblar safidan joy oldingiz!\n\n"
+                    f"{m_icon} <b>O'rningiz:</b> {place}-o'rin\n"
+                    f"🎁 <b>Sovrin:</b> <b>{html.escape(str(w['prize']))}</b>"
                     f"{t_str}\n\n"
-                    f"📞 <i>Sovrinni qabul qilib olish tafsilotlari bo'yicha tez orada rasmiy adminimiz siz bilan shaxsiy xabar orqali bog'lanadi.</i>\n"
-                    f"━━━━━━━━━━━━━━━━━━━━\n"
-                    f"🚀 <b>Ishtirokingiz uchun tashakkur! HASAN PACKAGE bilan doim bir qadam oldinda bo'ling!</b>"
+                    f"📞 <i>Sovrinni topshirish bo'yicha tez orada rasmiy adminimiz siz bilan shaxsiy xabar orqali bog'lanadi.</i>\n"
+                    f"━━━━━━━━━━━━\n"
+                    f"🚀 <b>Ishtirokingiz uchun rahmat!</b>\n"
+                    f"HASAN PACKAGE bilan doim bir qadam oldinda bo'ling!"
                 )
                 await bot.send_message(chat_id=w["user_id"], text=msg, parse_mode="HTML")
                 await asyncio.sleep(0.05)
@@ -663,13 +703,13 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
             lines = [
                 "🏆 <b>HASAN PACKAGE KONKURS</b> 🏆",
                 "🎉 <b>RASMIY G'OLIBLAR E'LON QILINDI!</b> 🎉",
-                "━━━━━━━━━━━━━━━━━━━━",
+                "━━━━━━━━━━━━",
                 "",
                 "Hurmatli kanalimiz a'zolari va ishtirokchilar!",
                 "",
                 f"Uzoq kutilgan <b>«{contest_title}»</b> o'z nihoyasiga yetdi. Barcha shartlarni bajargan va bilet to'plagan faol ishtirokchilar orasidan tasodifiy (random) algoritm orqali mutlaqo haqqoniy va shaffof tarzda g'oliblarimiz aniqlandi! ⚡️",
                 "",
-                "━━━━━━━━━━━━━━━━━━━━"
+                "━━━━━━━━━━━━"
             ]
 
             medals = ["🥇", "🥈", "🥉", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖", "🎖"]
@@ -706,8 +746,9 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
                 else:
                     uname = f"<a href=\"tg://user?id={user_id}\">{safe_name}</a> (ID: <code>{user_id}</code>)"
                 
-                prize = w.get("prize", f"{place}-O'rin Sovrini")
-                ticket_code = f"<code>#{w['ticket_number']}</code>" if w.get("ticket_number") else "<i>Mavjud emas</i>"
+                prize = html.escape(str(w.get("prize") or f"{place}-o'rin sovrini"))
+                t_clean = str(w.get("ticket_number") or "").lstrip("#")
+                ticket_code = f"<code>#{t_clean}</code>" if t_clean else "<i>Mavjud emas</i>"
 
                 lines.append(f"{m_icon} <b>{r_title}:</b>")
                 lines.append(f"👤 <b>G'olib:</b> {uname}")
@@ -715,13 +756,13 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
                 lines.append(f"🎟 <b>Yutuqli bilet:</b> {ticket_code}")
                 lines.append("")
 
-            lines.append("━━━━━━━━━━━━━━━━━━━━")
+            lines.append("━━━━━━━━━━━━")
             lines.append("🥳 <b>Barcha g'oliblarni chin yurakdan tabriklaymiz!</b>")
             lines.append("📞 <i>Sovrinlarni topshirish bo'yicha rasmiy administratorimiz g'oliblar bilan tez orada shaxsiy xabar orqali bog'lanadi.</i>")
             lines.append("")
             lines.append("🔥 <b>Omadi kelmaganlar aslo tushkunlikka tushmang!</b>")
             lines.append("Tez orada yangi, yanada katta sovrinli yirik konkurslarimiz start oladi. Botimizdan uzoqlashmang va do'stlaringizni taklif qilishda davom eting!")
-            lines.append("━━━━━━━━━━━━━━━━━━━━")
+            lines.append("━━━━━━━━━━━━")
 
             from backend.config import settings
             from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile

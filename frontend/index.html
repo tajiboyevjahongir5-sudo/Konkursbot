@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20261014_icons_anim2">
+  <link rel="stylesheet" href="css/style.css?v=20261018_prizes">
 
   <style>
     /* ==========================================================================
@@ -1862,6 +1862,7 @@
     .nav-item.active .nav-icon-3d .nav3d { opacity: 1; filter: none; }
     .emo { width: 1.25em; height: 1.25em; object-fit: contain; display: inline-block; vertical-align: -0.25em; flex-shrink: 0; pointer-events: none; }
     .prize-3d-emoji .emo, .avatar-yt-icon .emo, .avatar-ig-icon .emo { width: 1.5em; height: 1.5em; }
+    .prize-card-badge { white-space: nowrap !important; }
   </style>
 </head>
 <body>
@@ -1984,39 +1985,8 @@
           <span>Bosh Sovrinlar Jamg'armasi</span>
         </div>
         
-        <div class="pxl-prizes-grid">
-          <!-- 1-O'rin Gold VIP (iPhone 15 Pro) -->
-          <div class="prize-card gold">
-            <div class="prize-shine"></div>
-            <div class="prize-card-badge"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f451/512.webp" alt="" loading="lazy"> 1-O'RIN</div>
-            <div class="prize-icon-wrap gold-aura">
-              <span class="prize-3d-emoji"><img class="i3d" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Mobile%20phone/3D/mobile_phone_3d.png" alt="" loading="lazy"></span>
-            </div>
-            <div class="prize-card-name">iPhone 15 Pro</div>
-            <div class="prize-card-tag">Titanium Gold</div>
-          </div>
-
-          <!-- 2-O'rin Neon Lime (10,000,000 UZS) -->
-          <div class="prize-card lime">
-            <div class="prize-shine"></div>
-            <div class="prize-card-badge"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/26a1/512.webp" alt="" loading="lazy"> 2-O'RIN</div>
-            <div class="prize-icon-wrap lime-aura">
-              <span class="prize-3d-emoji"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4b8/512.webp" alt="" loading="lazy"></span>
-            </div>
-            <div class="prize-card-name">10,000,000</div>
-            <div class="prize-card-tag">UZS NAQD</div>
-          </div>
-
-          <!-- 3-O'rin Cyber Cyan (5x Telegram Premium) -->
-          <div class="prize-card cyan">
-            <div class="prize-shine"></div>
-            <div class="prize-card-badge"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/2b50/512.webp" alt="" loading="lazy"> 3-O'RIN</div>
-            <div class="prize-icon-wrap cyan-aura">
-              <span class="prize-3d-emoji"><img class="i3d" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f31f/512.webp" alt="" loading="lazy"></span>
-            </div>
-            <div class="prize-card-name">5x TG Premium</div>
-            <div class="prize-card-tag">Yillik Obuna</div>
-          </div>
+        <div class="pxl-prizes-grid" id="prizes-grid">
+          <!-- Prize cards are rendered by app.js from /api/prizes (editable in Admin > Konkurs) -->
         </div>
         <!-- Hidden containers for JS backwards compatibility -->
         <div id="contest-prizes-list" style="display: none;"></div>
@@ -2195,6 +2165,33 @@
             </div>
             <button type="button" id="btn-reset-banner" class="btn btn-sm" style="width: 100%; margin-top: 8px; background: transparent; border: 1px dashed rgba(255,255,255,0.2); color: var(--text-secondary);">↩️ Standart bannerga qaytarish</button>
             <small style="display: block; font-size: 0.74rem; color: var(--text-secondary); margin-top: 6px;">JPG, PNG, WEBP yoki GIF · 5MB gacha · tavsiya: 16:9 (masalan 1280×720)</small>
+          </div>
+          <!-- Sovrinlarni tahrirlash -->
+          <div class="form-group" style="background: rgba(255, 184, 0, 0.05); border: 1px solid rgba(255, 184, 0, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+            <label>🏆 Sovrinlar (1, 2, 3-o'rin):</label>
+            <div class="admin-prize-row" style="display: grid; grid-template-columns: 52px 1fr; gap: 6px; margin-bottom: 8px;">
+              <input type="text" class="form-input admin-prize-emoji" data-idx="0" maxlength="8" placeholder="🎁" style="text-align: center; font-size: 1.2rem; padding: 8px 4px; margin-bottom: 0;">
+              <div style="display: grid; gap: 6px;">
+                <input type="text" class="form-input admin-prize-title" data-idx="0" maxlength="60" placeholder="1-o'rin sovrini (masalan: iPhone 15 Pro)" style="margin-bottom: 0;">
+                <input type="text" class="form-input admin-prize-subtitle" data-idx="0" maxlength="40" placeholder="Qisqa izoh (masalan: Titanium Gold)" style="margin-bottom: 0; font-size: 0.8rem; padding: 8px 12px;">
+              </div>
+            </div>
+            <div class="admin-prize-row" style="display: grid; grid-template-columns: 52px 1fr; gap: 6px; margin-bottom: 8px;">
+              <input type="text" class="form-input admin-prize-emoji" data-idx="1" maxlength="8" placeholder="🎁" style="text-align: center; font-size: 1.2rem; padding: 8px 4px; margin-bottom: 0;">
+              <div style="display: grid; gap: 6px;">
+                <input type="text" class="form-input admin-prize-title" data-idx="1" maxlength="60" placeholder="2-o'rin sovrini (masalan: iPhone 15 Pro)" style="margin-bottom: 0;">
+                <input type="text" class="form-input admin-prize-subtitle" data-idx="1" maxlength="40" placeholder="Qisqa izoh (masalan: Titanium Gold)" style="margin-bottom: 0; font-size: 0.8rem; padding: 8px 12px;">
+              </div>
+            </div>
+            <div class="admin-prize-row" style="display: grid; grid-template-columns: 52px 1fr; gap: 6px; margin-bottom: 8px;">
+              <input type="text" class="form-input admin-prize-emoji" data-idx="2" maxlength="8" placeholder="🎁" style="text-align: center; font-size: 1.2rem; padding: 8px 4px; margin-bottom: 0;">
+              <div style="display: grid; gap: 6px;">
+                <input type="text" class="form-input admin-prize-title" data-idx="2" maxlength="60" placeholder="3-o'rin sovrini (masalan: iPhone 15 Pro)" style="margin-bottom: 0;">
+                <input type="text" class="form-input admin-prize-subtitle" data-idx="2" maxlength="40" placeholder="Qisqa izoh (masalan: Titanium Gold)" style="margin-bottom: 0; font-size: 0.8rem; padding: 8px 12px;">
+              </div>
+            </div>
+            <small style="display: block; font-size: 0.74rem; color: var(--text-secondary); margin: 2px 0 8px;">Chapdagi katakka bitta emoji qo'ying. Sovrin nomi g'olibga yuboriladigan xabarda ham ishlatiladi.</small>
+            <button type="button" id="btn-save-prizes" class="btn btn-primary btn-sm" style="width: 100%;">💾 Sovrinlarni saqlash</button>
           </div>
           <div class="form-group">
             <label>Konkurs Nomi:</label>
@@ -2563,6 +2560,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20261014_icons_anim2"></script>
+  <script src="js/app.js?v=20261018_prizes"></script>
 </body>
 </html>
