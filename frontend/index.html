@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20261019_contestinfo">
+  <link rel="stylesheet" href="css/style.css?v=20261020_headeruser">
 
   <style>
     /* ==========================================================================
@@ -1886,6 +1886,10 @@
     .contest-info-prize-icon { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
     .contest-info-prize-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
     .contest-info-prize-text { font-size: 0.95rem; font-weight: 800; color: #FFC93C; word-break: break-word; }
+    /* Header: foydalanuvchi rasmi va ismi */
+    .header-avatar-ring { width: 40px !important; height: 40px !important; border-radius: 50% !important; }
+    .header-avatar-ring .logo-img { border-radius: 50% !important; background: #1b1e16; }
+    .header-user-name { font-size: 0.95rem !important; overflow: hidden !important; text-overflow: ellipsis !important; letter-spacing: 0 !important; }
   </style>
 </head>
 <body>
@@ -1901,12 +1905,12 @@
       <!-- HEADER SECTION (Faqat Asosiy Sahifada Ko'rinadi) -->
       <header class="header-card">
         <div class="brand-wrapper">
-          <div class="logo-box-glow">
-            <img src="assets/logo.jpg" alt="HASAN PACKAGE Logo" class="logo-img">
+          <div class="logo-box-glow header-avatar-ring">
+            <img id="header-user-avatar" src="assets/avatar.png" alt="Profil rasmi" class="logo-img" onerror="this.onerror=null; this.src='assets/avatar.png';">
           </div>
           <div class="brand-text-box">
-            <div class="brand-title">HASAN PACKAGE <span class="brand-highlight">PUBG KONKURS</span></div>
-            <div class="brand-subtitle"><span class="brand-dot"></span> Rasmiy Telegram Konkurs</div>
+            <div id="header-user-name" class="brand-title header-user-name">Foydalanuvchi</div>
+            <div class="brand-subtitle"><span class="brand-dot"></span> HASAN PACKAGE konkursi</div>
           </div>
         </div>
         <div class="user-badge-header">
@@ -2594,6 +2598,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20261019_contestinfo"></script>
+  <script src="js/app.js?v=20261020_headeruser"></script>
 </body>
 </html>

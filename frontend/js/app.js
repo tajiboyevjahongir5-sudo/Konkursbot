@@ -102,6 +102,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Show Telegram name and photo in the header right away (API data refines it later)
+  const tgUser = tg?.initDataUnsafe?.user;
+  if (tgUser) {
+    const hName = document.getElementById("header-user-name");
+    if (hName) hName.textContent = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Foydalanuvchi';
+    const hAvatar = document.getElementById("header-user-avatar");
+    if (hAvatar && tgUser.photo_url) hAvatar.src = tgUser.photo_url;
+  }
+
   // App State
   let currentUser = null;
   let activeContest = null;
@@ -294,12 +303,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (pTickets) pTickets.textContent = currentUser.tickets;
         if (pRefs) pRefs.textContent = currentUser.referrals_count;
 
-        // Update Profile Avatar (Real Telegram Photo)
+        // Update Profile + Header Avatar (Real Telegram Photo)
+        const avatarSrc = tg?.initDataUnsafe?.user?.photo_url || `/api/user/photo/${currentUser.id}`;
         const pAvatar = document.getElementById("prof-user-avatar");
-        if (pAvatar && currentUser.id) {
-          const tgPhoto = tg?.initDataUnsafe?.user?.photo_url;
-          pAvatar.src = tgPhoto || `/api/user/photo/${currentUser.id}`;
-        }
+        if (pAvatar && currentUser.id) pAvatar.src = avatarSrc;
+        const hAvatar = document.getElementById("header-user-avatar");
+        if (hAvatar && currentUser.id && hAvatar.getAttribute("src") !== avatarSrc) hAvatar.src = avatarSrc;
+
+        const hName = document.getElementById("header-user-name");
+        if (hName) hName.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'Foydalanuvchi';
 
         // Render User Tickets Grid
         const ticketsContainer = document.getElementById("user-tickets-container");
