@@ -64,7 +64,6 @@ async def start_handler(message: Message):
     phone = db_user.get("phone_number")
     if not is_uzb_phone(phone):
         verify_text = (
-            f"⚡ **HASAN PACKAGE KONKURS BOT** ⚡\n\n"
             f"Salom, **{user.first_name}**! 👋\n\n"
             f"🇺🇿 **DIQQAT: TELEFON RAQAMNI TASDIQLASH MAJBURIY!**\n"
             f"Konkursimizda faqat **O'zbekiston (`+998`)** telefon raqamiga ega foydalanuvchilar qatnashishi mumkin.\n\n"
@@ -78,7 +77,6 @@ async def start_handler(message: Message):
         return
 
     welcome_text = (
-        f"⚡ **HASAN PACKAGE KONKURS BOT** ⚡\n\n"
         f"Salom, **{user.first_name}**! 👋\n"
         f"Konkursda qatnashish va bilet olish uchun pastdagi **🚀 HASAN PACKAGE Web App** tugmasini bosing:"
     )

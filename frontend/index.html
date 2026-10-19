@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20261018_prizes">
+  <link rel="stylesheet" href="css/style.css?v=20261019_contestinfo">
 
   <style>
     /* ==========================================================================
@@ -1863,6 +1863,29 @@
     .emo { width: 1.25em; height: 1.25em; object-fit: contain; display: inline-block; vertical-align: -0.25em; flex-shrink: 0; pointer-events: none; }
     .prize-3d-emoji .emo, .avatar-yt-icon .emo, .avatar-ig-icon .emo { width: 1.5em; height: 1.5em; }
     .prize-card-badge { white-space: nowrap !important; }
+    /* Faol konkurs kartasi */
+    .contest-info-card {
+      margin: 14px 0 0; padding: 16px;
+      background: linear-gradient(135deg, rgba(22, 26, 17, 0.95), rgba(13, 15, 11, 0.98));
+      border: 1px solid rgba(255, 184, 0, 0.35); border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    .contest-info-live {
+      display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; margin-bottom: 8px;
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      color: #4ADE80; background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.35); border-radius: 999px;
+    }
+    .contest-info-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; animation: liveDotBlink 1.2s infinite ease-in-out; }
+    .contest-info-title { font-size: 1.35rem; font-weight: 900; line-height: 1.2; color: #fff; margin: 0 0 6px; word-break: break-word; }
+    .contest-info-desc { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45; margin: 0 0 12px; white-space: pre-line; }
+    .contest-info-desc:empty { display: none; }
+    .contest-info-prize {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      background: rgba(255, 184, 0, 0.08); border: 1px dashed rgba(255, 184, 0, 0.4); border-radius: 12px;
+    }
+    .contest-info-prize-icon { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
+    .contest-info-prize-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); }
+    .contest-info-prize-text { font-size: 0.95rem; font-weight: 800; color: #FFC93C; word-break: break-word; }
   </style>
 </head>
 <body>
@@ -1902,8 +1925,20 @@
         <!-- Golden Flame Glare Sweep -->
         <div class="pxl-hero-banner-glare"></div>
 
-        <span id="contest-title" style="display:none;">HASAN PACKAGE PUBG KONKURS 2026</span>
-        <span id="contest-description" style="display:none;">Do'stlaringizni taklif qiling va sponsor kanallarga a'zo bo'lib biletlarni oling!</span>
+      </div>
+
+      <!-- Faol konkurs ma'lumotlari (Admin > Konkurs bo'limidan) -->
+      <div class="contest-info-card">
+        <div class="contest-info-live"><span class="contest-info-dot"></span> Faol konkurs</div>
+        <h1 id="contest-title" class="contest-info-title">Yuklanmoqda...</h1>
+        <p id="contest-description" class="contest-info-desc"></p>
+        <div class="contest-info-prize">
+          <span class="contest-info-prize-icon">🎁</span>
+          <div style="min-width: 0;">
+            <div class="contest-info-prize-label">Sovrinlar jamg'armasi</div>
+            <div id="contest-prizes-list" class="contest-info-prize-text"></div>
+          </div>
+        </div>
       </div>
 
       <!-- 2. Futuristic Glass Countdown Timer -->
@@ -1989,7 +2024,6 @@
           <!-- Prize cards are rendered by app.js from /api/prizes (editable in Admin > Konkurs) -->
         </div>
         <!-- Hidden containers for JS backwards compatibility -->
-        <div id="contest-prizes-list" style="display: none;"></div>
         <div id="public-winners-list" style="display: none;"></div>
       </div>
 
@@ -2560,6 +2594,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20261018_prizes"></script>
+  <script src="js/app.js?v=20261019_contestinfo"></script>
 </body>
 </html>
