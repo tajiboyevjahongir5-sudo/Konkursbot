@@ -100,6 +100,20 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {
       console.log("Header color set not supported in older SDK");
     }
+
+    // Telegram Desktop / macOS open Mini Apps in a small window; switch to fullscreen there
+    // automatically (Bot API 8.0+). Mobile clients keep their normal expanded view.
+    const DESKTOP_PLATFORMS = ["tdesktop", "macos"];
+    if (DESKTOP_PLATFORMS.includes(tg.platform)
+        && typeof tg.requestFullscreen === "function"
+        && typeof tg.isVersionAtLeast === "function" && tg.isVersionAtLeast("8.0")
+        && !tg.isFullscreen) {
+      try {
+        tg.requestFullscreen();
+      } catch (e) {
+        console.log("Fullscreen not available:", e);
+      }
+    }
   }
 
   // Show Telegram name and photo in the header right away (API data refines it later)
