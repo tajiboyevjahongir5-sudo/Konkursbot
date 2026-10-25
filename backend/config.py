@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     ADMIN_IDS: str = "7505685720,123456789,987654321"
     ADMIN_IDS_RAW: str = ""
     WEBAPP_URL: str = "http://localhost:8000"
+    BOT_USERNAME: str = "package_konkurs_bot"
     DATABASE_PATH: str = str(BASE_DIR / "data" / "contest.db")
     SECRET_KEY: str = "peexell_super_secret_key_2026_cyberpunk"
     

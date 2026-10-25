@@ -476,6 +476,7 @@ async def mark_task_completed(user_id: int, sponsor_id: int, google_account_id: 
                 INSERT OR IGNORE INTO contest_participants (user_id, contest_id)
                 VALUES (?, ?)
             """, (user_id, contest_id))
+            await credit_referrer_db(db, user_id, contest_id)
             await db.commit()
 
         return {
@@ -731,6 +732,52 @@ async def get_user_tickets(user_id: int) -> List[Dict[str, Any]]:
             return [dict(r) for r in rows]
 
 
+async def credit_referrer_db(db, user_id: int, contest_id: int) -> None:
+    """Gives the user's referrer +1 ticket for every 5 friends who joined this contest.
+    Idempotent: only issues the tickets the referrer is still missing."""
+    async with db.execute("SELECT referred_by FROM users WHERE id = ?", (user_id,)) as c_ref:
+        ref_row = await c_ref.fetchone()
+        referrer_id = ref_row["referred_by"] if ref_row else None
+    if not referrer_id:
+        return
+
+    async with db.execute("""
+        SELECT COUNT(cp.id) as active_cnt
+        FROM referrals r
+        JOIN contest_participants cp ON r.referred_id = cp.user_id
+        WHERE r.referrer_id = ? AND cp.contest_id = ?
+    """, (referrer_id, contest_id)) as c_act:
+        active_referrals = (await c_act.fetchone())["active_cnt"]
+    earned_ref_tickets = active_referrals // 5
+
+    async with db.execute("""
+        SELECT COUNT(*) as existing_ref_t
+        FROM user_tickets
+        WHERE user_id = ? AND contest_id = ? AND reason LIKE '%do''st taklifi%'
+    """, (referrer_id, contest_id)) as c_earned:
+        already_issued = (await c_earned.fetchone())["existing_ref_t"]
+
+    for i in range(max(0, earned_ref_tickets - already_issued)):
+        milestone = (already_issued + i + 1) * 5
+        await issue_ticket_db(db, referrer_id, contest_id, f"{milestone} ta do'st taklifi")
+
+
+async def get_active_referrals_count(user_id: int) -> int:
+    """Friends invited by this user who have joined the active contest."""
+    async with get_db() as db:
+        async with db.execute("SELECT id FROM contests WHERE is_active = 1 ORDER BY id DESC LIMIT 1") as c:
+            row = await c.fetchone()
+        if not row:
+            return 0
+        async with db.execute("""
+            SELECT COUNT(cp.id) as cnt
+            FROM referrals r
+            JOIN contest_participants cp ON r.referred_id = cp.user_id
+            WHERE r.referrer_id = ? AND cp.contest_id = ?
+        """, (user_id, row["id"])) as c2:
+            return (await c2.fetchone())["cnt"]
+
+
 async def participate_in_contest(user_id: int) -> Dict[str, Any]:
     async with get_db() as db:
         # Get active contest
@@ -767,38 +814,7 @@ async def participate_in_contest(user_id: int) -> Dict[str, Any]:
         # Issue 1st participation ticket
         ticket_number = await issue_ticket_db(db, user_id, contest_id, "Konkursda qatnashish")
 
-        # Check Referral rule for referrer (Every 5 active participating friends = +1 Ticket)
-        async with db.execute("SELECT referred_by FROM users WHERE id = ?", (user_id,)) as c_ref:
-            ref_row = await c_ref.fetchone()
-            referrer_id = ref_row["referred_by"] if ref_row else None
-
-        if referrer_id:
-            # Count active participating referrals for this referrer
-            async with db.execute("""
-                SELECT COUNT(cp.id) as active_cnt
-                FROM referrals r
-                JOIN contest_participants cp ON r.referred_id = cp.user_id
-                WHERE r.referrer_id = ? AND cp.contest_id = ?
-            """, (referrer_id, contest_id)) as c_act:
-                active_referrals = (await c_act.fetchone())["active_cnt"]
-
-            # Number of referral tickets referrer should have (1 for every 5 active friends)
-            earned_ref_tickets = active_referrals // 5
-
-            # Number of referral tickets referrer has already received
-            async with db.execute("""
-                SELECT COUNT(*) as existing_ref_t
-                FROM user_tickets
-                WHERE user_id = ? AND contest_id = ? AND reason LIKE '%do''st taklifi%'
-            """, (referrer_id, contest_id)) as c_earned:
-                already_issued = (await c_earned.fetchone())["existing_ref_t"]
-
-            # Issue missing referral tickets if milestone hit
-            if earned_ref_tickets > already_issued:
-                new_tickets_to_issue = earned_ref_tickets - already_issued
-                for i in range(new_tickets_to_issue):
-                    milestone = (already_issued + i + 1) * 5
-                    await issue_ticket_db(db, referrer_id, contest_id, f"{milestone} ta do'st taklifi")
+        await credit_referrer_db(db, user_id, contest_id)
 
         await db.commit()
 

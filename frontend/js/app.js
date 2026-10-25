@@ -352,6 +352,8 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
+        renderReferral(currentUser);
+
         // Update "Mening Imkoniyatim" Widget
         const cTickets = document.getElementById("chance-tickets-num");
         const cProgress = document.getElementById("chance-progress-bar");
@@ -816,6 +818,53 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // --- REFERRAL CARD ---
+  const REFERRALS_PER_TICKET = 5;
+
+  function renderReferral(user) {
+    const link = user.ref_link || "";
+    const active = user.active_referrals_count || 0;
+    const total = user.referrals_count || 0;
+    const progress = active % REFERRALS_PER_TICKET;
+    document.querySelectorAll(".ref-link-input").forEach(el => { el.value = link; });
+    document.querySelectorAll(".ref-progress-text").forEach(el => {
+      el.textContent = `Keyingi biletgacha: ${progress} / ${REFERRALS_PER_TICKET}`;
+    });
+    document.querySelectorAll(".ref-total").forEach(el => {
+      el.textContent = `Faol: ${active} · Jami: ${total}`;
+    });
+    document.querySelectorAll(".ref-progress-bar").forEach(el => {
+      el.style.width = `${(progress / REFERRALS_PER_TICKET) * 100}%`;
+    });
+  }
+
+  async function copyReferralLink() {
+    const link = currentUser?.ref_link;
+    if (!link) return;
+    try {
+      await navigator.clipboard.writeText(link);
+      showToast("Taklif havolasi nusxalandi! 🚀", "success");
+    } catch (e) {
+      fallbackCopyText(link);
+    }
+  }
+
+  function shareReferralLink() {
+    const link = currentUser?.ref_link;
+    if (!link) return;
+    const text = "🎁 HASAN PACKAGE konkursida qatnashing va sovrinlar yutib oling! Homiylarga obuna bo'ling va bilet oling 👇";
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+    if (tg && typeof tg.openTelegramLink === "function") {
+      tg.openTelegramLink(shareUrl);
+    } else {
+      window.open(shareUrl, "_blank");
+    }
+  }
+
+  document.querySelectorAll(".btn-ref-copy").forEach(b => b.addEventListener("click", copyReferralLink));
+  document.querySelectorAll(".btn-ref-share").forEach(b => b.addEventListener("click", shareReferralLink));
+  document.querySelectorAll(".ref-link-input").forEach(el => el.addEventListener("focus", () => el.select()));
 
   // --- REFERRAL LINK ACTIONS ---
   function fallbackCopyText(text) {

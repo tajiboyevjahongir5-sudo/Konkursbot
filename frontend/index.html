@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Custom Cyberpunk CSS with Cache Buster -->
-  <link rel="stylesheet" href="css/style.css?v=20261023_fullscreen">
+  <link rel="stylesheet" href="css/style.css?v=20261025_referral">
 
   <style>
     /* ==========================================================================
@@ -1949,6 +1949,40 @@
       .prize-card:hover, .task-item-card:hover { transform: translateY(-3px); }
       .pxl-hero-card { cursor: pointer; }
     }
+    /* Do'stlarni taklif qilish kartasi */
+    .referral-card {
+      margin: 16px 0; padding: 16px;
+      background: linear-gradient(135deg, rgba(31, 36, 24, 0.95), rgba(13, 15, 11, 0.98));
+      border: 1px solid rgba(74, 222, 128, 0.35); border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+    .referral-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .referral-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; }
+    .referral-title { font-size: 1.05rem; font-weight: 900; color: #fff; }
+    .referral-sub { font-size: 0.8rem; color: var(--text-secondary); }
+    .referral-sub b { color: #4ADE80; }
+    .referral-progress { margin-bottom: 12px; }
+    .referral-progress-row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+    .ref-progress-text { color: #4ADE80; }
+    .referral-bar { height: 8px; background: rgba(255, 255, 255, 0.07); border-radius: 999px; overflow: hidden; }
+    .ref-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, #22C55E, #4ADE80); border-radius: 999px; transition: width 0.6s ease; }
+    .referral-link-row { display: flex; gap: 8px; margin-bottom: 10px; }
+    .ref-link-input {
+      flex: 1; min-width: 0; height: 42px; padding: 0 12px;
+      font-size: 0.8rem; color: #fff; background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; outline: none;
+      user-select: all; -webkit-user-select: all;
+    }
+    .btn-ref-copy {
+      width: 46px; height: 42px; flex-shrink: 0; font-size: 1.15rem; cursor: pointer;
+      background: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.45); border-radius: 10px; color: #fff;
+    }
+    .btn-ref-share {
+      width: 100%; padding: 12px !important; font-weight: 900 !important; color: #06210f !important;
+      background: linear-gradient(135deg, #4ADE80, #22C55E) !important; border: none !important; border-radius: 12px !important;
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35) !important;
+    }
+    .referral-note { font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; line-height: 1.4; }
   </style>
 </head>
 <body>
@@ -2079,6 +2113,30 @@
         </div>
       </div>
 
+      <!-- Do'stlarni taklif qilish -->
+      <div class="referral-card">
+        <div class="referral-head">
+          <span class="referral-icon">🤝</span>
+          <div style="min-width: 0;">
+            <div class="referral-title">Do'stlarni taklif qiling</div>
+            <div class="referral-sub">Har 5 ta faol do'st uchun <b>+1 bilet</b></div>
+          </div>
+        </div>
+        <div class="referral-progress">
+          <div class="referral-progress-row">
+            <span class="ref-progress-text">Keyingi biletgacha: 0 / 5</span>
+            <span class="ref-total">Jami taklif: 0</span>
+          </div>
+          <div class="referral-bar"><div class="ref-progress-bar"></div></div>
+        </div>
+        <div class="referral-link-row">
+          <input type="text" class="ref-link-input" readonly value="Yuklanmoqda...">
+          <button type="button" class="btn-ref-copy" title="Nusxalash">📋</button>
+        </div>
+        <button type="button" class="btn btn-ref-share">📤 Do'stlarga ulashish</button>
+        <div class="referral-note">Do'stingiz havola orqali botga kirib, barcha homiylarga obuna bo'lgach "faol" hisoblanadi.</div>
+      </div>
+
       <!-- 5. VIP Prize Showcase (3D Luxury Cards - Pastki Qism) -->
       <div class="pxl-section-block" style="margin-bottom: 24px;">
         <div class="pxl-section-title">
@@ -2122,6 +2180,30 @@
             <div class="stat-label">Taklif qilinganlar</div>
           </div>
         </div>
+      </div>
+
+      <!-- Do'stlarni taklif qilish -->
+      <div class="referral-card">
+        <div class="referral-head">
+          <span class="referral-icon">🤝</span>
+          <div style="min-width: 0;">
+            <div class="referral-title">Do'stlarni taklif qiling</div>
+            <div class="referral-sub">Har 5 ta faol do'st uchun <b>+1 bilet</b></div>
+          </div>
+        </div>
+        <div class="referral-progress">
+          <div class="referral-progress-row">
+            <span class="ref-progress-text">Keyingi biletgacha: 0 / 5</span>
+            <span class="ref-total">Jami taklif: 0</span>
+          </div>
+          <div class="referral-bar"><div class="ref-progress-bar"></div></div>
+        </div>
+        <div class="referral-link-row">
+          <input type="text" class="ref-link-input" readonly value="Yuklanmoqda...">
+          <button type="button" class="btn-ref-copy" title="Nusxalash">📋</button>
+        </div>
+        <button type="button" class="btn btn-ref-share">📤 Do'stlarga ulashish</button>
+        <div class="referral-note">Do'stingiz havola orqali botga kirib, barcha homiylarga obuna bo'lgach "faol" hisoblanadi.</div>
       </div>
 
       <!-- Tickets Grid Card -->
@@ -2552,7 +2634,7 @@
             </div>
             <div class="form-group">
               <label>Tugma Havolasi (URL):</label>
-              <input type="text" id="admin-broadcast-btn-url" class="form-input" placeholder="https://t.me/peexell_contest_bot">
+              <input type="text" id="admin-broadcast-btn-url" class="form-input" placeholder="https://t.me/package_konkurs_bot">
             </div>
           </div>
           <button id="btn-send-broadcast" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
@@ -2662,6 +2744,6 @@
   </script>
 
   <!-- Custom JavaScript with Cache Buster -->
-  <script src="js/app.js?v=20261023_fullscreen"></script>
+  <script src="js/app.js?v=20261025_referral"></script>
 </body>
 </html>

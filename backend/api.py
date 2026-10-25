@@ -137,12 +137,35 @@ async def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
 
 # --- PUBLIC API ENDPOINTS ---
 
+_bot_username_cache: Optional[str] = None
+
+
+async def get_bot_username() -> str:
+    """Real bot @username from Telegram (cached); falls back to the configured name."""
+    global _bot_username_cache
+    if _bot_username_cache:
+        return _bot_username_cache
+    from backend.main import get_bot_instance
+    bot = get_bot_instance()
+    if bot:
+        try:
+            me = await bot.get_me()
+            if me and me.username:
+                _bot_username_cache = me.username
+                return _bot_username_cache
+        except Exception as e:
+            logger.warning(f"Could not fetch bot username: {e}")
+    return settings.BOT_USERNAME.lstrip("@")
+
+
 @router.get("/user/me")
 async def get_me(user: dict = Depends(get_current_user)):
+    from backend.database import get_active_referrals_count
     ref_count = await get_user_referrals_count(user["id"])
+    active_ref_count = await get_active_referrals_count(user["id"])
     user_tickets_list = await get_user_tickets(user["id"])
     is_admin = settings.is_admin(user["id"]) or (user["id"] == 999999999)
-    bot_name = "peexell_contest_bot"
+    bot_name = await get_bot_username()
     ref_link = f"https://t.me/{bot_name}?start=ref_{user['id']}"
 
     return {
@@ -156,6 +179,8 @@ async def get_me(user: dict = Depends(get_current_user)):
             "points": user["points"],
             "ref_code": user["ref_code"],
             "referrals_count": ref_count,
+            "active_referrals_count": active_ref_count,
+            "bot_username": bot_name,
             "ref_link": ref_link,
             "is_admin": is_admin,
             "phone_number": user.get("phone_number"),
@@ -691,13 +716,7 @@ async def admin_pick_winners(body: PickWinnersRequest, admin: dict = Depends(get
             target_chat_id = winner_channel["channel_id"]
             
             # Fetch Bot Info dynamically for bot username
-            bot_username = "peexell_contest_bot"
-            try:
-                bot_user = await bot.get_me()
-                if bot_user and bot_user.username:
-                    bot_username = bot_user.username
-            except Exception:
-                pass
+            bot_username = await get_bot_username()
 
             # Build aesthetically upgraded, VIP winner announcement post
             lines = [
@@ -1278,8 +1297,9 @@ def render_cyberpunk_result_page(
     auto_close: bool = False,
     action_button_text: str = "",
     action_button_url: str = "",
-    bot_username: str = "peexell_contest_bot"
+    bot_username: str = ""
 ) -> str:
+    bot_username = bot_username or _bot_username_cache or settings.BOT_USERNAME
     color = "#ff3b30" if status_type == "error" else ("#C5FF00" if status_type == "success" else "#ffcc00")
     border_color = f"{color}50"
     glow_color = f"{color}40"
