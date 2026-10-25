@@ -191,6 +191,93 @@ async def get_me(user: dict = Depends(get_current_user)):
     }
 
 
+def build_ref_share_caption(contest: dict, prizes: list) -> str:
+    """HTML caption for the shared invite card."""
+    title = html.escape(str(contest.get("title") or "HASAN PACKAGE KONKURSI"), quote=False)
+    lines = [f"🎁 <b>{title}</b>", ""]
+    medals = ["🥇", "🥈", "🥉"]
+    if prizes:
+        lines.append("🏆 <b>Sovrinlar:</b>")
+        for idx, p in enumerate(prizes[:3]):
+            lines.append(f"{medals[idx]} {html.escape(str(p.get('title', '')), quote=False)}")
+    elif contest.get("prize_pool"):
+        lines.append(f"🏆 <b>Sovrinlar:</b> {html.escape(str(contest['prize_pool']), quote=False)}")
+    lines += [
+        "",
+        "✅ Homiy kanallarga obuna bo'ling",
+        "🎟 Bilet oling va g'olib bo'ling!",
+        "",
+        "👇 <b>Qatnashish uchun pastdagi tugmani bosing</b>",
+    ]
+    return "\n".join(lines)
+
+
+async def _tg_api_call(method: str, payload: dict) -> dict:
+    """Raw Bot API call (independent of the installed aiogram version)."""
+    import aiohttp
+    url = f"https://api.telegram.org/bot{settings.BOT_TOKEN}/{method}"
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=payload, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+            return await resp.json()
+
+
+@router.post("/referral/share-message")
+async def prepare_referral_share_message(user: dict = Depends(get_current_user)):
+    """Prepares a rich invite card (banner + caption + button) for Telegram.WebApp.shareMessage."""
+    import time
+    from backend.database import get_prizes
+
+    if settings.BOT_TOKEN.startswith("7891234567"):
+        return {"status": "error", "message": "Bot sozlanmagan"}
+
+    bot_name = await get_bot_username()
+    ref_link = f"https://t.me/{bot_name}?start=ref_{user['id']}"
+    contest = await get_active_contest() or {}
+    caption = build_ref_share_caption(contest, await get_prizes())
+    keyboard = {"inline_keyboard": [[{"text": "🚀 Konkursda qatnashish", "url": ref_link}]]}
+    base_url = settings.clean_webapp_url
+    stamp = int(time.time())
+
+    results = [
+        {
+            "type": "photo",
+            "id": f"ref{user['id']}p{stamp}",
+            "photo_url": f"{base_url}/api/banner?t={stamp}",
+            "thumbnail_url": f"{base_url}/api/banner?t={stamp}",
+            "caption": caption,
+            "parse_mode": "HTML",
+            "reply_markup": keyboard,
+        },
+        {
+            "type": "article",
+            "id": f"ref{user['id']}a{stamp}",
+            "title": "Konkursga taklif",
+            "input_message_content": {"message_text": caption, "parse_mode": "HTML"},
+            "reply_markup": keyboard,
+        },
+    ]
+
+    last_error = ""
+    for result in results:
+        try:
+            data = await _tg_api_call("savePreparedInlineMessage", {
+                "user_id": user["id"],
+                "result": result,
+                "allow_user_chats": True,
+                "allow_group_chats": True,
+                "allow_channel_chats": True,
+            })
+        except Exception as e:
+            last_error = str(e)
+            continue
+        if data.get("ok"):
+            return {"status": "success", "id": data["result"]["id"]}
+        last_error = data.get("description", "")
+        logger.warning(f"savePreparedInlineMessage ({result['type']}) failed: {last_error}")
+
+    return {"status": "error", "message": last_error or "Ulashish kartasini tayyorlab bo'lmadi"}
+
+
 @router.get("/user/photo/{user_id}")
 async def get_user_photo(user_id: int):
     from backend.main import get_bot_instance

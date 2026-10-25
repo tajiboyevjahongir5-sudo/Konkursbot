@@ -850,16 +850,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function shareReferralLink() {
-    const link = currentUser?.ref_link;
-    if (!link) return;
-    const text = "🎁 HASAN PACKAGE konkursida qatnashing va sovrinlar yutib oling! Homiylarga obuna bo'ling va bilet oling 👇";
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+  function shareReferralViaUrl(link) {
+    const prizes = [...document.querySelectorAll("#prizes-grid .prize-card-name")]
+      .map(el => el.textContent.trim()).filter(Boolean).slice(0, 3);
+    const medals = ["🥇", "🥈", "🥉"];
+    const lines = ["🎁 HASAN PACKAGE KONKURSI", ""];
+    if (prizes.length) {
+      lines.push("🏆 Sovrinlar:");
+      prizes.forEach((p, i) => lines.push(`${medals[i]} ${p}`));
+      lines.push("");
+    }
+    lines.push("✅ Homiy kanallarga obuna bo'ling", "🎟 Bilet oling va g'olib bo'ling!", "", "👆 Qatnashish uchun havolani bosing");
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(lines.join("\n"))}`;
     if (tg && typeof tg.openTelegramLink === "function") {
       tg.openTelegramLink(shareUrl);
     } else {
       window.open(shareUrl, "_blank");
     }
+  }
+
+  async function shareReferralLink() {
+    const link = currentUser?.ref_link;
+    if (!link) return;
+
+    // Telegram 8.0+: share a rich card (banner + caption + "Qatnashish" button)
+    const canShareCard = tg && typeof tg.shareMessage === "function"
+      && typeof tg.isVersionAtLeast === "function" && tg.isVersionAtLeast("8.0");
+    if (canShareCard) {
+      const shareBtns = document.querySelectorAll(".btn-ref-share");
+      shareBtns.forEach(b => { b.disabled = true; });
+      try {
+        const resp = await fetch("/api/referral/share-message", {
+          method: "POST",
+          headers: { "X-Telegram-Init-Data": initData }
+        });
+        const data = await resp.json();
+        if (data.status === "success" && data.id) {
+          tg.shareMessage(data.id, (sent) => {
+            if (sent) showToast("Taklif yuborildi! 🚀", "success");
+          });
+          return;
+        }
+      } catch (e) {
+        console.log("Rich share failed, falling back to link:", e);
+      } finally {
+        shareBtns.forEach(b => { b.disabled = false; });
+      }
+    }
+    shareReferralViaUrl(link);
   }
 
   document.querySelectorAll(".btn-ref-copy").forEach(b => b.addEventListener("click", copyReferralLink));
