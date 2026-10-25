@@ -732,8 +732,12 @@ async def get_user_tickets(user_id: int) -> List[Dict[str, Any]]:
             return [dict(r) for r in rows]
 
 
+# A referrer earns +1 ticket for every N invited friends who have joined the active contest
+REFERRALS_PER_TICKET = 3
+
+
 async def credit_referrer_db(db, user_id: int, contest_id: int) -> None:
-    """Gives the user's referrer +1 ticket for every 5 friends who joined this contest.
+    """Gives the user's referrer +1 ticket for every REFERRALS_PER_TICKET friends who joined this contest.
     Idempotent: only issues the tickets the referrer is still missing."""
     async with db.execute("SELECT referred_by FROM users WHERE id = ?", (user_id,)) as c_ref:
         ref_row = await c_ref.fetchone()
@@ -748,7 +752,7 @@ async def credit_referrer_db(db, user_id: int, contest_id: int) -> None:
         WHERE r.referrer_id = ? AND cp.contest_id = ?
     """, (referrer_id, contest_id)) as c_act:
         active_referrals = (await c_act.fetchone())["active_cnt"]
-    earned_ref_tickets = active_referrals // 5
+    earned_ref_tickets = active_referrals // REFERRALS_PER_TICKET
 
     async with db.execute("""
         SELECT COUNT(*) as existing_ref_t
@@ -758,7 +762,7 @@ async def credit_referrer_db(db, user_id: int, contest_id: int) -> None:
         already_issued = (await c_earned.fetchone())["existing_ref_t"]
 
     for i in range(max(0, earned_ref_tickets - already_issued)):
-        milestone = (already_issued + i + 1) * 5
+        milestone = (already_issued + i + 1) * REFERRALS_PER_TICKET
         await issue_ticket_db(db, referrer_id, contest_id, f"{milestone} ta do'st taklifi")
 
 

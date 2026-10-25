@@ -820,9 +820,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- REFERRAL CARD ---
-  const REFERRALS_PER_TICKET = 5;
-
   function renderReferral(user) {
+    const REFERRALS_PER_TICKET = user.referrals_per_ticket || 3;
     const link = user.ref_link || "";
     const active = user.active_referrals_count || 0;
     const total = user.referrals_count || 0;
@@ -834,6 +833,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".ref-total").forEach(el => {
       el.textContent = `Faol: ${active} · Jami: ${total}`;
     });
+    document.querySelectorAll(".ref-per-ticket").forEach(el => { el.textContent = REFERRALS_PER_TICKET; });
     document.querySelectorAll(".ref-progress-bar").forEach(el => {
       el.style.width = `${(progress / REFERRALS_PER_TICKET) * 100}%`;
     });

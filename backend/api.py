@@ -160,7 +160,7 @@ async def get_bot_username() -> str:
 
 @router.get("/user/me")
 async def get_me(user: dict = Depends(get_current_user)):
-    from backend.database import get_active_referrals_count
+    from backend.database import get_active_referrals_count, REFERRALS_PER_TICKET
     ref_count = await get_user_referrals_count(user["id"])
     active_ref_count = await get_active_referrals_count(user["id"])
     user_tickets_list = await get_user_tickets(user["id"])
@@ -180,6 +180,7 @@ async def get_me(user: dict = Depends(get_current_user)):
             "ref_code": user["ref_code"],
             "referrals_count": ref_count,
             "active_referrals_count": active_ref_count,
+            "referrals_per_ticket": REFERRALS_PER_TICKET,
             "bot_username": bot_name,
             "ref_link": ref_link,
             "is_admin": is_admin,
