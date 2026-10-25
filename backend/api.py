@@ -191,7 +191,7 @@ async def get_me(user: dict = Depends(get_current_user)):
     }
 
 
-def build_ref_share_caption(contest: dict, prizes: list) -> str:
+def build_ref_share_caption(contest: dict, prizes: list, sponsors: Optional[list] = None) -> str:
     """HTML caption for the shared invite card."""
     title = html.escape(str(contest.get("title") or "HASAN PACKAGE KONKURSI"), quote=False)
     lines = [f"🎁 <b>{title}</b>", ""]
@@ -202,9 +202,20 @@ def build_ref_share_caption(contest: dict, prizes: list) -> str:
             lines.append(f"{medals[idx]} {html.escape(str(p.get('title', '')), quote=False)}")
     elif contest.get("prize_pool"):
         lines.append(f"🏆 <b>Sovrinlar:</b> {html.escape(str(contest['prize_pool']), quote=False)}")
+    if sponsors:
+        platform_icons = {"telegram": "📢", "youtube": "▶️", "instagram": "📸"}
+        lines += ["", "📣 <b>Homiy kanallar:</b>"]
+        for sp in sponsors[:10]:
+            name = html.escape(str(sp.get("title") or sp.get("channel_id") or ""), quote=False)
+            link = str(sp.get("invite_link") or "").strip()
+            icon = platform_icons.get(sp.get("platform") or "telegram", "📢")
+            if link.startswith(("https://", "http://")):
+                lines.append(f'{icon} <a href="{html.escape(link)}">{name}</a>')
+            else:
+                lines.append(f"{icon} {name}")
     lines += [
         "",
-        "✅ Homiy kanallarga obuna bo'ling",
+        "✅ Barcha homiy kanallarga obuna bo'ling",
         "🎟 Bilet oling va g'olib bo'ling!",
         "",
         "👇 <b>Qatnashish uchun pastdagi tugmani bosing</b>",
@@ -233,7 +244,7 @@ async def prepare_referral_share_message(user: dict = Depends(get_current_user))
     bot_name = await get_bot_username()
     ref_link = f"https://t.me/{bot_name}?start=ref_{user['id']}"
     contest = await get_active_contest() or {}
-    caption = build_ref_share_caption(contest, await get_prizes())
+    caption = build_ref_share_caption(contest, await get_prizes(), await get_sponsors(active_only=True))
     keyboard = {"inline_keyboard": [[{"text": "🚀 Konkursda qatnashish", "url": ref_link}]]}
     base_url = settings.clean_webapp_url
     stamp = int(time.time())

@@ -860,7 +860,17 @@ document.addEventListener("DOMContentLoaded", () => {
       prizes.forEach((p, i) => lines.push(`${medals[i]} ${p}`));
       lines.push("");
     }
-    lines.push("✅ Homiy kanallarga obuna bo'ling", "🎟 Bilet oling va g'olib bo'ling!", "", "👆 Qatnashish uchun havolani bosing");
+    const sponsors = [...document.querySelectorAll("#tasks-container .task-item-card")].map(card => {
+      const title = card.querySelector(".task-title")?.textContent.trim() || "";
+      const handle = card.querySelector(".task-subtitle")?.textContent.trim() || "";
+      return handle.startsWith("@") ? `${title} (${handle})` : title;
+    }).filter(Boolean).slice(0, 10);
+    if (sponsors.length) {
+      lines.push("📣 Homiy kanallar:");
+      sponsors.forEach(sp => lines.push(`📢 ${sp}`));
+      lines.push("");
+    }
+    lines.push("✅ Barcha homiy kanallarga obuna bo'ling", "🎟 Bilet oling va g'olib bo'ling!", "", "👆 Qatnashish uchun havolani bosing");
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(lines.join("\n"))}`;
     if (tg && typeof tg.openTelegramLink === "function") {
       tg.openTelegramLink(shareUrl);
